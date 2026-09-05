@@ -7,6 +7,8 @@
   여기 정리된 규칙과 어긋나는 방식으로 콘텐츠를 만들지 않는다.
 - 채널별로 무엇을 자동 발행하고 무엇을 사람이 직접 발행하는지는
   **[docs/publishing-plan.md](docs/publishing-plan.md)** 를 따른다.
+- 이번 주에 어떤 블로그 주제를 쓸지는 **[docs/blog-calendar.md](docs/blog-calendar.md)**
+  (22주 편집 일정)를 따른다.
 - 실제 자동 발행 코드(GitHub Actions 워크플로/스크립트)는 이 저장소에 구현한다.
 
 ## 발행 자동화 수준 (요약 — 절대 임의로 바꾸지 않는다)
