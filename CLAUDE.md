@@ -41,3 +41,11 @@
 
 실제 API 키/토큰 값은 이 저장소에 절대 커밋하지 않는다 — GitHub Actions Secrets로만 관리한다.
 필요한 시크릿 이름 목록과 용도는 `docs/publishing-plan.md`의 "자격증명" 절 참고.
+
+## 지침 자동 갱신 — 알고리즘-searching team
+
+네이버·구글 검색 알고리즘과 AEO/GEO 동향을 조사해 `docs/content-playbook.md`를 최신
+상태로 유지하는 전담 에이전트다. 4주(28일) 간격으로 자동 실행되며, 실행 이력은
+`docs/algorithm-search-log.md`에 남는다. 스킬 정의:
+[.claude/skills/algorithm-searching-team/SKILL.md](.claude/skills/algorithm-searching-team/SKILL.md).
+지침 변경은 항상 PR로 올라오며 자동 머지되지 않는다 — 사용자가 검토 후 머지한다.
