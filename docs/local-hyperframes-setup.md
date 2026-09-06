@@ -52,9 +52,20 @@ Get-ChildItem .claude\skills | Where-Object { $_.Name -like "hyperframes*" }
 ```
 
 7개 폴더가 모두 보이고(속성이 정션으로 표시됨), 각각 안에 `SKILL.md`가 실제로
-열리면 성공이다. `content-derivation-team` 스킬을 실행하기 전 이 확인을 먼저
-해본다 — 정션이 깨져 있으면(예: `claude_pro` 폴더 위치를 옮긴 경우) 위 명령을 다시
-실행해서 다시 연결한다.
+열리면 정션 자체는 성공이다. **단, 정션 안쪽까지 파고드는 폴더 목록 검색(Glob 등)은
+정션을 따라 들어가지 않을 수 있다** — 그래서 `.claude/skills/`를 나열했을 때
+`hyperframes*`가 안 보여도, 실제 파일을 직접 읽거나(`Read`) `/hyperframes` 스킬을
+직접 호출하면 정상 작동하는 경우가 많다(2026-09-06 실제 확인됨). 가장 확실한
+검증은 목록 검색이 아니라 **`/hyperframes` 스킬을 실제로 호출**해보는 것이다 —
+호출됐을 때 8개 도메인 스킬(`-core`·`-animation`·`-audio`·`-cli`·`-creative`·
+`-keyframes`·`-registry`)이 다 인식되면 성공.
+
+**참고**: 이 컴퓨터에서는 확인해보니 HyperFrames가 `claude_pro` 프로젝트에만 있는
+게 아니라 **사용자 계정 레벨**(`C:\Users\<계정명>\.claude\skills\hyperframes` 등)에도
+이미 설치돼 있었다 — 이 경우 정션 없이도 이 저장소를 포함한 이 컴퓨터의 모든 로컬
+프로젝트에서 HyperFrames가 자동으로 인식된다. 위 정션 설정은 그래도 안전장치로
+남겨둔다 — 사용자 레벨 설치가 없는 다른 컴퓨터에서 작업하거나, 나중에 그 설치가
+사라지는 경우에 대비한 대체 경로다.
 
 ## 유지 관리
 
