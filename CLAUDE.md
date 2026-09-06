@@ -47,6 +47,17 @@
 승인이 있어야만 카드뉴스·숏츠 스토리보드 단계로 넘어간다. 스킬 정의:
 [.claude/skills/mainmanager/SKILL.md](.claude/skills/mainmanager/SKILL.md).
 
+## 카드뉴스·숏츠 제작 — content-derivation-team
+
+mainmanager 승인 게이트 통과 후, 그 주 블로그 원고에서 소재를 뽑아 카드뉴스·숏츠
+스토리보드+채널별 캡션+스레드 초안을 작성하고, 다시 사용자 승인을 받은 뒤 로컬
+HyperFrames(`/hyperframes`, general-video 컴패니언 모드)로 실제 렌더링까지 진행하는
+전담 에이전트다. 발행 자체는 담당하지 않는다(그건 `publishing-plan.md`의 큐
+메커니즘). HyperFrames는 별도 로컬 프로젝트 `claude_pro`에 있으며, 이 저장소에는
+파일을 복사하지 않고 윈도우 디렉터리 정션으로 경로만 연결한다 — 최초 1회 설정은
+**[docs/local-hyperframes-setup.md](docs/local-hyperframes-setup.md)** 참고. 스킬 정의:
+[.claude/skills/content-derivation-team/SKILL.md](.claude/skills/content-derivation-team/SKILL.md).
+
 ## 주간 교육뉴스 — education-news-weekly (이 저장소와 별개의 파이프라인)
 
 이 프로젝트의 블로그/카드뉴스/숏츠 콘텐츠와는 완전히 별개로, 매주 월요일 네이버 밴드

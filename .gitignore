@@ -4,3 +4,14 @@ node_modules/
 *.log
 __pycache__/
 *.pyc
+
+# 로컬 claude_pro 프로젝트의 HyperFrames 스킬을 디렉터리 정션(junction)으로만
+# 연결한다 — 실제 파일은 이 저장소에 없으므로 커밋 대상에서 제외한다.
+# (docs/local-hyperframes-setup.md 참고)
+.claude/skills/hyperframes/
+.claude/skills/hyperframes-animation/
+.claude/skills/hyperframes-cli/
+.claude/skills/hyperframes-core/
+.claude/skills/hyperframes-creative/
+.claude/skills/hyperframes-keyframes/
+.claude/skills/hyperframes-registry/
