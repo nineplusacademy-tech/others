@@ -30,11 +30,12 @@ def check_google() -> str:
     blogger = build("blogger", "v3", credentials=creds)
     blog = blogger.blogs().get(blogId=os.environ["BLOGGER_BLOG_ID"]).execute()
 
-    youtube = build("youtube", "v3", credentials=creds)
-    channels = youtube.channels().list(part="snippet", mine=True).execute()
-    channel_name = channels["items"][0]["snippet"]["title"] if channels.get("items") else "?"
-
-    return f"blog='{blog.get('name')}' ({blog.get('url')}), youtube channel='{channel_name}'"
+    # youtube.upload 권한은 업로드(videos.insert) 전용이라 channels.list 같은 조회
+    # 호출엔 애초에 쓸 수 없다 (Google이 요구하는 별도 scope: youtube/youtube.readonly
+    # 등). 그래서 여기선 채널 조회로 검증하지 않고, refresh 성공 자체로 client_id/
+    # secret/refresh_token이 유효함을 확인한 것으로 충분하다고 본다. 실제 업로드
+    # 권한(youtube.upload) 자체는 발행 워크플로가 처음 영상을 올릴 때 검증된다.
+    return f"blog='{blog.get('name')}' ({blog.get('url')}) — OAuth 갱신 성공 (youtube.upload 범위는 업로드 시 검증됨)"
 
 
 def check_facebook_page() -> str:
