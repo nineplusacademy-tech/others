@@ -6,11 +6,21 @@ import os
 
 from googleapiclient.discovery import build
 
+from common import DRY_RUN, dry_run_log
 from google_auth import get_credentials
 
 
 def publish(title: str, html_content: str, labels: list[str]) -> str:
     """블로그 글을 즉시 공개로 게시하고, 게시된 글의 URL을 반환한다."""
+    if DRY_RUN:
+        dry_run_log(
+            "Blogger",
+            title=title,
+            labels=", ".join(labels),
+            content=html_content,
+        )
+        return "https://dry-run.invalid/blogger-post"
+
     creds = get_credentials()
     service = build("blogger", "v3", credentials=creds)
 

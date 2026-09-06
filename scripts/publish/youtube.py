@@ -7,6 +7,7 @@ from pathlib import Path
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
+from common import DRY_RUN, dry_run_log
 from google_auth import get_credentials
 
 EDUCATION_CATEGORY_ID = "27"
@@ -18,6 +19,10 @@ def upload_shorts(video_path: Path, title: str, description: str) -> str:
     제목/설명에 "#Shorts"가 없으면 유튜브가 쇼츠로 인식하지 않을 수 있어
     자동으로 덧붙인다(이미 있으면 중복 추가하지 않음).
     """
+    if DRY_RUN:
+        dry_run_log("YouTube 쇼츠", video=str(video_path), title=title, description=description)
+        return "https://dry-run.invalid/youtube-shorts"
+
     creds = get_credentials()
     service = build("youtube", "v3", credentials=creds)
 

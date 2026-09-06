@@ -4,7 +4,12 @@ on:
   schedule:
     # 목요일 00:00 UTC = 목요일 09:00 KST
     - cron: "0 0 * * 4"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "true면 실제로 게시하지 않고 각 단계에서 무엇을 올릴지만 로그로 출력 (안전한 테스트용)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -29,6 +34,7 @@ jobs:
       - name: 발행 실행
         env:
           PYTHONPATH: scripts/publish
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
           GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
           GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
           GOOGLE_OAUTH_REFRESH_TOKEN: ${{ secrets.GOOGLE_OAUTH_REFRESH_TOKEN }}

@@ -8,11 +8,22 @@ GitHub Actions 로그도 공개되며, 새로 발급받은(아직 Secrets에 등
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 import yaml
 
 QUEUE_DIR = Path("queue")
+
+DRY_RUN = os.environ.get("DRY_RUN", "").lower() == "true"
+
+
+def dry_run_log(channel: str, **details: str) -> None:
+    """DRY_RUN일 때 실제 API 호출 대신 '이렇게 게시될 것입니다'를 출력한다."""
+    print(f"[DRY RUN] {channel} — 실제로 게시하지 않음. 아래 내용으로 게시될 예정:")
+    for key, value in details.items():
+        preview = value if len(value) <= 200 else value[:200] + "…"
+        print(f"    {key}: {preview}")
 
 # main.py가 각 채널 성공 여부를 기록할 때 쓰는 키 전체 목록.
 ALL_STEPS = [

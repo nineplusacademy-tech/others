@@ -19,6 +19,7 @@ import facebook
 import instagram
 import youtube
 from common import (
+    DRY_RUN,
     all_steps_done,
     fill_placeholders,
     find_queue_folder,
@@ -31,14 +32,17 @@ from common import (
 
 
 def run(folder: Path) -> None:
-    status = load_status(folder)
+    # DRY_RUN에서는 실제 상태 파일을 읽거나 쓰지 않는다 — 진짜 실행 때 이 큐가
+    # 처리된 것처럼 보이면 안 되고, 매번 처음부터 6단계를 전부 시뮬레이션한다.
+    status = {} if DRY_RUN else load_status(folder)
 
     # 1. 구글 블로그
     if not step_done(status, "blogger"):
         meta, html = parse_frontmatter(folder / "블로그" / "구글블로그용.md")
         url = blogger.publish(meta.get("title", ""), html, meta.get("labels") or [])
         status["blogger"] = {"done": True, "url": url}
-        save_status(folder, status)
+        if not DRY_RUN:
+            save_status(folder, status)
         print(f"[blogger] 발행 완료: {url}")
     blog_url = status["blogger"]["url"]
 
@@ -51,7 +55,8 @@ def run(folder: Path) -> None:
         caption = fill_placeholders(cardnews_captions.get("페이스북", ""), BLOG_URL=blog_url)
         post_id = facebook.publish_photo_post(cover, caption)
         status["facebook_post"] = {"done": True, "id": post_id}
-        save_status(folder, status)
+        if not DRY_RUN:
+            save_status(folder, status)
         print(f"[facebook_post] 발행 완료: {post_id}")
 
     # 3. 인스타그램 캐러셀 (카드뉴스 9장)
@@ -60,7 +65,8 @@ def run(folder: Path) -> None:
         caption = fill_placeholders(cardnews_captions.get("인스타그램", ""), BLOG_URL=blog_url)
         media_id = instagram.publish_carousel(images, caption)
         status["instagram_carousel"] = {"done": True, "id": media_id}
-        save_status(folder, status)
+        if not DRY_RUN:
+            save_status(folder, status)
         print(f"[instagram_carousel] 발행 완료: {media_id}")
 
     video_path = folder / "숏츠" / "9x16.mp4"
@@ -70,7 +76,8 @@ def run(folder: Path) -> None:
         caption = fill_placeholders(shorts_captions.get("페이스북", ""), BLOG_URL=blog_url)
         video_id = facebook.publish_reel(video_path, caption)
         status["facebook_reel"] = {"done": True, "id": video_id}
-        save_status(folder, status)
+        if not DRY_RUN:
+            save_status(folder, status)
         print(f"[facebook_reel] 발행 완료: {video_id}")
 
     # 5. 인스타그램 릴스
@@ -78,7 +85,8 @@ def run(folder: Path) -> None:
         caption = fill_placeholders(shorts_captions.get("인스타그램", ""), BLOG_URL=blog_url)
         media_id = instagram.publish_reel(video_path, caption)
         status["instagram_reel"] = {"done": True, "id": media_id}
-        save_status(folder, status)
+        if not DRY_RUN:
+            save_status(folder, status)
         print(f"[instagram_reel] 발행 완료: {media_id}")
 
     # 6. 유튜브 쇼츠
@@ -86,14 +94,17 @@ def run(folder: Path) -> None:
         yt_meta, yt_description = parse_frontmatter(folder / "숏츠" / "캡션_유튜브쇼츠.md")
         video_url = youtube.upload_shorts(video_path, yt_meta.get("title", ""), yt_description)
         status["youtube_shorts"] = {"done": True, "url": video_url}
-        save_status(folder, status)
+        if not DRY_RUN:
+            save_status(folder, status)
         print(f"[youtube_shorts] 발행 완료: {video_url}")
 
-    if all_steps_done(status):
+    if not all_steps_done(status):
+        print(f"'{folder.name}' 일부 채널 미완료 — 다음 실행 때 나머지 재시도")
+    elif DRY_RUN:
+        print(f"[DRY RUN] '{folder.name}' 전 채널 시뮬레이션 완료 — 실제로는 아무것도 게시되거나 삭제되지 않음")
+    else:
         shutil.rmtree(folder)
         print(f"'{folder.name}' 전 채널 발행 완료 — 큐에서 삭제")
-    else:
-        print(f"'{folder.name}' 일부 채널 미완료 — 다음 실행 때 나머지 재시도")
 
 
 def main() -> None:
