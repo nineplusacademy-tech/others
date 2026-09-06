@@ -10,6 +10,8 @@
 - 이번 주에 어떤 블로그 주제를 쓸지는 **[docs/blog-calendar.md](docs/blog-calendar.md)**
   (22주 편집 일정)를 따른다.
 - 실제 자동 발행 코드(GitHub Actions 워크플로/스크립트)는 이 저장소에 구현한다.
+- "오늘 뭐 해야 하는지", "다음 기획안이 뭔지", 각 에이전트 상태 확인, 정규 사이클 밖의
+  별도 작업 지시는 **[mainmanager](.claude/skills/mainmanager/SKILL.md)** 에게 시킨다.
 
 ## 발행 자동화 수준 (요약 — 절대 임의로 바꾸지 않는다)
 
@@ -49,3 +51,11 @@
 `docs/algorithm-search-log.md`에 남는다. 스킬 정의:
 [.claude/skills/algorithm-searching-team/SKILL.md](.claude/skills/algorithm-searching-team/SKILL.md).
 지침 변경은 항상 PR로 올라오며 자동 머지되지 않는다 — 사용자가 검토 후 머지한다.
+
+## 총괄 관리 — mainmanager
+
+작업 스케줄(원고 작성일·업로드 일정)과 `docs/blog-calendar.md`의 기획안 순서를 관리하고,
+algorithm-searching-team 등 다른 에이전트의 최근 상태를 취합해 보여주며, 정규 기획안과
+무관한 별도 작업 지시가 들어오면 기존 지침(content-playbook.md·publishing-plan.md)
+그대로 다른 작업이 즉시 진행되도록 연결해주는 총괄 에이전트다. 스킬 정의:
+[.claude/skills/mainmanager/SKILL.md](.claude/skills/mainmanager/SKILL.md).
