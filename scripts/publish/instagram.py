@@ -16,7 +16,7 @@ import requests
 
 from common import raw_github_url
 
-GRAPH = "https://graph.facebook.com/v21.0"
+GRAPH = "https://graph.instagram.com"
 POLL_INTERVAL_SECONDS = 10
 POLL_MAX_ATTEMPTS = 30  # 최대 5분 대기
 
