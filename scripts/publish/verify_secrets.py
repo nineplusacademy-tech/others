@@ -38,31 +38,34 @@ def check_google() -> str:
     return f"blog='{blog.get('name')}' ({blog.get('url')}) — OAuth 갱신 성공 (youtube.upload 범위는 업로드 시 검증됨)"
 
 
-def check_facebook_page() -> str:
+def _graph_get(node_id: str, fields: str, access_token: str) -> dict:
+    """Meta Graph API GET 호출. 실패 시 Meta가 돌려준 error 객체를 그대로
+    예외 메시지에 담는다 (토큰 값은 에러 응답에 echo되지 않으므로 안전)."""
     resp = requests.get(
-        f"https://graph.facebook.com/v21.0/{os.environ['FACEBOOK_PAGE_ID']}",
-        params={
-            "fields": "name,id",
-            "access_token": os.environ["FACEBOOK_PAGE_ACCESS_TOKEN"],
-        },
+        f"https://graph.facebook.com/v21.0/{node_id}",
+        params={"fields": fields, "access_token": access_token},
         timeout=30,
     )
-    resp.raise_for_status()
-    data = resp.json()
+    if not resp.ok:
+        try:
+            detail = resp.json().get("error", resp.text)
+        except ValueError:
+            detail = resp.text
+        raise RuntimeError(f"HTTP {resp.status_code} — {detail}")
+    return resp.json()
+
+
+def check_facebook_page() -> str:
+    data = _graph_get(os.environ["FACEBOOK_PAGE_ID"], "name,id", os.environ["FACEBOOK_PAGE_ACCESS_TOKEN"])
     return f"page='{data.get('name')}' (id={data.get('id')})"
 
 
 def check_instagram() -> str:
-    resp = requests.get(
-        f"https://graph.facebook.com/v21.0/{os.environ['INSTAGRAM_BUSINESS_ACCOUNT_ID']}",
-        params={
-            "fields": "username,id",
-            "access_token": os.environ["INSTAGRAM_ACCESS_TOKEN"],
-        },
-        timeout=30,
+    data = _graph_get(
+        os.environ["INSTAGRAM_BUSINESS_ACCOUNT_ID"],
+        "username,id",
+        os.environ["INSTAGRAM_ACCESS_TOKEN"],
     )
-    resp.raise_for_status()
-    data = resp.json()
     return f"account=@{data.get('username')} (id={data.get('id')})"
 
 
