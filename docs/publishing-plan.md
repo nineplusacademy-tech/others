@@ -50,10 +50,50 @@ HyperFrames)대로 계속 진행하고, 이미 그 과정에서 검토·승인�
 ```
 queue/<번호>_<주제요약>/
   블로그/구글블로그용.md   ← Blogger API가 그대로 게시
-  카드뉴스/01.png ~ 09.png ← 인스타그램 캐러셀
+  카드뉴스/01.png ~ 09.png ← 인스타그램 캐러셀 (01.png은 페이스북 게시글 표지로도 씀)
   카드뉴스/채널별_캡션.md  ← 인스타·페이스북 캡션 추출용
   숏츠/9x16.mp4            ← 인스타 릴스, 페이스북 릴스, 유튜브 쇼츠 공용
+  숏츠/채널별_캡션.md      ← 릴스용 인스타·페이스북 캡션
   숏츠/캡션_유튜브쇼츠.md
+  _status.json             ← 발행 워크플로가 자동 생성/갱신 (직접 만들 필요 없음)
+```
+
+### 각 파일의 정확한 형식 (`scripts/publish/`가 이 형식 그대로 읽는다)
+
+**`블로그/구글블로그용.md`** — YAML 프런트매터 + HTML 본문
+
+```markdown
+---
+title: 포스트 제목
+labels: [라벨1, 라벨2]
+---
+<h2>소제목</h2>
+<p>본문...</p>
+```
+
+**`카드뉴스/채널별_캡션.md`, `숏츠/채널별_캡션.md`** — `## 채널명` 으로 구분. 스크립트는
+`## 인스타그램`, `## 페이스북` 두 섹션만 읽고 나머지(당근마켓 등)는 사람이 반자동
+게시할 때 참고하는 용도로 그대로 둔다. 페이스북 섹션에 `{{BLOG_URL}}`이라고 써두면
+실제 발행 시 그 자리에 방금 게시된 Blogger 글 주소가 자동으로 채워진다.
+
+```markdown
+## 인스타그램
+캡션 텍스트...
+
+## 페이스북
+캡션 텍스트... 전체 글 보기 👉 {{BLOG_URL}}
+
+## 당근마켓
+(사람이 금요일에 참고해서 직접 게시)
+```
+
+**`숏츠/캡션_유튜브쇼츠.md`** — YAML 프런트매터(제목) + 본문(설명)
+
+```markdown
+---
+title: 영상 제목(100자 이내)
+---
+영상 설명(최대 5,000자)...
 ```
 
 **흐름:**
@@ -77,39 +117,60 @@ queue/<번호>_<주제요약>/
 남고, 실제 콘텐츠 파일은 발행 성공 즉시 사라져 "결과물은 로컬에만 보관"이라는
 원칙이 유지된다.
 
-## 4. 자격증명 (GitHub Actions Secrets로만 관리 — 이 저장소에 값 자체를 커밋하지 않음)
+**저장소가 퍼블릭인 이유**: 인스타그램 Graph API는 파일 직접 업로드를 지원하지
+않고 반드시 공개 URL(`image_url`/`video_url`)을 요구한다. 그래서 이 저장소를
+퍼블릭으로 전환해, `queue/` 안의 이미지·영상을 `raw.githubusercontent.com` 주소로
+인스타그램이 바로 읽어갈 수 있게 했다(`scripts/publish/common.py`의
+`raw_github_url()`). 발행 성공 즉시 파일이 삭제되므로 노출 기간은 짧다. **이
+저장소에는 절대 실제 자격증명 값을 커밋하지 않는다** — 퍼블릭이라 더더욱 중요하다.
 
-| Secret 이름(제안) | 용도 | 비고 |
+## 4. 실제 구현 위치
+
+- `scripts/publish/main.py` — 오케스트레이터. `queue/` 폴더 하나를 찾아 6단계
+  (Blogger → 페이스북 게시글 → 인스타 캐러셀 → 페이스북 릴스 → 인스타 릴스 →
+  유튜브 쇼츠) 순서로 발행하고, 단계별 성공 여부를 `_status.json`에 기록해
+  재실행 시 이미 끝난 단계는 건너뛴다. 전부 끝나면 큐 폴더를 삭제한다.
+- `scripts/publish/{blogger,facebook,instagram,youtube}.py` — 채널별 API 호출.
+- `.github/workflows/publish.yml` — 매주 목요일 00:00 UTC(09:00 KST) 실행 +
+  `workflow_dispatch`로 수동 테스트 가능. 실행 후 `_status.json` 변경이나 큐 폴더
+  삭제를 항상 커밋·푸시한다(중간에 실패해도 `if: always()`로 상태는 저장됨).
+- `scripts/publish/refresh_instagram_token.py` + `.github/workflows/refresh-instagram-token.yml`
+  — 매달 1일·15일에 인스타그램 토큰을 갱신하고 GitHub Secret에 자동으로 다시
+  저장(아래 6절).
+
+## 5. 자격증명 (GitHub Actions Secrets로만 관리 — 이 저장소에 값 자체를 커밋하지 않음)
+
+| Secret 이름 | 용도 | 비고 |
 |---|---|---|
-| `GEMINI_API_KEY` | 블로그 이미지 자동 생성 | Google AI Studio 발급 |
 | `GOOGLE_OAUTH_CLIENT_ID` | Blogger/YouTube 인증 | 웹 애플리케이션 타입 OAuth 클라이언트 |
 | `GOOGLE_OAUTH_CLIENT_SECRET` | Blogger/YouTube 인증 | 위 클라이언트의 시크릿 |
 | `GOOGLE_OAUTH_REFRESH_TOKEN` | Blogger/YouTube 인증 | 만료 없음(프로덕션 게시 상태 확인됨) |
-| `BLOGGER_BLOG_ID` | 어느 Blogger 블로그에 올릴지 | 첫 발행 전에 Blogger API로 조회해 채워넣기 |
-| `META_APP_ID` / `META_APP_SECRET` | Instagram 토큰 자동 갱신용 | blogTOsns_nineplus 앱 |
+| `BLOGGER_BLOG_ID` | 어느 Blogger 블로그에 올릴지 | Blogger API `blogs.getByUrl` 등으로 조회해서 채워넣기 |
 | `FACEBOOK_PAGE_ID` | 페이스북 페이지 게시 대상 | 1265899359934473 (나인플러스수학학원) |
-| `FACEBOOK_PAGE_ACCESS_TOKEN` | 페이스북 페이지 게시 | 만료 없음(Page 토큰) — 그래도 주기적으로 debug_token으로 유효성 점검 권장 |
+| `FACEBOOK_PAGE_ACCESS_TOKEN` | 페이스북 게시글·릴스 | 만료 없음(Page 토큰) — 그래도 가끔 debug_token으로 유효성 점검 권장 |
 | `INSTAGRAM_BUSINESS_ACCOUNT_ID` | 인스타그램 게시 대상 | 27167215579620807 (nineplus_math) |
-| `INSTAGRAM_ACCESS_TOKEN` | 인스타그램 게시 | 60일 만료 — 자동 갱신 로직 필요(아래 5절) |
-| `YOUTUBE_CHANNEL_ID` | 업로드 대상 채널 확인용 | 선택사항, 업로드 자체엔 OAuth 토큰이면 충분 |
+| `INSTAGRAM_ACCESS_TOKEN` | 인스타그램 캐러셀·릴스 | 60일 만료 — `refresh-instagram-token.yml`이 자동 갱신 |
+| `GH_PAT` | 인스타그램 토큰 자동 갱신 시 이 저장소의 Secret을 다시 쓰기 위함 | 이 저장소에 "Secrets: Read and write" 권한을 준 fine-grained PAT. 기본 `GITHUB_TOKEN`은 Secrets API 쓰기 권한이 없어서 별도 PAT 필요 |
 
-## 5. 인스타그램 토큰 자동 갱신
+`GEMINI_API_KEY`(블로그 이미지 생성)는 콘텐츠 작성이 로컬에서 이뤄지므로 이
+저장소의 Secrets에는 필요 없다 — 로컬 작업 환경에만 보관한다.
 
-인스타그램 액세스 토큰은 60일 후 만료된다. 완전 무인 운영을 위해 발행 워크플로
-실행 시마다(또는 별도 주간 스케줄) 다음을 수행하는 갱신 스텝을 둔다.
+## 6. 인스타그램 토큰 자동 갱신 (구현됨)
 
-```
-GET https://graph.instagram.com/refresh_access_token
-    ?grant_type=ig_refresh_token
-    &access_token={현재 INSTAGRAM_ACCESS_TOKEN}
-```
+인스타그램 액세스 토큰은 60일 후 만료된다. `refresh-instagram-token.yml`이 매달
+1일·15일에 자동으로:
 
-응답으로 받은 새 토큰을 GitHub Secrets에 다시 저장해야 하는데, Actions는 자기
-자신의 Secret을 직접 덮어쓸 수 없으므로 GitHub API(저장소 관리자 권한의 PAT 또는
-GitHub App)를 통해 `INSTAGRAM_ACCESS_TOKEN` 시크릿을 갱신하는 별도 스텝이 필요하다.
-(구현 시 `actions/github-script` + `libsodium` 암호화로 Secrets API 호출)
+1. `scripts/publish/instagram.py`의 `refresh_access_token()`으로 새 토큰 발급
+   (`GET https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=...`)
+2. `scripts/publish/refresh_instagram_token.py`가 GitHub Secrets API를 호출해
+   `INSTAGRAM_ACCESS_TOKEN` Secret 값을 새 토큰으로 덮어씀 (libsodium sealed box로
+   암호화해서 전송 — `PyNaCl` 사용)
 
-## 6. 스레드(Threads) — 향후 완전자동 전환 메모
+새로 발급된 토큰 값은 어떤 경우에도 print/log 하지 않는다 — 저장소가 퍼블릭이라
+Actions 로그도 공개되고, 아직 Secret에 등록 전인 값은 GitHub의 자동 로그 마스킹
+대상이 아니기 때문이다.
+
+## 7. 스레드(Threads) — 향후 완전자동 전환 메모
 
 Threads API는 같은 Meta 앱 안에서 Facebook 로그인/페이지 관리 이용 사례와 함께 쓸 수
 없다(Meta 앱 생성 시 확인된 제약). 나중에 스레드 콘텐츠 전략이 확정되면:
