@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import threading
 from pathlib import Path
 
 import yaml
@@ -17,13 +18,25 @@ QUEUE_DIR = Path("queue")
 
 DRY_RUN = os.environ.get("DRY_RUN", "").lower() == "true"
 
+# main.py가 여러 채널을 스레드풀로 동시 실행하므로, 여러 줄짜리 출력이
+# 서로 다른 스레드의 print와 섞여 로그가 깨지지 않도록 공유 락으로 감싼다.
+_print_lock = threading.Lock()
+
 
 def dry_run_log(channel: str, **details: str) -> None:
     """DRY_RUN일 때 실제 API 호출 대신 '이렇게 게시될 것입니다'를 출력한다."""
-    print(f"[DRY RUN] {channel} — 실제로 게시하지 않음. 아래 내용으로 게시될 예정:")
+    lines = [f"[DRY RUN] {channel} — 실제로 게시하지 않음. 아래 내용으로 게시될 예정:"]
     for key, value in details.items():
         preview = value if len(value) <= 200 else value[:200] + "…"
-        print(f"    {key}: {preview}")
+        lines.append(f"    {key}: {preview}")
+    with _print_lock:
+        print("\n".join(lines))
+
+
+def log(message: str) -> None:
+    """여러 스레드가 동시에 출력해도 줄이 섞이지 않게 락으로 감싸서 print한다."""
+    with _print_lock:
+        print(message)
 
 # main.py가 각 채널 성공 여부를 기록할 때 쓰는 키 전체 목록.
 ALL_STEPS = [
