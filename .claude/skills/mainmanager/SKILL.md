@@ -82,6 +82,10 @@ description: 나인플러스학원 마케팅 자동화 프로젝트의 총괄 �
 3. **승인이 없으면 다음 과정으로 진행하지 않는다.** 승인이 늦어지면 그 상태로
    대기하고, 다음 브리핑 때 "승인 대기중"으로 안내한다.
 4. 사용자가 범위를 좁히면(예: "숏츠만") 그 범위만 진행한다.
+5. 승인 후 실제 작성·렌더링은 `content-derivation-team` 스킬이 이어받는다 —
+   스토리보드·캡션·스레드 작성 후 렌더링(HyperFrames) 착수 전에 다시 한번 사용자
+   확인을 받는 2단계 승인 구조다(`.claude/skills/content-derivation-team/SKILL.md`
+   §3 참고).
 
 같은 원칙이 교육뉴스에도 적용된다: 그 주 원고(10개 파일)가 완성되면 발행 승인을
 먼저 받고, **승인 후에만** 구글 블로그용 파일을 `queue-edu/`에 올린다 — 승인 없이
@@ -96,6 +100,7 @@ description: 나인플러스학원 마케팅 자동화 프로젝트의 총괄 �
 |---|---|---|
 | algorithm-searching-team | SEO/AEO/GEO 지침 4주 주기 갱신 | `docs/algorithm-search-log.md` (최근 실행일, 최근 변경 여부) |
 | mainmanager (이 스킬) | 전체 기획안·일정·자동화 안내 관리 | `docs/mainmanager-plan.md`, `docs/blog-calendar.md`(진행 상황 표) |
+| content-derivation-team | 승인 후 카드뉴스·숏츠 스토리보드+캡션+스레드 작성, 승인 후 HyperFrames 렌더링 | 로컬 `카드뉴스_발행현황.md`(원격 세션은 접근 불가 — 진행 상태는 사용자에게 직접 확인) |
 | education-news-weekly | 매주 월요일 교육뉴스 큐레이션 + 8채널 배포 (이 저장소와 별개 파이프라인, 계정 레벨 스킬) | `docs/education-news-log.md` (로컬 발행이력.md의 저장소 미러 스냅샷 — 원본은 로컬 `클로드작업폴더/교육뉴스/발행이력.md`이며, 원격/클라우드 세션은 그 로컬 파일에 접근할 수 없으므로 이 미러로 대신 확인) |
 
 예: "algorithm-searching-team 상태 알려줘" 라고 하면 `docs/algorithm-search-log.md`의
@@ -124,8 +129,9 @@ description: 나인플러스학원 마케팅 자동화 프로젝트의 총괄 �
 ## 원칙
 
 - mainmanager 자신은 원고를 쓰거나 이미지를 만들지 않는다 — 그 작업이 필요하면
-  기존 지침에 따라 진행하되, 실제 작성은 이 세션(또는 사용자의 로컬 콘텐츠 작업
-  세션)이 `content-playbook.md`를 보고 수행한다.
+  기존 지침에 따라 진행하되, 블로그 원고는 이 세션(또는 사용자의 로컬 콘텐츠 작업
+  세션)이 `content-playbook.md`를 보고 수행하고, 승인 후 카드뉴스·숏츠 스토리보드/
+  캡션/스레드 작성과 렌더링은 `content-derivation-team` 스킬이 수행한다.
 - 기획안·포스팅 일정·자동화 안내는 항상 `docs/mainmanager-plan.md`를 기준으로
   답한다 — 다른 문서에 예전 버전 표가 남아있어도 이 문서가 우선한다.
 - 스케줄·순서·상태에 대한 사실은 항상 저장소의 실제 파일(`mainmanager-plan.md`,
