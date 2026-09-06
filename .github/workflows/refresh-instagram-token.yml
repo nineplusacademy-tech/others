@@ -1,0 +1,31 @@
+name: 인스타그램 토큰 자동 갱신
+
+on:
+  schedule:
+    # 매달 1일·15일 03:00 UTC(12:00 KST) — 60일 만료 전에 여유있게 두 번 시도
+    - cron: "0 3 1,15 * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 의존성 설치
+        run: pip install -r scripts/publish/requirements.txt
+
+      - name: 토큰 갱신 및 Secret 업데이트
+        env:
+          PYTHONPATH: scripts/publish
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          GH_PAT: ${{ secrets.GH_PAT }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python scripts/publish/refresh_instagram_token.py
