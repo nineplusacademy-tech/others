@@ -7,6 +7,8 @@ from pathlib import Path
 
 import requests
 
+from common import DRY_RUN, dry_run_log
+
 GRAPH = "https://graph.facebook.com/v21.0"
 
 
@@ -20,6 +22,10 @@ def _page_token() -> str:
 
 def publish_photo_post(image_path: Path, caption: str) -> str:
     """카드뉴스 표지 이미지 + 캡션(블로그 링크 포함)으로 페이지 게시글을 올린다."""
+    if DRY_RUN:
+        dry_run_log("Facebook 게시글", image=str(image_path), caption=caption)
+        return "dryrun-facebook-post"
+
     url = f"{GRAPH}/{_page_id()}/photos"
     with open(image_path, "rb") as f:
         resp = requests.post(
@@ -34,6 +40,10 @@ def publish_photo_post(image_path: Path, caption: str) -> str:
 
 def publish_reel(video_path: Path, caption: str) -> str:
     """숏츠 영상을 페이스북 릴스로 업로드한다 (Resumable Upload API 3단계)."""
+    if DRY_RUN:
+        dry_run_log("Facebook 릴스", video=str(video_path), caption=caption)
+        return "dryrun-facebook-reel"
+
     token = _page_token()
     page_id = _page_id()
 

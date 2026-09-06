@@ -14,7 +14,7 @@ from pathlib import Path
 
 import requests
 
-from common import raw_github_url
+from common import DRY_RUN, dry_run_log, raw_github_url
 
 GRAPH = "https://graph.instagram.com"
 POLL_INTERVAL_SECONDS = 10
@@ -47,6 +47,14 @@ def _wait_until_finished(creation_id: str) -> None:
 
 
 def publish_carousel(image_paths: list[Path], caption: str) -> str:
+    if DRY_RUN:
+        dry_run_log(
+            "Instagram 캐러셀",
+            images=", ".join(str(p) for p in image_paths),
+            caption=caption,
+        )
+        return "dryrun-instagram-carousel"
+
     ig_id = _ig_id()
     token = _token()
 
@@ -87,6 +95,10 @@ def publish_carousel(image_paths: list[Path], caption: str) -> str:
 
 
 def publish_reel(video_path: Path, caption: str) -> str:
+    if DRY_RUN:
+        dry_run_log("Instagram 릴스", video=str(video_path), caption=caption)
+        return "dryrun-instagram-reel"
+
     ig_id = _ig_id()
     token = _token()
 
