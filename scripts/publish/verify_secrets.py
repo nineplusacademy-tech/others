@@ -38,11 +38,11 @@ def check_google() -> str:
     return f"blog='{blog.get('name')}' ({blog.get('url')}) — OAuth 갱신 성공 (youtube.upload 범위는 업로드 시 검증됨)"
 
 
-def _graph_get(node_id: str, fields: str, access_token: str) -> dict:
-    """Meta Graph API GET 호출. 실패 시 Meta가 돌려준 error 객체를 그대로
-    예외 메시지에 담는다 (토큰 값은 에러 응답에 echo되지 않으므로 안전)."""
+def _graph_get(base: str, node_id: str, fields: str, access_token: str) -> dict:
+    """Graph API GET 호출. 실패 시 돌려준 error 객체를 그대로 예외 메시지에
+    담는다 (토큰 값은 에러 응답에 echo되지 않으므로 안전)."""
     resp = requests.get(
-        f"https://graph.facebook.com/v21.0/{node_id}",
+        f"{base}/{node_id}",
         params={"fields": fields, "access_token": access_token},
         timeout=30,
     )
@@ -56,12 +56,20 @@ def _graph_get(node_id: str, fields: str, access_token: str) -> dict:
 
 
 def check_facebook_page() -> str:
-    data = _graph_get(os.environ["FACEBOOK_PAGE_ID"], "name,id", os.environ["FACEBOOK_PAGE_ACCESS_TOKEN"])
+    data = _graph_get(
+        "https://graph.facebook.com/v21.0",
+        os.environ["FACEBOOK_PAGE_ID"],
+        "name,id",
+        os.environ["FACEBOOK_PAGE_ACCESS_TOKEN"],
+    )
     return f"page='{data.get('name')}' (id={data.get('id')})"
 
 
 def check_instagram() -> str:
+    # "Instagram 로그인이 포함된 API" 방식으로 발급된 토큰이라 graph.facebook.com이
+    # 아니라 graph.instagram.com 이어야 한다 (Facebook 로그인 방식과는 다른 도메인).
     data = _graph_get(
+        "https://graph.instagram.com",
         os.environ["INSTAGRAM_BUSINESS_ACCOUNT_ID"],
         "username,id",
         os.environ["INSTAGRAM_ACCESS_TOKEN"],
