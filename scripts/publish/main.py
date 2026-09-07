@@ -114,27 +114,33 @@ def run(folder: Path, phase: str = "all") -> None:
 
     cardnews_captions = parse_caption_sections(folder / "카드뉴스" / "채널별_캡션.md")
     shorts_captions = parse_caption_sections(folder / "숏츠" / "채널별_캡션.md")
-    video_path = folder / "숏츠" / "9x16.mp4"
 
+    # 2026-09-08부로 카드뉴스·숏츠 모두 채널마다 CTA 문구가 달라(§7) 플랫폼별 파일을
+    # 따로 렌더링한다 — 카드뉴스는 "카드뉴스/instagram/"·"카드뉴스/facebook/" 하위
+    # 폴더, 숏츠는 "9x16_instagram.mp4"·"9x16_facebook.mp4"·"9x16_youtube.mp4"
+    # 파일명으로 구분한다(content-playbook.md §11).
     def _facebook_post() -> str:
-        cover = folder / "카드뉴스" / "01.png"
+        cover = folder / "카드뉴스" / "facebook" / "01.png"
         caption = fill_placeholders(cardnews_captions.get("페이스북", ""), BLOG_URL=blog_url)
         return facebook.publish_photo_post(cover, caption)
 
     def _instagram_carousel() -> str:
-        images = sorted((folder / "카드뉴스").glob("*.png"))
+        images = sorted((folder / "카드뉴스" / "instagram").glob("*.png"))
         caption = fill_placeholders(cardnews_captions.get("인스타그램", ""), BLOG_URL=blog_url)
         return instagram.publish_carousel(images, caption)
 
     def _facebook_reel() -> str:
+        video_path = folder / "숏츠" / "9x16_facebook.mp4"
         caption = fill_placeholders(shorts_captions.get("페이스북", ""), BLOG_URL=blog_url)
         return facebook.publish_reel(video_path, caption)
 
     def _instagram_reel() -> str:
+        video_path = folder / "숏츠" / "9x16_instagram.mp4"
         caption = fill_placeholders(shorts_captions.get("인스타그램", ""), BLOG_URL=blog_url)
         return instagram.publish_reel(video_path, caption)
 
     def _youtube_shorts() -> str:
+        video_path = folder / "숏츠" / "9x16_youtube.mp4"
         yt_meta, yt_description = parse_frontmatter(folder / "숏츠" / "캡션_유튜브쇼츠.md")
         return youtube.upload_shorts(video_path, yt_meta.get("title", ""), yt_description)
 

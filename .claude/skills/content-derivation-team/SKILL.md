@@ -80,8 +80,12 @@ mainmanager의 "결과물 보고 및 승인 게이트"(`docs/mainmanager-plan.md
   다시 인터뷰하지 않는다.
 - 필요한 실제 미디어(사진·아이콘·음원 등)는 `content-playbook.md` §3 이미지 규칙과
   §11 폴더 구조를 따라 준비해 HyperFrames에 넘긴다.
-- 결과물 저장 위치(§11 그대로): 카드뉴스는 `01~09.png`(+ `_원본프로젝트/`), 숏츠는
-  `9x16.mp4`(+ 4:5 보조 버전, `_원본프로젝트_916/`·`_원본프로젝트_4x5/`).
+- 결과물 저장 위치(§11 그대로): 카드뉴스는 `instagram/01~09.png`+`facebook/01.png`
+  (각각 `_원본프로젝트_instagram/`·`_원본프로젝트_facebook/`), 숏츠는
+  `9x16_instagram.mp4`·`9x16_facebook.mp4`·`9x16_youtube.mp4`(+ 4:5 보조 버전,
+  `_원본프로젝트_916_instagram/`·`_원본프로젝트_916_facebook/`·
+  `_원본프로젝트_916_youtube/`·`_원본프로젝트_4x5/`) — 온스크린 CTA가 채널마다
+  달라서(§2-3, content-playbook.md §7) 하나의 파일을 여러 채널이 공유하지 않는다.
 
 ## 5. 렌더링 후 마무리
 
