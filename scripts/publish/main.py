@@ -4,26 +4,32 @@ queue/ 아래 폴더 하나를 찾아 6개 채널에 발행한다. 각 단계 �
 _status.json에 기록해 재실행 시 이미 성공한 채널은 건너뛴다. 전부 성공하면
 큐 폴더를 삭제한다.
 
-2026-09-08부로 발행이 **2단계 배치**로 나뉜다(`docs/mainmanager-plan.md` §1-1
-참고 — 블로그 원문을 먼저 내보내 검색 유입을 잡고, 이틀 뒤 저녁 피크 시간대에
-카드뉴스·숏츠로 재환기하기 위함):
+2026-09-09부로 발행이 **3단계 배치**로 나뉜다(`docs/mainmanager-plan.md` §1-1
+참고 — 블로그로 검색 유입을 먼저 잡고, 카드뉴스와 릴스/쇼츠를 하루씩 띄워
+같은 팔로워에게 같은 시각 두 게시물이 알고리즘 노출을 서로 갉아먹지 않게 하고,
+카드뉴스(저장·정독)와 릴스(발견·확산)가 서로 다른 날 각자의 확산 곡선을
+갖게 한다):
 
 - `--phase blog` (화요일 10:00 KST): 구글 블로그만 발행하고 끝낸다. 다른 채널
   캡션이 이 URL을 참조하므로 반드시 먼저 끝나야 한다. 이 단계만으로는
   `_status.json`이 전부 완료되지 않으므로 큐 폴더는 삭제되지 않고 다음 배치를
   기다린다.
+- `--phase cardnews` (수요일 20:00 KST): 블로그가 이미 끝나 있다고 가정하고
+  (안 끝나 있으면 에러) 카드뉴스 캐러셀 2채널(FB 캐러셀·IG 캐러셀)을 동시에
+  발행한다.
 - `--phase social` (목요일 20:00 KST): 블로그가 이미 끝나 있다고 가정하고
-  (안 끝나 있으면 에러) 나머지 5개 채널(FB 캐러셀·IG 캐러셀·FB 릴스·IG 릴스·
-  YT 쇼츠)을 스레드풀로 동시에 발행한다 — 특히 인스타 릴스는 처리 완료까지
-  최대 5분 폴링이라, 순차 실행이면 그 대기 시간이 전체 소요 시간에 그대로
-  더해진다. 동시 실행하면 전체 소요 시간이 "5개 합산"이 아니라 "5개 중
-  가장 오래 걸리는 것" 기준으로 줄어든다. 전부 끝나면 큐 폴더를 삭제한다.
-- `--phase all`(기본값, 생략 시): 예전처럼 블로그+소셜을 한 번에 순서대로
-  전부 실행한다 — 수동 재시도나 dry-run 점검용.
+  릴스/쇼츠 3채널(FB 릴스·IG 릴스·YT 쇼츠)을 스레드풀로 동시에 발행한다 —
+  특히 인스타 릴스는 처리 완료까지 최대 5분 폴링이라, 순차 실행이면 그 대기
+  시간이 전체 소요 시간에 그대로 더해진다. 동시 실행하면 전체 소요 시간이
+  "3개 합산"이 아니라 "3개 중 가장 오래 걸리는 것" 기준으로 줄어든다.
+- `--phase all`(기본값, 생략 시): 예전처럼 블로그+카드뉴스+릴스를 한 번에
+  순서대로 전부 실행한다 — 수동 재시도나 dry-run 점검용.
 
-이 파일은 python scripts/publish/main.py [--phase blog|social|all] 로 저장소
-루트에서 실행한다(.github/workflows/publish.yml 참고). 실제로 Secrets/토큰
-값을 print하지 않는다.
+6개 채널 전부 끝나면(세 배치 모두 성공하면) 큐 폴더를 삭제한다.
+
+이 파일은 python scripts/publish/main.py [--phase blog|cardnews|social|all] 로
+저장소 루트에서 실행한다(.github/workflows/publish.yml 참고). 실제로
+Secrets/토큰 값을 print하지 않는다.
 """
 
 from __future__ import annotations
@@ -119,46 +125,51 @@ def run(folder: Path, phase: str = "all") -> None:
         )
     blog_url = status["blogger"]["url"]
 
-    cardnews_captions = parse_caption_sections(folder / "카드뉴스" / "채널별_캡션.md")
-    shorts_captions = parse_caption_sections(folder / "숏츠" / "채널별_캡션.md")
-
     # 2026-09-08부로 카드뉴스·숏츠 모두 채널마다 CTA 문구가 달라(§7) 플랫폼별 파일을
     # 따로 렌더링한다 — 카드뉴스는 "카드뉴스/instagram/"·"카드뉴스/facebook/" 하위
     # 폴더, 숏츠는 "9x16_instagram.mp4"·"9x16_facebook.mp4"·"9x16_youtube.mp4"
     # 파일명으로 구분한다(content-playbook.md §11).
-    def _facebook_carousel() -> str:
-        images = sorted((folder / "카드뉴스" / "facebook").glob("*.png"))
-        caption = fill_placeholders(cardnews_captions.get("페이스북", ""), BLOG_URL=blog_url)
-        return facebook.publish_photo_carousel(images, caption)
+    tasks: dict[str, tuple] = {}
 
-    def _instagram_carousel() -> str:
-        images = sorted((folder / "카드뉴스" / "instagram").glob("*.png"))
-        caption = fill_placeholders(cardnews_captions.get("인스타그램", ""), BLOG_URL=blog_url)
-        return instagram.publish_carousel(images, caption)
+    if phase in ("all", "cardnews"):
+        cardnews_captions = parse_caption_sections(folder / "카드뉴스" / "채널별_캡션.md")
 
-    def _facebook_reel() -> str:
-        video_path = folder / "숏츠" / "9x16_facebook.mp4"
-        caption = fill_placeholders(shorts_captions.get("페이스북", ""), BLOG_URL=blog_url)
-        return facebook.publish_reel(video_path, caption)
+        def _facebook_carousel() -> str:
+            images = sorted((folder / "카드뉴스" / "facebook").glob("*.png"))
+            caption = fill_placeholders(cardnews_captions.get("페이스북", ""), BLOG_URL=blog_url)
+            return facebook.publish_photo_carousel(images, caption)
 
-    def _instagram_reel() -> str:
-        video_path = folder / "숏츠" / "9x16_instagram.mp4"
-        caption = fill_placeholders(shorts_captions.get("인스타그램", ""), BLOG_URL=blog_url)
-        return instagram.publish_reel(video_path, caption)
+        def _instagram_carousel() -> str:
+            images = sorted((folder / "카드뉴스" / "instagram").glob("*.png"))
+            caption = fill_placeholders(cardnews_captions.get("인스타그램", ""), BLOG_URL=blog_url)
+            return instagram.publish_carousel(images, caption)
 
-    def _youtube_shorts() -> str:
-        video_path = folder / "숏츠" / "9x16_youtube.mp4"
-        yt_meta, yt_description = parse_frontmatter(folder / "숏츠" / "캡션_유튜브쇼츠.md")
-        return youtube.upload_shorts(video_path, yt_meta.get("title", ""), yt_description)
+        tasks["facebook_carousel"] = (_facebook_carousel, "id")
+        tasks["instagram_carousel"] = (_instagram_carousel, "id")
 
-    # 2~6. 나머지 다섯 채널은 서로 의존하지 않으므로 동시에 실행한다.
-    tasks: dict[str, tuple] = {
-        "facebook_carousel": (_facebook_carousel, "id"),
-        "instagram_carousel": (_instagram_carousel, "id"),
-        "facebook_reel": (_facebook_reel, "id"),
-        "instagram_reel": (_instagram_reel, "id"),
-        "youtube_shorts": (_youtube_shorts, "url"),
-    }
+    if phase in ("all", "social"):
+        shorts_captions = parse_caption_sections(folder / "숏츠" / "채널별_캡션.md")
+
+        def _facebook_reel() -> str:
+            video_path = folder / "숏츠" / "9x16_facebook.mp4"
+            caption = fill_placeholders(shorts_captions.get("페이스북", ""), BLOG_URL=blog_url)
+            return facebook.publish_reel(video_path, caption)
+
+        def _instagram_reel() -> str:
+            video_path = folder / "숏츠" / "9x16_instagram.mp4"
+            caption = fill_placeholders(shorts_captions.get("인스타그램", ""), BLOG_URL=blog_url)
+            return instagram.publish_reel(video_path, caption)
+
+        def _youtube_shorts() -> str:
+            video_path = folder / "숏츠" / "9x16_youtube.mp4"
+            yt_meta, yt_description = parse_frontmatter(folder / "숏츠" / "캡션_유튜브쇼츠.md")
+            return youtube.upload_shorts(video_path, yt_meta.get("title", ""), yt_description)
+
+        tasks["facebook_reel"] = (_facebook_reel, "id")
+        tasks["instagram_reel"] = (_instagram_reel, "id")
+        tasks["youtube_shorts"] = (_youtube_shorts, "url")
+
+    # 이번 배치에 속한 채널들은 서로 의존하지 않으므로 동시에 실행한다.
     pending = {key: fn_field for key, fn_field in tasks.items() if not step_done(status, key)}
 
     errors: dict[str, Exception] = {}
@@ -182,10 +193,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--phase",
-        choices=["all", "blog", "social"],
+        choices=["all", "blog", "cardnews", "social"],
         default="all",
-        help="blog=화요일 배치(구글블로그만), social=목요일 배치(나머지 5채널), "
-             "all=예전처럼 한 번에 전부(기본값)",
+        help="blog=화요일 배치(구글블로그만), cardnews=수요일 배치(카드뉴스 캐러셀 "
+             "2채널), social=목요일 배치(릴스·쇼츠 3채널), all=예전처럼 한 번에 "
+             "전부(기본값)",
     )
     args = parser.parse_args()
 
