@@ -123,7 +123,22 @@ def run(folder: Path, phase: str = "all") -> None:
             "블로그가 아직 발행되지 않았습니다 — 먼저 --phase blog(화요일 배치)를 "
             "실행하거나 --phase all로 전체를 실행하세요."
         )
-    blog_url = status["blogger"]["url"]
+    # 캡션의 {{BLOG_URL}}은 원문으로 안내하는 자리이므로 실제 학원 블로그(네이버)를
+    # 우선한다 — 구글 블로그는 완전자동 발행을 위한 SEO/AEO용 미러일 뿐, 독자가 아는
+    # "블로그"는 네이버다. 네이버는 반자동(사람이 직접 예약)이라 자동화가 URL을 알
+    # 방법이 없으므로, 사람이 발행 직후 set_naver_url.py로 _status.json에 적어둔
+    # naver_blog_url을 읽는다. 아직 안 적혀 있으면 구글 블로그 URL로 대체하되 경고를
+    # 남긴다 — 조용히 잘못된 링크로 나가지 않게 한다.
+    naver_url = status.get("naver_blog_url")
+    if naver_url:
+        blog_url = naver_url
+    else:
+        blog_url = status["blogger"]["url"]
+        log(
+            "[경고] naver_blog_url이 _status.json에 없어 캡션의 {{BLOG_URL}}에 구글 "
+            "블로그 주소를 대신 씁니다 — 네이버 블로그를 발행했다면 "
+            "'python scripts/publish/set_naver_url.py <URL>'로 기록해주세요."
+        )
 
     # 2026-09-08부로 카드뉴스·숏츠 모두 채널마다 CTA 문구가 달라(§7) 플랫폼별 파일을
     # 따로 렌더링한다 — 카드뉴스는 "카드뉴스/instagram/"·"카드뉴스/facebook/" 하위
