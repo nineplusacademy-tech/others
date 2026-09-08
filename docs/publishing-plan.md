@@ -257,5 +257,5 @@ Threads API는 같은 Meta 앱 안에서 Facebook 로그인/페이지 관리 이
 3. Threads 계정을 테스터로 연결해 액세스 토큰 발급
 4. 같은 GitHub Actions 구조에 5번째 완전자동 채널로 추가
 
-그 전까지는 [content-playbook.md](content-playbook.md) 9절 규칙대로 사람이 금요일에
-직접 게시한다.
+그 전까지는 [content-playbook.md](content-playbook.md) 9절 규칙대로 사람이 화요일
+12:30에 직접 게시한다.
