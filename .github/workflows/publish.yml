@@ -1,22 +1,26 @@
-name: 예약 발행 (완전자동 4채널, 2단계 배치)
+name: 예약 발행 (완전자동 4채널, 3단계 배치)
 
-# 2026-09-08부로 발행이 2단계로 나뉜다(docs/mainmanager-plan.md §1-1):
+# 2026-09-09부로 발행이 3단계로 나뉜다(docs/mainmanager-plan.md §1-1):
 #   - 화요일 10:00 KST: 구글 블로그만 먼저 발행(--phase blog) — 검색 유입을 먼저 잡는다
-#   - 목요일 20:00 KST: 나머지 3채널(페이스북·인스타그램·유튜브쇼츠)을 저녁 피크
-#     시간대에 발행(--phase social) — 카드뉴스·숏츠로 재환기
+#   - 수요일 20:00 KST: 카드뉴스 캐러셀 2채널(페이스북·인스타그램)만 발행(--phase cardnews)
+#   - 목요일 20:00 KST: 릴스/쇼츠 3채널(페이스북·인스타그램·유튜브)을 발행(--phase social)
+#     — 카드뉴스와 같은 날 같은 시각에 내면 같은 팔로워에게 같은 알고리즘 노출을
+#     두 게시물이 서로 갉아먹으므로 하루씩 띄운다
 # github.event.schedule로 어느 cron이 발화했는지 구분해 phase를 자동으로 정한다.
 on:
   schedule:
     # 화요일 01:00 UTC = 화요일 10:00 KST — 블로그 배치
     - cron: "0 1 * * 2"
-    # 목요일 11:00 UTC = 목요일 20:00 KST — 소셜 배치
+    # 수요일 11:00 UTC = 수요일 20:00 KST — 카드뉴스 배치
+    - cron: "0 11 * * 3"
+    # 목요일 11:00 UTC = 목요일 20:00 KST — 소셜(릴스/쇼츠) 배치
     - cron: "0 11 * * 4"
   workflow_dispatch:
     inputs:
       phase:
         description: "발행 배치 선택 (수동 실행용)"
         type: choice
-        options: ["all", "blog", "social"]
+        options: ["all", "blog", "cardnews", "social"]
         default: "all"
       dry_run:
         description: "true면 실제로 게시하지 않고 각 단계에서 무엇을 올릴지만 로그로 출력 (안전한 테스트용)"
@@ -50,6 +54,8 @@ jobs:
             echo "value=${{ github.event.inputs.phase }}" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "0 1 * * 2" ]; then
             echo "value=blog" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "0 11 * * 3" ]; then
+            echo "value=cardnews" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "0 11 * * 4" ]; then
             echo "value=social" >> "$GITHUB_OUTPUT"
           else
