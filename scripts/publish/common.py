@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import threading
 from pathlib import Path
 
@@ -41,7 +42,7 @@ def log(message: str) -> None:
 # main.py가 각 채널 성공 여부를 기록할 때 쓰는 키 전체 목록.
 ALL_STEPS = [
     "blogger",
-    "facebook_post",
+    "facebook_carousel",
     "instagram_carousel",
     "facebook_reel",
     "instagram_reel",
@@ -120,10 +121,41 @@ def fill_placeholders(text: str, **values: str) -> str:
 def raw_github_url(rel_path: Path) -> str:
     """queue/ 안의 파일을 인스타그램 API가 읽을 수 있는 공개 URL로 바꾼다.
 
-    저장소가 퍼블릭이어야 동작한다 (raw.githubusercontent.com).
+    저장소가 퍼블릭이어야 동작한다 (raw.githubusercontent.com). GITHUB_SHA로
+    커밋을 고정하므로, 나중에 큐 폴더가 삭제되는 커밋이 생겨도 이 URL이 가리키는
+    특정 커밋의 blob은 계속 살아있어 링크가 깨지지 않는다(히스토리를 재작성하지
+    않는 한).
     """
     import os
 
     repo = os.environ["GITHUB_REPOSITORY"]  # "owner/repo"
     sha = os.environ["GITHUB_SHA"]
     return f"https://raw.githubusercontent.com/{repo}/{sha}/{rel_path.as_posix()}"
+
+
+_IMG_PLACEHOLDER_RE = re.compile(r'<img\s+src="\[사진 자리 \d+\s*·\s*([^\]]+)\]"')
+
+
+def fill_image_placeholders(html: str, blog_folder: Path) -> str:
+    """`<img src="[사진 자리 N · 설명]">`을 실제 이미지의 공개 URL로 치환한다.
+
+    content-playbook.md §2 규칙 9번(`[📷 사진 자리 N · 대표이미지/본문이미지 N — 비율]`)의
+    HTML 버전 표기를 그대로 파싱한다. "설명"에서 공백을 제거한 이름
+    (예: "대표이미지", "본문이미지 1" → "본문이미지1")과 같은 파일명(.png/.jpg/.jpeg)을
+    같은 폴더에서 찾아 raw_github_url로 바꾼다. 매칭되는 파일이 없으면 원본을 그대로
+    두고 어떤 자리가 비어있는지 stderr에 남긴다 — 발행을 막지는 않되 눈에 띄게 한다.
+    """
+    import sys
+
+    def _replace(match: re.Match) -> str:
+        label = re.sub(r"\s+", "", match.group(1))
+        for ext in (".png", ".jpg", ".jpeg"):
+            candidate = blog_folder / f"{label}{ext}"
+            if candidate.exists():
+                # blog_folder는 이미 저장소 루트 기준 상대경로(queue/.../블로그)이므로
+                # 추가 변환 없이 그대로 raw_github_url에 넘긴다.
+                return f'<img src="{raw_github_url(candidate)}"'
+        print(f"[blogger] 경고: '{label}'에 매칭되는 이미지 파일을 {blog_folder}에서 찾지 못함 — 원본 플레이스홀더 유지", file=sys.stderr)
+        return match.group(0)
+
+    return _IMG_PLACEHOLDER_RE.sub(_replace, html)
