@@ -80,8 +80,9 @@ mainmanager의 "결과물 보고 및 승인 게이트"(`docs/mainmanager-plan.md
   다시 인터뷰하지 않는다.
 - 필요한 실제 미디어(사진·아이콘·음원 등)는 `content-playbook.md` §3 이미지 규칙과
   §11 폴더 구조를 따라 준비해 HyperFrames에 넘긴다.
-- 결과물 저장 위치(§11 그대로): 카드뉴스는 `instagram/01~09.png`+`facebook/01.png`
-  (각각 `_원본프로젝트_instagram/`·`_원본프로젝트_facebook/`), 숏츠는
+- 결과물 저장 위치(§11 그대로): 카드뉴스는 `instagram/01~09.png`+`facebook/01~09.png`
+  (각각 `_원본프로젝트_instagram/`·`_원본프로젝트_facebook/`, 페이스북도 캐러셀
+  9장 전체를 씬별로 캡처 — 2026-09-08 표지 1장에서 전환), 숏츠는
   `9x16_instagram.mp4`·`9x16_facebook.mp4`·`9x16_youtube.mp4`(+ 4:5 보조 버전,
   `_원본프로젝트_916_instagram/`·`_원본프로젝트_916_facebook/`·
   `_원본프로젝트_916_youtube/`·`_원본프로젝트_4x5/`) — 온스크린 CTA가 채널마다

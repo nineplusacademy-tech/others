@@ -20,22 +20,44 @@ def _page_token() -> str:
     return os.environ["FACEBOOK_PAGE_ACCESS_TOKEN"]
 
 
-def publish_photo_post(image_path: Path, caption: str) -> str:
-    """카드뉴스 표지 이미지 + 캡션(블로그 링크 포함)으로 페이지 게시글을 올린다."""
-    if DRY_RUN:
-        dry_run_log("Facebook 게시글", image=str(image_path), caption=caption)
-        return "dryrun-facebook-post"
+def publish_photo_carousel(image_paths: list[Path], caption: str) -> str:
+    """카드뉴스 9장 + 캡션(블로그 링크 포함)으로 멀티포토(캐러셀) 페이지 게시글을 올린다.
 
-    url = f"{GRAPH}/{_page_id()}/photos"
-    with open(image_path, "rb") as f:
-        resp = requests.post(
-            url,
-            data={"caption": caption, "access_token": _page_token()},
-            files={"source": f},
-            timeout=120,
-        )
-    resp.raise_for_status()
-    return resp.json()["id"]
+    Graph API는 인스타그램 캐러셀과 달리 별도 컨테이너 타입이 없다 — 사진을
+    각각 비공개(published=false)로 업로드해 photo_id만 받은 뒤, /feed에
+    attached_media로 묶어 게시글 하나로 발행하는 2단계 방식이다.
+    """
+    if DRY_RUN:
+        dry_run_log("Facebook 캐러셀 게시글", images=[str(p) for p in image_paths], caption=caption)
+        return "dryrun-facebook-carousel"
+
+    token = _page_token()
+    page_id = _page_id()
+
+    media_fbids = []
+    for image_path in image_paths:
+        with open(image_path, "rb") as f:
+            resp = requests.post(
+                f"{GRAPH}/{page_id}/photos",
+                data={"published": "false", "access_token": token},
+                files={"source": f},
+                timeout=120,
+            )
+        resp.raise_for_status()
+        media_fbids.append(resp.json()["id"])
+
+    attached_media = [{"media_fbid": fbid} for fbid in media_fbids]
+    feed_resp = requests.post(
+        f"{GRAPH}/{page_id}/feed",
+        json={
+            "message": caption,
+            "attached_media": attached_media,
+            "access_token": token,
+        },
+        timeout=120,
+    )
+    feed_resp.raise_for_status()
+    return feed_resp.json()["id"]
 
 
 def publish_reel(video_path: Path, caption: str) -> str:

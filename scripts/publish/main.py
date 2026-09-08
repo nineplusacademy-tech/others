@@ -86,7 +86,12 @@ def _publish_blog(folder: Path, status: dict) -> None:
     if not step_done(status, "blogger"):
         meta, html = parse_frontmatter(folder / "블로그" / "구글블로그용.md")
         html = fill_image_placeholders(html, folder / "블로그")
-        url = blogger.publish(meta.get("title", ""), html, meta.get("labels") or [])
+        url = blogger.publish(
+            meta.get("title", ""),
+            html,
+            meta.get("labels") or [],
+            meta.get("search_description", ""),
+        )
         _record(folder, status, "blogger", "url", url)
         log(f"[blogger] 발행 완료: {url}")
     else:
