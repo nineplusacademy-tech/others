@@ -12,8 +12,10 @@
 | 1 | 네이버 블로그 | 반자동 | 블로그 원고(`블로그용.txt`) | 원고 자동 준비 → 사람이 네이버 블로그에서 자체 예약발행 기능으로 **화요일 10:00** 예약 클릭 |
 | 2 | 구글 블로그(Blogger) | **완전자동** | 블로그 원고(`구글블로그용.md`, HTML) | Blogger API v3 — GitHub Actions가 **화요일 10:00 KST**(`--phase blog`)에 직접 게시 |
 | 3 | 유튜브 커뮤니티 게시판 | 반자동 | `유튜브_게시물.md` | Data API가 커뮤니티 탭 글쓰기 미지원 — 사람이 **목요일 20:00**(카드뉴스·숏츠와 동시) 직접 게시 |
-| 4 | 페이스북 (게시글 · 릴스) | **완전자동** | 카드뉴스 표지+블로그 링크(게시글), 숏츠 9:16(릴스) | Meta Graph API(페이지 토큰) — GitHub Actions가 **목요일 20:00 KST**(`--phase social`)에 직접 게시 |
-| 5 | 인스타그램 (캐러셀 · 릴스) | **완전자동** | 카드뉴스 9장(캐러셀), 숏츠 9:16(릴스) | Instagram Graph API — 위와 같은 시각(`--phase social`)에 직접 게시 |
+| 4a | 페이스북 카드뉴스 (캐러셀) | **완전자동** | 카드뉴스 9장+블로그 링크(멀티포토 게시글) | Meta Graph API(페이지 토큰) — 사진 9장을 `published=false`로 각각 업로드 후 `/feed`에 `attached_media`로 묶어 게시(`facebook.publish_photo_carousel`, `_status.json` 키 `facebook_carousel`). 릴스와 API 흐름이 완전히 달라 별도 단계로 성공/실패를 추적한다. GitHub Actions가 **목요일 20:00 KST**(`--phase social`)에 직접 게시 |
+| 4b | 페이스북 릴스 | **완전자동** | 숏츠 9:16(`9x16_facebook.mp4`) | Meta Graph API(Resumable Upload, `facebook.publish_reel`, `_status.json` 키 `facebook_reel`) — 위와 같은 시각(`--phase social`)에 직접 게시 |
+| 5a | 인스타그램 카드뉴스 (캐러셀) | **완전자동** | 카드뉴스 9장(캐러셀) | Instagram Graph API(`instagram.publish_carousel`, `_status.json` 키 `instagram_carousel`) — 위와 같은 시각(`--phase social`)에 직접 게시 |
+| 5b | 인스타그램 릴스 | **완전자동** | 숏츠 9:16(`9x16_instagram.mp4`) | Instagram Graph API(`instagram.publish_reel`, `_status.json` 키 `instagram_reel`) — 위와 같은 시각(`--phase social`)에 직접 게시 |
 | 6 | 스레드 | 반자동(당분간) | `스레드.md` | Threads API 앱 별도 구축 전까지 사람이 **화요일 12:30** 직접 게시 |
 | 7 | 유튜브 쇼츠 | **완전자동** | 숏츠 9:16 mp4 | YouTube Data API v3 — 위와 같은 시각(`--phase social`)에 직접 업로드 |
 | 8 | 네이버클립 | 반자동 | 숏츠 9:16 mp4 + `네이버클립_소개글.md` | 업로드 API 없음 — 사람이 **목요일 20:00**(위와 동시) 직접 업로드 |
@@ -45,7 +47,7 @@ HyperFrames)대로 계속 진행하고, 이미 그 과정에서 검토·승인�
 queue/<번호>_<주제요약>/
   블로그/구글블로그용.md            ← Blogger API가 그대로 게시
   카드뉴스/instagram/01.png ~ 09.png ← 인스타그램 캐러셀 전용(댓글'9'+더보기 CTA)
-  카드뉴스/facebook/01.png          ← 페이스북 게시글 표지 전용(더보기만 CTA)
+  카드뉴스/facebook/01.png ~ 09.png ← 페이스북 캐러셀 전용(더보기만 CTA, 2026-09-08 표지 1장→9장 캐러셀로 전환)
   카드뉴스/채널별_캡션.md           ← 인스타·페이스북 캡션 추출용
   숏츠/9x16_instagram.mp4          ← 인스타 릴스 전용
   숏츠/9x16_facebook.mp4           ← 페이스북 릴스 전용
@@ -63,15 +65,26 @@ queue/<번호>_<주제요약>/
 
 ### 각 파일의 정확한 형식 (`scripts/publish/`가 이 형식 그대로 읽는다)
 
-**`블로그/구글블로그용.md`** — YAML 프런트매터 + HTML 본문
+**`블로그/구글블로그용.md`** — YAML 프런트매터 + HTML 본문. `title`·`labels`·
+`search_description` 셋 다 프런트매터 안에 있어야 실제로 게시글에 반영된다 —
+본문 상단에 HTML 주석(`<!-- 검색 설명: ... -->`)으로만 적어두면 파서가 읽지
+않아 그대로 빈 채로 게시된다(2026-09-08 36주차 스터디플래너 실사고로 확인 —
+검색 설명·라벨·제목이 전부 비어서 나갔다가 Blogger 대시보드에서 직접 수정).
+`fill_image_placeholders()`가 본문의 `<img src="[사진 자리 N · 설명]">`도
+같은 폴더의 실제 파일(공백 제거 매칭)로 자동 치환하므로, 이미지 파일도
+`구글블로그용.md`와 같은 폴더에 함께 큐에 올려야 한다.
 
 ```markdown
 ---
 title: 포스트 제목
 labels: [라벨1, 라벨2]
+search_description: 검색 결과에 노출될 요약(150자 내외)
 ---
 <h2>소제목</h2>
 <p>본문...</p>
+<img src="[사진 자리 1 · 대표이미지]" alt="...">
+<!-- 위 예시처럼 본문 중간의 이미지 자리는 같은 폴더의 실제 파일명(대표이미지.png 등,
+     공백 제거 매칭)으로 자동 치환된다 -->
 ```
 
 **`카드뉴스/채널별_캡션.md`, `숏츠/채널별_캡션.md`** — `## 채널명` 으로 구분. 스크립트는
@@ -177,7 +190,7 @@ title: 영상 제목(100자 이내)
 | `GOOGLE_OAUTH_REFRESH_TOKEN` | Blogger/YouTube 인증 | 만료 없음(프로덕션 게시 상태 확인됨) |
 | `BLOGGER_BLOG_ID` | 어느 Blogger 블로그에 올릴지 | Blogger API `blogs.getByUrl` 등으로 조회해서 채워넣기 |
 | `FACEBOOK_PAGE_ID` | 페이스북 페이지 게시 대상 | 1265899359934473 (나인플러스수학학원) |
-| `FACEBOOK_PAGE_ACCESS_TOKEN` | 페이스북 게시글·릴스 | 만료 없음(Page 토큰) — 그래도 가끔 debug_token으로 유효성 점검 권장 |
+| `FACEBOOK_PAGE_ACCESS_TOKEN` | 페이스북 카드뉴스 캐러셀·릴스 | 만료 없음(Page 토큰) — 그래도 가끔 debug_token으로 유효성 점검 권장 |
 | `INSTAGRAM_BUSINESS_ACCOUNT_ID` | 인스타그램 게시 대상 | 27167215579620807 (nineplus_math) |
 | `INSTAGRAM_ACCESS_TOKEN` | 인스타그램 캐러셀·릴스 | 60일 만료 — `refresh-instagram-token.yml`이 자동 갱신 |
 | `GH_PAT` | 인스타그램 토큰 자동 갱신 시 이 저장소의 Secret을 다시 쓰기 위함 | 이 저장소에 "Secrets: Read and write" 권한을 준 fine-grained PAT. 기본 `GITHUB_TOKEN`은 Secrets API 쓰기 권한이 없어서 별도 PAT 필요 |

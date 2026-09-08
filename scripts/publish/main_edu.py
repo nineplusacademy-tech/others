@@ -35,7 +35,12 @@ def find_queue_edu_folder() -> Path | None:
 
 def run(folder: Path) -> None:
     meta, html = parse_frontmatter(folder / "구글블로그용.md")
-    url = blogger.publish(meta.get("title", ""), html, meta.get("labels") or ["교육뉴스"])
+    url = blogger.publish(
+        meta.get("title", ""),
+        html,
+        meta.get("labels") or ["교육뉴스"],
+        meta.get("search_description", ""),
+    )
     print(f"[교육뉴스-blogger] 발행 완료: {url}")
 
     if DRY_RUN:
