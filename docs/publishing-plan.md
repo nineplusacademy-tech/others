@@ -58,6 +58,7 @@ queue/<번호>_<주제요약>/
   숏츠/9x16_youtube.mp4            ← 유튜브 쇼츠 전용
   숏츠/채널별_캡션.md               ← 릴스용 인스타·페이스북 캡션
   숏츠/캡션_유튜브쇼츠.md
+  스레드.md                         ← (선택) 화요일 12:30 스레드 자동 게시용, §6 참고
   _status.json                      ← 발행 워크플로가 자동 생성/갱신 (직접 만들 필요 없음)
 ```
 
@@ -122,6 +123,11 @@ title: 영상 제목(100자 이내)
 영상 설명(최대 5,000자)...
 ```
 
+**`스레드.md`** — 프런트매터 없이 게시물 본문 그대로(500자 이내, `content-playbook.md`
+§9). `{{BLOG_URL}}` 자리는 발행 시 네이버 블로그 URL로 채워진다. 파일이 없으면
+그 주는 자동 게시 대상이 아니라는 뜻으로 조용히 건너뛴다 — 카드뉴스 캐러셀을
+첨부하기로 한 주는 아직 자동화 대상이 아니라 사람이 그대로 수동 게시한다.
+
 **흐름:**
 
 1. 로컬에서 그 주 콘텐츠(구글블로그용.md, 카드뉴스 PNG 9장, 숏츠 mp4, 캡션 파일들)가
@@ -146,6 +152,11 @@ title: 영상 제목(100자 이내)
    `content-playbook.md` §9)가 이 파일을 읽는다. `queue-edu/`는 구글 블로그 발행
    성공 즉시 삭제되는 구조라 그 안에는 목요일까지 상태를 못 들고 있어서, 큐 폴더와
    무관한 별도 파일에 보관한다.
+2-2. **같은 날 12:30 KST**, 별도 워크플로(`publish-thread.yml`)가 `queue/` 폴더에
+   `스레드.md`가 있으면 `naver_blog_url`을 채워 넣어 자동 게시한다(§6). 성공 여부는
+   `_status.json`의 `thread` 키에 기록하지만, 이 키는 `ALL_STEPS`(6채널 완료 판정)에
+   포함되지 않는다 — 스레드 게시가 지연되거나 실패해도 기존 6채널 완료 후 큐 폴더
+   삭제에 영향을 주지 않는다.
 3. **수요일 20:00 KST**, 같은 워크플로가 `--phase cardnews`로 실행돼 카드뉴스
    캐러셀 2채널(페이스북·인스타그램)에 게시한다(2026-09-09부터 — 릴스와 같은 날
    같은 시각에 내면 같은 팔로워에게 알고리즘 노출이 서로 갉아먹혀서 하루 뺐다).
@@ -194,6 +205,11 @@ title: 영상 제목(100자 이내)
   2-1번). 인자 없이 실행하면 메인 블로그용(`_status.json`의 `naver_blog_url`),
   `--edu` 플래그를 주면 교육뉴스용(`queue/_edu_thread_link.json`, 목요일 스레드가
   읽음)으로 기록한다.
+- `scripts/publish/main_thread.py` + `.github/workflows/publish-thread.yml` — 화요일
+  12:30 KST(03:30 UTC)에 `queue/`의 `스레드.md`를 텍스트로 자동 게시(§6, 2026-09-09
+  구현). `scripts/publish/threads.py`가 실제 그래프 API 호출을 담당한다.
+- `scripts/publish/refresh_threads_token.py` + `.github/workflows/refresh-threads-token.yml`
+  — 매달 2일·16일에 스레드 토큰을 갱신하고 GitHub Secret에 자동으로 다시 저장(§6).
 
 ### 3-1. 3단계 배치(`--phase`) 동작 방식 (2026-09-08 신설, 2026-09-09 카드뉴스 분리)
 
@@ -234,7 +250,9 @@ title: 영상 제목(100자 이내)
 | `FACEBOOK_PAGE_ACCESS_TOKEN` | 페이스북 카드뉴스 캐러셀·릴스 | 만료 없음(Page 토큰) — 그래도 가끔 debug_token으로 유효성 점검 권장 |
 | `INSTAGRAM_BUSINESS_ACCOUNT_ID` | 인스타그램 게시 대상 | 27167215579620807 (nineplus_math) |
 | `INSTAGRAM_ACCESS_TOKEN` | 인스타그램 캐러셀·릴스 | 60일 만료 — `refresh-instagram-token.yml`이 자동 갱신 |
-| `GH_PAT` | 인스타그램 토큰 자동 갱신 시 이 저장소의 Secret을 다시 쓰기 위함 | 이 저장소에 "Secrets: Read and write" 권한을 준 fine-grained PAT. 기본 `GITHUB_TOKEN`은 Secrets API 쓰기 권한이 없어서 별도 PAT 필요 |
+| `GH_PAT` | 인스타그램·스레드 토큰 자동 갱신 시 이 저장소의 Secret을 다시 쓰기 위함 | 이 저장소에 "Secrets: Read and write" 권한을 준 fine-grained PAT. 기본 `GITHUB_TOKEN`은 Secrets API 쓰기 권한이 없어서 별도 PAT 필요 |
+| `THREADS_USER_ID` | 스레드 게시 대상 계정 | 17841469176062079 (nineplus_math) — 공개 식별자라 값 자체는 민감하지 않음 |
+| `THREADS_ACCESS_TOKEN` | 스레드 텍스트 게시 | 60일 만료 — `refresh-threads-token.yml`이 자동 갱신 |
 
 `GEMINI_API_KEY`(블로그 이미지 생성)는 콘텐츠 작성이 로컬에서 이뤄지므로 이
 저장소의 Secrets에는 필요 없다 — 로컬 작업 환경에만 보관한다.
@@ -254,15 +272,31 @@ title: 영상 제목(100자 이내)
 Actions 로그도 공개되고, 아직 Secret에 등록 전인 값은 GitHub의 자동 로그 마스킹
 대상이 아니기 때문이다.
 
-## 6. 스레드(Threads) — 향후 완전자동 전환 메모
+### 5-1. 스레드 토큰 자동 갱신 (구현됨, 2026-09-09)
+
+스레드 장기 액세스 토큰도 60일 후 만료된다. `refresh-threads-token.yml`이 매달
+2일·16일(인스타그램 갱신과 하루 띄움)에 자동으로:
+
+1. `scripts/publish/threads.py`의 `refresh_access_token()`으로 새 토큰 발급
+   (`GET https://graph.threads.net/v1.0/refresh_access_token?grant_type=th_refresh_token&access_token=...`)
+2. `scripts/publish/refresh_threads_token.py`가 `common.update_github_secret()`으로
+   `THREADS_ACCESS_TOKEN` Secret 값을 새 토큰으로 덮어씀(인스타그램과 같은
+   libsodium sealed box 암호화 로직을 `common.py`로 공유)
+
+## 6. 스레드(Threads) 완전자동 게시 (구현됨, 2026-09-09)
 
 Threads API는 같은 Meta 앱 안에서 Facebook 로그인/페이지 관리 이용 사례와 함께 쓸 수
-없다(Meta 앱 생성 시 확인된 제약). 나중에 스레드 콘텐츠 전략이 확정되면:
+없어(Meta 앱 생성 시 확인된 제약) 별도 Meta 앱 `threads_nineplus`를 새로 만들고,
+"Threads API 액세스" 이용 사례만 선택해 `nineplus_math` 계정을 테스터로 연결한 뒤
+장기 액세스 토큰을 발급받았다.
 
-1. 새 Meta 앱을 별도로 생성(예: `threads_nineplus`)
-2. 이용 사례에서 "Threads API 액세스"만 선택
-3. Threads 계정을 테스터로 연결해 액세스 토큰 발급
-4. 같은 GitHub Actions 구조에 5번째 완전자동 채널로 추가
-
-그 전까지는 [content-playbook.md](content-playbook.md) 9절 규칙대로 사람이 화요일
-12:30에 직접 게시한다.
+- **화요일 12:30 KST**, `.github/workflows/publish-thread.yml`이 `main.py`의 3단계
+  배치와는 독립적으로 실행돼 `scripts/publish/main_thread.py`가 `queue/`의
+  `스레드.md`를 텍스트 게시물로 올린다(`scripts/publish/threads.py`,
+  `graph.threads.net/v1.0`).
+- **카드뉴스 캐러셀 첨부는 아직 자동화 대상이 아니다** — 이미지 첨부를 하기로 한
+  주는 `content-playbook.md` §9 그대로 사람이 직접 게시한다. `스레드.md`가 큐에
+  없으면(카드뉴스 첨부 주 등) 조용히 건너뛴다.
+- **목요일 교육뉴스 스레드는 여전히 반자동이다** — 별개 파이프라인(`queue-edu/`)이라
+  이 자동화 대상이 아니고, 예약 작업 `edu-thread-reminder`가 초안을 제시하면 사람이
+  같은 `threads_nineplus` 앱/토큰이 아니라 직접 앱에서 게시한다.

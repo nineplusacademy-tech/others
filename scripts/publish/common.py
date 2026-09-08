@@ -118,6 +118,46 @@ def fill_placeholders(text: str, **values: str) -> str:
     return text
 
 
+def update_github_secret(name: str, value: str) -> None:
+    """이 저장소의 GitHub Actions Secret 값을 새로 갱신한다 (토큰 자동 갱신용).
+
+    GH_PAT 환경변수(이 저장소에 "Secrets: Read and write" 권한을 준 fine-grained
+    PAT)가 필요하다 — 기본 GITHUB_TOKEN은 Secrets API 쓰기 권한이 없다. 절대
+    value를 print/log하지 않는다 — 이 저장소는 퍼블릭이라 Actions 로그도
+    공개되고, 새로 발급된 토큰은 아직 Secrets에 등록되지 않아 GitHub의 자동
+    마스킹 대상이 아니다.
+    """
+    import base64
+
+    import requests
+    from nacl import encoding, public
+
+    repo = os.environ["GITHUB_REPOSITORY"]
+    headers = {
+        "Authorization": f"Bearer {os.environ['GH_PAT']}",
+        "Accept": "application/vnd.github+json",
+    }
+
+    key_resp = requests.get(
+        f"https://api.github.com/repos/{repo}/actions/secrets/public-key",
+        headers=headers,
+        timeout=30,
+    )
+    key_resp.raise_for_status()
+    key_info = key_resp.json()
+
+    pk = public.PublicKey(key_info["key"].encode("utf-8"), encoding.Base64Encoder())
+    encrypted = base64.b64encode(public.SealedBox(pk).encrypt(value.encode("utf-8"))).decode("utf-8")
+
+    put_resp = requests.put(
+        f"https://api.github.com/repos/{repo}/actions/secrets/{name}",
+        headers=headers,
+        json={"encrypted_value": encrypted, "key_id": key_info["key_id"]},
+        timeout=30,
+    )
+    put_resp.raise_for_status()
+
+
 def raw_github_url(rel_path: Path) -> str:
     """queue/ 안의 파일을 인스타그램 API가 읽을 수 있는 공개 URL로 바꾼다.
 
