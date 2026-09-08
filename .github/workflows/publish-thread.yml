@@ -1,0 +1,55 @@
+name: 스레드(메인 블로그) 자동 게시
+
+# 화요일 12:30 KST(블로그 발행 당일 점심) — docs/mainmanager-plan.md §1-1.
+# main.py의 3단계 배치와는 독립적으로 실행된다. queue/의 스레드.md가 없으면
+# (이미지 첨부 주 등, content-playbook.md §9) 조용히 건너뛴다.
+on:
+  schedule:
+    - cron: "30 3 * * 2"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "true면 실제로 게시하지 않고 무엇을 올릴지만 로그로 출력"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-queue
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 의존성 설치
+        run: pip install -r scripts/publish/requirements.txt
+
+      - name: 스레드 게시
+        env:
+          PYTHONPATH: scripts/publish
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+        run: python scripts/publish/main_thread.py
+
+      - name: 발행 결과 커밋 (상태 갱신)
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add queue/
+          if ! git diff --cached --quiet; then
+            git commit -m "스레드 발행 결과 갱신 [skip ci]"
+            git push
+          else
+            echo "변경 없음 — 커밋 생략"
+          fi
