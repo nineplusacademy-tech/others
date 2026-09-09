@@ -95,21 +95,35 @@ def parse_frontmatter(path: Path) -> tuple[dict, str]:
     return {}, text.strip()
 
 
+_AUTHOR_NOTE_RE = re.compile(r"\[※.*?\]", re.DOTALL)
+
+
 def parse_caption_sections(path: Path) -> dict[str, str]:
-    """`## 채널명` 으로 구분된 캡션 파일을 {채널명: 캡션텍스트} 로 파싱한다."""
+    """`## 채널명` 으로 구분된 캡션 파일을 {채널명: 캡션텍스트} 로 파싱한다.
+
+    각 섹션 끝의 `[※ 글자수: ...]` 같은 작성자용 메모(발행에는 포함되면 안 됨)를
+    제거한다 — content-playbook.md에 공식화되지 않은 채 content-derivation-team이
+    관행적으로 남기던 메모라 이 파서가 몰랐고, 2026-09-09 카드뉴스 발행 때 그대로
+    페이스북·인스타그램 캡션에 게시된 걸 확인해 여기서 걸러내도록 고쳤다.
+    """
     sections: dict[str, str] = {}
     current: str | None = None
     buf: list[str] = []
+
+    def _finish(name: str) -> None:
+        text = _AUTHOR_NOTE_RE.sub("", "\n".join(buf)).strip()
+        sections[name] = text
+
     for line in path.read_text(encoding="utf-8").splitlines():
         if line.startswith("## "):
             if current is not None:
-                sections[current] = "\n".join(buf).strip()
+                _finish(current)
             current = line[3:].strip()
             buf = []
         else:
             buf.append(line)
     if current is not None:
-        sections[current] = "\n".join(buf).strip()
+        _finish(current)
     return sections
 
 
