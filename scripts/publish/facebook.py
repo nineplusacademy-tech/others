@@ -7,7 +7,7 @@ from pathlib import Path
 
 import requests
 
-from common import DRY_RUN, dry_run_log
+from common import DRY_RUN, dry_run_log, raise_for_status_with_body
 
 GRAPH = "https://graph.facebook.com/v21.0"
 
@@ -43,7 +43,7 @@ def publish_photo_carousel(image_paths: list[Path], caption: str) -> str:
                 files={"source": f},
                 timeout=120,
             )
-        resp.raise_for_status()
+        raise_for_status_with_body(resp)
         media_fbids.append(resp.json()["id"])
 
     attached_media = [{"media_fbid": fbid} for fbid in media_fbids]
@@ -56,7 +56,7 @@ def publish_photo_carousel(image_paths: list[Path], caption: str) -> str:
         },
         timeout=120,
     )
-    feed_resp.raise_for_status()
+    raise_for_status_with_body(feed_resp)
     return feed_resp.json()["id"]
 
 
@@ -74,7 +74,7 @@ def publish_reel(video_path: Path, caption: str) -> str:
         data={"upload_phase": "start", "access_token": token},
         timeout=60,
     )
-    start.raise_for_status()
+    raise_for_status_with_body(start)
     start_data = start.json()
     video_id = start_data["video_id"]
     upload_url = start_data["upload_url"]
@@ -93,7 +93,7 @@ def publish_reel(video_path: Path, caption: str) -> str:
         data=video_bytes,
         timeout=600,
     )
-    upload_resp.raise_for_status()
+    raise_for_status_with_body(upload_resp)
 
     finish = requests.post(
         f"{GRAPH}/{page_id}/video_reels",
@@ -106,5 +106,5 @@ def publish_reel(video_path: Path, caption: str) -> str:
         },
         timeout=60,
     )
-    finish.raise_for_status()
+    raise_for_status_with_body(finish)
     return video_id
