@@ -85,6 +85,8 @@ def publish_carousel(image_paths: list[Path], caption: str) -> str:
     raise_for_status_with_body(container)
     creation_id = container.json()["id"]
 
+    _wait_until_finished(creation_id)
+
     publish = requests.post(
         f"{GRAPH}/{ig_id}/media_publish",
         data={"creation_id": creation_id, "access_token": token},
