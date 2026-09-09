@@ -187,12 +187,20 @@ def raw_github_url(rel_path: Path) -> str:
     커밋을 고정하므로, 나중에 큐 폴더가 삭제되는 커밋이 생겨도 이 URL이 가리키는
     특정 커밋의 blob은 계속 살아있어 링크가 깨지지 않는다(히스토리를 재작성하지
     않는 한).
+
+    경로 세그먼트(주제 폴더명 등 한글 포함)는 반드시 percent-encode해야 한다 —
+    curl/브라우저는 인코딩 안 된 UTF-8 경로도 관대하게 처리하지만, 인스타그램의
+    media fetcher는 엄격한 RFC 3986 URI를 요구해 raw 한글 경로를 그대로 주면
+    "Media download has failed"로 조용히 실패한다(2026-09-09 카드뉴스 발행
+    실사고에서 확인).
     """
     import os
+    from urllib.parse import quote
 
     repo = os.environ["GITHUB_REPOSITORY"]  # "owner/repo"
     sha = os.environ["GITHUB_SHA"]
-    return f"https://raw.githubusercontent.com/{repo}/{sha}/{rel_path.as_posix()}"
+    encoded_path = "/".join(quote(segment) for segment in rel_path.as_posix().split("/"))
+    return f"https://raw.githubusercontent.com/{repo}/{sha}/{encoded_path}"
 
 
 _IMG_PLACEHOLDER_RE = re.compile(r'<img\s+src="\[사진 자리 \d+\s*·\s*([^\]]+)\]"')
