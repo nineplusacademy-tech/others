@@ -14,7 +14,7 @@ from pathlib import Path
 
 import requests
 
-from common import DRY_RUN, dry_run_log, raw_github_url
+from common import DRY_RUN, dry_run_log, raise_for_status_with_body, raw_github_url
 
 GRAPH = "https://graph.instagram.com"
 POLL_INTERVAL_SECONDS = 10
@@ -37,7 +37,7 @@ def _wait_until_finished(creation_id: str) -> None:
             params={"fields": "status_code", "access_token": _token()},
             timeout=30,
         )
-        resp.raise_for_status()
+        raise_for_status_with_body(resp)
         status = resp.json().get("status_code")
         if status == "FINISHED":
             return
@@ -69,7 +69,7 @@ def publish_carousel(image_paths: list[Path], caption: str) -> str:
             },
             timeout=60,
         )
-        resp.raise_for_status()
+        raise_for_status_with_body(resp)
         child_ids.append(resp.json()["id"])
 
     container = requests.post(
@@ -82,7 +82,7 @@ def publish_carousel(image_paths: list[Path], caption: str) -> str:
         },
         timeout=60,
     )
-    container.raise_for_status()
+    raise_for_status_with_body(container)
     creation_id = container.json()["id"]
 
     publish = requests.post(
@@ -90,7 +90,7 @@ def publish_carousel(image_paths: list[Path], caption: str) -> str:
         data={"creation_id": creation_id, "access_token": token},
         timeout=60,
     )
-    publish.raise_for_status()
+    raise_for_status_with_body(publish)
     return publish.json()["id"]
 
 
@@ -112,7 +112,7 @@ def publish_reel(video_path: Path, caption: str) -> str:
         },
         timeout=60,
     )
-    container.raise_for_status()
+    raise_for_status_with_body(container)
     creation_id = container.json()["id"]
 
     _wait_until_finished(creation_id)
@@ -122,7 +122,7 @@ def publish_reel(video_path: Path, caption: str) -> str:
         data={"creation_id": creation_id, "access_token": token},
         timeout=60,
     )
-    publish.raise_for_status()
+    raise_for_status_with_body(publish)
     return publish.json()["id"]
 
 
@@ -138,5 +138,5 @@ def refresh_access_token(current_token: str) -> dict:
         params={"grant_type": "ig_refresh_token", "access_token": current_token},
         timeout=30,
     )
-    resp.raise_for_status()
+    raise_for_status_with_body(resp)
     return resp.json()

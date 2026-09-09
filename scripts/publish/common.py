@@ -13,6 +13,7 @@ import re
 import threading
 from pathlib import Path
 
+import requests
 import yaml
 
 QUEUE_DIR = Path("queue")
@@ -116,6 +117,27 @@ def fill_placeholders(text: str, **values: str) -> str:
     for key, value in values.items():
         text = text.replace("{{" + key + "}}", value)
     return text
+
+
+def raise_for_status_with_body(resp: requests.Response) -> None:
+    """`resp.raise_for_status()`와 같지만, Meta Graph API가 돌려준 실제 오류 메시지
+    (JSON 본문)까지 예외 메시지에 포함한다.
+
+    `raise_for_status()`만 쓰면 HTTP 상태 코드(예: "400 Bad Request")만 로그에 남고
+    Meta가 알려주는 구체적인 원인(예: 만료된 토큰, 권한 부족, 잘못된 파라미터)이
+    사라져 Actions 로그만 보고는 원인을 알 수 없다(2026-09-09 카드뉴스 발행 실패
+    때 겪은 문제).
+    """
+    if resp.ok:
+        return
+    try:
+        body = resp.json()
+    except ValueError:
+        body = resp.text
+    raise requests.HTTPError(
+        f"{resp.status_code} {resp.reason} for url: {resp.url} — 응답 본문: {body}",
+        response=resp,
+    )
 
 
 def update_github_secret(name: str, value: str) -> None:
