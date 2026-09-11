@@ -85,14 +85,20 @@ def all_steps_done(status: dict) -> bool:
 
 
 def parse_frontmatter(path: Path) -> tuple[dict, str]:
-    """`---\\nYAML\\n---\\n본문` 형식을 (메타, 본문)으로 분리한다."""
+    """`---\\nYAML\\n---\\n본문` 형식을 (메타, 본문)으로 분리한다.
+
+    본문에 섞인 `[※ ...]` 작성자용 메모(글자수 확인 등)는 parse_caption_sections()와
+    동일하게 여기서도 제거한다 — 유튜브 쇼츠 설명(`캡션_유튜브쇼츠.md`)이 이 함수로
+    파싱되는데, 예전엔 이 stripping이 없어서 메모가 실제 유튜브 설명란에 그대로
+    올라간 적이 있다(2026-09-11 사용자 리포트로 발견).
+    """
     text = path.read_text(encoding="utf-8")
     if text.startswith("---"):
         parts = text.split("---", 2)
         if len(parts) == 3:
             meta = yaml.safe_load(parts[1]) or {}
-            return meta, parts[2].strip()
-    return {}, text.strip()
+            return meta, _AUTHOR_NOTE_RE.sub("", parts[2]).strip()
+    return {}, _AUTHOR_NOTE_RE.sub("", text).strip()
 
 
 _AUTHOR_NOTE_RE = re.compile(r"\[※.*?\]", re.DOTALL)
