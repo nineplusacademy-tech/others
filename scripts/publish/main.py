@@ -62,6 +62,24 @@ from common import (
 _status_lock = threading.Lock()
 
 
+def _require_caption(caption: str, channel: str, section: str) -> str:
+    """캡션이 빈 문자열이면 발행을 막고 즉시 에러를 낸다.
+
+    2026-09-11 신설 — 채널별_캡션.md의 섹션명이 조회 키와 안 맞으면
+    parse_caption_sections()가 조용히 빈 문자열을 반환해, 36주차 릴스가
+    캡션 없이 그대로 게시된 실사고가 있었다. 원인 자체는 이미 고쳤지만
+    (섹션명 뒤 괄호 정규화), 앞으로 같은 종류의 실수(섹션명 오타 등)가 다시
+    생겨도 조용히 넘어가지 않고 여기서 확실히 막는다 — 캡션 없는 발행은
+    항상 버그이지 정상 상태가 아니다.
+    """
+    if not caption or not caption.strip():
+        raise RuntimeError(
+            f"[{channel}] 캡션이 비어 있어 발행을 중단합니다 — "
+            f"채널별_캡션.md의 '## {section}' 섹션을 확인하세요."
+        )
+    return caption
+
+
 def _record(folder: Path, status: dict, key: str, result_field: str, value: str) -> None:
     """여러 스레드에서 동시에 상태를 기록해도 안전하게 (락으로 보호)."""
     with _status_lock:
@@ -152,11 +170,13 @@ def run(folder: Path, phase: str = "all") -> None:
         def _facebook_carousel() -> str:
             images = sorted((folder / "카드뉴스" / "facebook").glob("*.png"))
             caption = fill_placeholders(cardnews_captions.get("페이스북", ""), BLOG_URL=blog_url)
+            caption = _require_caption(caption, "facebook_carousel", "페이스북")
             return facebook.publish_photo_carousel(images, caption)
 
         def _instagram_carousel() -> str:
             images = sorted((folder / "카드뉴스" / "instagram").glob("*.png"))
             caption = fill_placeholders(cardnews_captions.get("인스타그램", ""), BLOG_URL=blog_url)
+            caption = _require_caption(caption, "instagram_carousel", "인스타그램")
             return instagram.publish_carousel(images, caption)
 
         tasks["facebook_carousel"] = (_facebook_carousel, "id")
@@ -168,16 +188,19 @@ def run(folder: Path, phase: str = "all") -> None:
         def _facebook_reel() -> str:
             video_path = folder / "숏츠" / "9x16_facebook.mp4"
             caption = fill_placeholders(shorts_captions.get("페이스북", ""), BLOG_URL=blog_url)
+            caption = _require_caption(caption, "facebook_reel", "페이스북")
             return facebook.publish_reel(video_path, caption)
 
         def _instagram_reel() -> str:
             video_path = folder / "숏츠" / "9x16_instagram.mp4"
             caption = fill_placeholders(shorts_captions.get("인스타그램", ""), BLOG_URL=blog_url)
+            caption = _require_caption(caption, "instagram_reel", "인스타그램")
             return instagram.publish_reel(video_path, caption)
 
         def _youtube_shorts() -> str:
             video_path = folder / "숏츠" / "9x16_youtube.mp4"
             yt_meta, yt_description = parse_frontmatter(folder / "숏츠" / "캡션_유튜브쇼츠.md")
+            yt_description = _require_caption(yt_description, "youtube_shorts", "(캡션_유튜브쇼츠.md 본문)")
             return youtube.upload_shorts(video_path, yt_meta.get("title", ""), yt_description)
 
         tasks["facebook_reel"] = (_facebook_reel, "id")
