@@ -96,6 +96,7 @@ def parse_frontmatter(path: Path) -> tuple[dict, str]:
 
 
 _AUTHOR_NOTE_RE = re.compile(r"\[※.*?\]", re.DOTALL)
+_SECTION_SUFFIX_RE = re.compile(r"\s*\([^)]*\)\s*$")
 
 
 def parse_caption_sections(path: Path) -> dict[str, str]:
@@ -105,6 +106,12 @@ def parse_caption_sections(path: Path) -> dict[str, str]:
     제거한다 — content-playbook.md에 공식화되지 않은 채 content-derivation-team이
     관행적으로 남기던 메모라 이 파서가 몰랐고, 2026-09-09 카드뉴스 발행 때 그대로
     페이스북·인스타그램 캡션에 게시된 걸 확인해 여기서 걸러내도록 고쳤다.
+
+    채널명 뒤에 붙는 `(릴스)` 같은 설명용 괄호는 키에서 제거한다 — 카드뉴스
+    캡션 파일은 "## 인스타그램"으로, 숏츠 캡션 파일은 "## 인스타그램(릴스)"로
+    적혀 있어서 호출부의 `.get("인스타그램", ...)` 조회가 숏츠 쪽에서만
+    조용히 빈 문자열로 빠지던 실사고(2026-09-11, 36주차 릴스 캡션 전부 누락)를
+    이 정규화로 막는다.
     """
     sections: dict[str, str] = {}
     current: str | None = None
@@ -118,7 +125,7 @@ def parse_caption_sections(path: Path) -> dict[str, str]:
         if line.startswith("## "):
             if current is not None:
                 _finish(current)
-            current = line[3:].strip()
+            current = _SECTION_SUFFIX_RE.sub("", line[3:].strip())
             buf = []
         else:
             buf.append(line)
