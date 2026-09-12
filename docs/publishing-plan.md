@@ -247,9 +247,9 @@ title: 영상 제목(100자 이내)
 | `GOOGLE_OAUTH_REFRESH_TOKEN` | Blogger/YouTube 인증 | 만료 없음(프로덕션 게시 상태 확인됨) |
 | `BLOGGER_BLOG_ID` | 어느 Blogger 블로그에 올릴지 | Blogger API `blogs.getByUrl` 등으로 조회해서 채워넣기 |
 | `FACEBOOK_PAGE_ID` | 페이스북 페이지 게시 대상 | 1265899359934473 (나인플러스수학학원) |
-| `FACEBOOK_PAGE_ACCESS_TOKEN` | 페이스북 카드뉴스 캐러셀·릴스 | 만료 없음(Page 토큰) — 그래도 가끔 debug_token으로 유효성 점검 권장 |
+| `FACEBOOK_PAGE_ACCESS_TOKEN` | 페이스북 카드뉴스 캐러셀·릴스 + (2026-09-12부) `insights.yml` 인사이트 조회 | 만료 없음(Page 토큰) — 그래도 가끔 debug_token으로 유효성 점검 권장 |
 | `INSTAGRAM_BUSINESS_ACCOUNT_ID` | 인스타그램 게시 대상 | 27167215579620807 (nineplus_math) |
-| `INSTAGRAM_ACCESS_TOKEN` | 인스타그램 캐러셀·릴스 | 60일 만료 — `refresh-instagram-token.yml`이 자동 갱신 |
+| `INSTAGRAM_ACCESS_TOKEN` | 인스타그램 캐러셀·릴스 + (2026-09-12부) `insights.yml` 인사이트 조회 | 60일 만료 — `refresh-instagram-token.yml`이 자동 갱신. 인사이트 조회 권한(`instagram_manage_insights` 등)까지 있는지는 §7 참고 |
 | `GH_PAT` | 인스타그램·스레드 토큰 자동 갱신 시 이 저장소의 Secret을 다시 쓰기 위함 | 이 저장소에 "Secrets: Read and write" 권한을 준 fine-grained PAT. 기본 `GITHUB_TOKEN`은 Secrets API 쓰기 권한이 없어서 별도 PAT 필요 |
 | `THREADS_USER_ID` | 스레드 게시 대상 계정 | 17841469176062079 (nineplus_math) — 공개 식별자라 값 자체는 민감하지 않음 |
 | `THREADS_ACCESS_TOKEN` | 스레드 텍스트 게시 | 60일 만료 — `refresh-threads-token.yml`이 자동 갱신 |
@@ -300,3 +300,28 @@ Threads API는 같은 Meta 앱 안에서 Facebook 로그인/페이지 관리 이
 - **목요일 교육뉴스 스레드는 여전히 반자동이다** — 별개 파이프라인(`queue-edu/`)이라
   이 자동화 대상이 아니고, 예약 작업 `edu-thread-reminder`가 초안을 제시하면 사람이
   같은 `threads_nineplus` 앱/토큰이 아니라 직접 앱에서 게시한다.
+
+## 7. SNS 인사이트 조회 (읽기 전용, 신설 2026-09-12)
+
+`sns_analysis_team`이 네이버 블로그·플레이스뿐 아니라 인스타그램·페이스북 성과도
+같이 참고할 수 있도록, 발행에 쓰는 것과 동일한 Meta 토큰(`INSTAGRAM_ACCESS_TOKEN`·
+`FACEBOOK_PAGE_ACCESS_TOKEN`)으로 **게시 없이 조회만** 하는 별도 파이프라인이다.
+
+- `scripts/publish/insights.py`: Graph API 인사이트 엔드포인트를 호출하는 함수
+  모음(계정 요약, 최근 게시물별 reach·좋아요·댓글·저장·공유, 릴스 재생수 등).
+- `scripts/publish/append_insights_log.py`: 위 결과를 마크다운으로 정리해
+  `docs/sns-analysis-log.md` 끝에 append(기존 내용은 지우지 않음).
+- `.github/workflows/insights.yml`: **매주 토요일 12:00 KST**(콘텐츠 브리핑
+  13:00보다 먼저) 자동 실행 + `workflow_dispatch`로 수동 실행 가능. 조회만 하므로
+  실패해도 발행 파이프라인에 영향 없음.
+
+**중요한 미확인 사항**: 발행용 토큰이 인사이트 조회 권한(`instagram_manage_insights`·
+`read_insights` 등)까지 실제로 갖고 있는지는 이 워크플로를 처음 돌려보기 전까지
+확인된 바 없다 — 첫 실행 결과(`docs/sns-analysis-log.md`에 남는 로그, 또는 Actions
+탭 로그)를 반드시 확인할 것. 메트릭 이름은 Meta가 API 버전마다 자주 바꾸므로,
+특정 메트릭이 실패해도 스크립트가 나머지는 계속 진행하고 실패 사유를 그대로
+남기도록 만들어져 있다 — "값이 0"과 "조회 실패"를 구분해서 읽어야 한다.
+
+queue/_status.json에 남는 게시물 ID는 재사용하지 않는다 — 전 채널 발행이
+끝나면 `main.py`가 큐 폴더를 즉시 삭제하므로 ID가 남아있지 않다. 대신 계정의
+"최근 미디어/게시물 목록"을 API로 직접 가져와 최근 N개를 조회하는 방식이다.
