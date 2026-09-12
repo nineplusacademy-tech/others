@@ -1,0 +1,47 @@
+name: SNS 인사이트 조회 (인스타그램·페이스북, 읽기 전용)
+
+# 아무것도 게시하지 않는다 — 조회만 한다. 매주 토요일 12:00 KST(콘텐츠 브리핑
+# 13:00보다 먼저)에 실행해 sns_analysis_team이 그 주 브리핑에서 참고할 수
+# 있게 docs/sns-analysis-log.md에 결과를 append한다.
+on:
+  schedule:
+    - cron: "0 3 * * 6" # 토요일 03:00 UTC = 토요일 12:00 KST
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  insights:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 의존성 설치
+        run: pip install -r scripts/publish/requirements.txt
+
+      - name: 인사이트 조회 및 로그 갱신
+        env:
+          PYTHONPATH: scripts/publish
+          FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+          INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+        run: python scripts/publish/append_insights_log.py
+
+      - name: 결과 커밋
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/sns-analysis-log.md
+          if ! git diff --cached --quiet; then
+            git commit -m "SNS 인사이트 자동 기록 [skip ci]"
+            git push
+          else
+            echo "변경 없음 — 커밋 생략"
+          fi

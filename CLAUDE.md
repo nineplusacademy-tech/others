@@ -64,7 +64,11 @@ sns_analysis_team·content-derivation-team·design_team·education-news-team)의
 고치지 않는다 — 추천만 하고 실제 반영은 mainmanager가 사용자 승인 후에 한다.
 순위 추이는 **[docs/sns-analysis-log.md](docs/sns-analysis-log.md)** 에 매주
 누적 기록한다. 데이터랩툴즈 크롬 확장 패널이 닫혀 있으면 억측하지 않고 그 사실만
-보고한다. 스킬 정의:
+보고한다. 인스타그램·페이스북 게시물/계정 인사이트(reach·좋아요·댓글·저장·공유,
+2026-09-12 신설)도 매주 토요일 12:00 KST에 `.github/workflows/insights.yml`이
+자동 조회해 같은 로그에 append한다(발행용 Meta 토큰 재사용, 게시 없이 조회만,
+`publishing-plan.md` §7) — 다만 이건 검색순위 추천 로직과는 별개의 참고자료다.
+스킬 정의:
 [.claude/skills/sns_analysis_team/SKILL.md](.claude/skills/sns_analysis_team/SKILL.md).
 
 ## 카드뉴스·숏츠 제작 — content-derivation-team
