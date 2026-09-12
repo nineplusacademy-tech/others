@@ -12,11 +12,31 @@ import os
 import re
 import threading
 from pathlib import Path
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import requests
 import yaml
 
 QUEUE_DIR = Path("queue")
+
+_SENSITIVE_QUERY_KEYS = {"access_token", "client_secret", "refresh_token"}
+
+
+def redact_url(url: str) -> str:
+    """URL 쿼리스트링에서 access_token 등 민감한 값을 [REDACTED]로 가린다.
+
+    Graph API 호출은 토큰을 쿼리 파라미터로 넘기는 경우가 많아(GET 요청 등),
+    `resp.url`을 그대로 에러 메시지에 넣으면 토큰이 그대로 노출된다 — 2026-09-12
+    docs/sns-analysis-log.md에 실제 토큰 값이 여러 번 커밋되는 사고로 확인됨
+    (이 저장소는 퍼블릭이라 커밋되는 순간 사실상 공개됨). 에러 메시지에 URL을
+    넣는 모든 경로가 이 함수를 거쳐야 한다.
+    """
+    parts = urlsplit(url)
+    query = [
+        (k, "[REDACTED]" if k in _SENSITIVE_QUERY_KEYS else v)
+        for k, v in parse_qsl(parts.query, keep_blank_values=True)
+    ]
+    return urlunsplit(parts._replace(query=urlencode(query)))
 
 DRY_RUN = os.environ.get("DRY_RUN", "").lower() == "true"
 
@@ -162,7 +182,7 @@ def raise_for_status_with_body(resp: requests.Response) -> None:
     except ValueError:
         body = resp.text
     raise requests.HTTPError(
-        f"{resp.status_code} {resp.reason} for url: {resp.url} — 응답 본문: {body}",
+        f"{resp.status_code} {resp.reason} for url: {redact_url(resp.url)} — 응답 본문: {body}",
         response=resp,
     )
 
