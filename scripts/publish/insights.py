@@ -59,10 +59,17 @@ def _get(url: str, params: dict) -> dict:
 
 
 def _latest_values(data: dict) -> dict:
-    return {
-        item["name"]: item.get("values", [{}])[-1].get("value")
-        for item in data.get("data", [])
-    }
+    """응답 형식이 두 가지다 — 시계열(`values: [{value, end_time}, ...]`)과
+    `metric_type=total_value`로 요청했을 때의 합계형(`total_value: {value}`).
+    합계형을 시계열 형식으로만 읽으면 값이 항상 None으로 나온다(2026-09-12
+    accounts_engaged에서 실제로 겪음) — 둘 다 처리한다."""
+    result: dict = {}
+    for item in data.get("data", []):
+        if "total_value" in item:
+            result[item["name"]] = item["total_value"].get("value")
+        elif item.get("values"):
+            result[item["name"]] = item["values"][-1].get("value")
+    return result
 
 
 def _fetch_metrics_one_by_one(
