@@ -27,15 +27,15 @@ description: 나인플러스학원 마케팅 자동화 프로젝트의 총괄 �
 매주 토요일 13:00 브리핑(예약 작업 `weekly-content-kickoff`)에서는 스케줄 확인에
 그치지 않고, 그 주 주제를 사용자와 함께 확정한다:
 
-1. **`naverblog_team` 스킬을 먼저 호출**한다(신설 — 목표: 네이버 블로그·플레이스
+1. **`sns_analysis_team` 스킬을 먼저 호출**한다(신설 — 목표: 네이버 블로그·플레이스
    검색순위 상위권 진입). 이 스킬이 실제 통계·SERP·플레이스 순위를 분석해 "그대로
    진행"할지 "이런 이유로 이 소재를 먼저 하는 게 낫다"는 추천을 근거와 함께
    돌려준다 — 데이터랩툴즈 연결이 안 돼 있으면 그 사실만 받고 다음 단계로 넘어간다
-   (`.claude/skills/naverblog_team/SKILL.md` 참고).
+   (`.claude/skills/sns_analysis_team/SKILL.md` 참고).
 2. `docs/blog-calendar.md`의 다음 순번 주제와 `docs/education-news-log.md`의 다음 호
-   유력 후보를, 1번의 naverblog_team 추천과 함께 제시한다.
+   유력 후보를, 1번의 sns_analysis_team 추천과 함께 제시한다.
 3. "이대로 진행할까요, 아니면 더 나은 주제를 검색해볼까요?"라고 물어 확인받는다 —
-   naverblog_team이 교체를 추천했다면 그 근거를 함께 설명한다.
+   sns_analysis_team이 교체를 추천했다면 그 근거를 함께 설명한다.
 4. "그대로 진행"이면 바로 작성 착수, "다른 주제 찾아봐"면 최신 뉴스·입시 일정을
    검색해 2~4개 대안을 요약과 함께 제시하고 선택을 기다린다 — **mainmanager가 임의로
    주제를 확정하지 않는다.**
@@ -116,7 +116,7 @@ description: 나인플러스학원 마케팅 자동화 프로젝트의 총괄 �
 | content-derivation-team | 승인 후 카드뉴스·숏츠 스토리보드+캡션+스레드 작성, 승인 후 HyperFrames 렌더링 | 로컬 `카드뉴스_발행현황.md`(원격 세션은 접근 불가 — 진행 상태는 사용자에게 직접 확인) |
 | design_team | 블로그 대표이미지·본문이미지 등 정지 이미지 1장 단위 오버레이/디자인 실제 제작(도구는 매번 상황에 맞게 선택) | 로컬 각 `<번호>_<주제요약>/블로그/` 폴더의 이미지 파일 존재 여부, `사진요청_및_일러스트프롬프트.md`의 체크 상태 |
 | education-news-team | mainmanager 지시로 매주 교육뉴스 주제 조사·10개 파일 작성, 승인 후 구글블로그 `queue-edu/` 등록 (이 저장소 스킬, 메인 블로그와는 별개 파이프라인) | 로컬 `클로드작업폴더/교육뉴스/발행이력.md`(원본) / `docs/education-news-log.md`(저장소 미러 — 최신화 지연 가능성 유의) |
-| naverblog_team | 매주 토요일(§2) 네이버 블로그·플레이스 실통계·검색순위 분석, 목표(상위권 진입) 기준 기획안 교체/시의성 추천 — `blog-calendar.md`는 직접 안 고치고 추천만 함 | `docs/naverblog-seo-log.md` (키워드별 순위 추이, 최근 실행일과 추천 반영 여부) |
+| sns_analysis_team | 매주 토요일(§2) 네이버 블로그·플레이스 실통계·검색순위 분석, 목표(상위권 진입) 기준 기획안 교체/시의성 추천 — `blog-calendar.md`는 직접 안 고치고 추천만 함 | `docs/sns-analysis-log.md` (키워드별 순위 추이, 최근 실행일과 추천 반영 여부) |
 
 예: "algorithm-searching-team 상태 알려줘" 라고 하면 `docs/algorithm-search-log.md`의
 최신 항목과 다음 실행 예정일(최근 항목 날짜 + 28일)을 계산해서 알려준다. "교육뉴스
