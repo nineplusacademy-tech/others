@@ -146,9 +146,12 @@ def instagram_account_summary() -> dict:
     except Exception as exc:  # noqa: BLE001
         result["profile_error"] = str(exc)
 
+    # profile_views는 2025-01-08부로 폐기됐고(Graph API v21+), accounts_engaged는
+    # metric_type=total_value가 있어야 값이 온다(2026-09-12 확인 — 이 파라미터
+    # 없이는 에러 없이 빈 응답만 왔다). reach는 그대로 period=day만 있으면 된다.
     result["account_insights"] = _fetch_metrics_one_by_one(
         f"{IG_GRAPH}/{_ig_id()}/insights",
-        ["reach", "profile_views", "accounts_engaged"],
+        ["reach", ("accounts_engaged", {"metric_type": "total_value"})],
         _ig_token(),
         extra={"period": "day"},
     )
@@ -198,7 +201,18 @@ def facebook_post_insights(post_id: str) -> dict:
 
 
 def facebook_video_insights(video_id: str) -> dict:
-    metrics = ["total_video_views", "total_video_impressions", "total_video_avg_time_watched"]
+    """릴스(Reels)로 올라간 영상은 일반 영상과 지원 메트릭이 다르다 — 일반
+    영상 메트릭(total_video_views 등)을 릴스에 물으면 에러 없이 빈 응답만
+    온다(2026-09-12 확인). 릴스 재생수는 `blue_reels_play_count`로 따로
+    조회해야 한다(Meta 개발자 블로그 2022-12-15 공지) — 어느 쪽인지 미리
+    구분하지 않고 둘 다 요청해서, 해당 안 되는 쪽은 실패로 남기고 맞는
+    쪽만 값을 받는다."""
+    metrics = [
+        "total_video_views",
+        "total_video_impressions",
+        "total_video_avg_time_watched",
+        "blue_reels_play_count",
+    ]
     return _fetch_metrics_one_by_one(f"{FB_GRAPH}/{video_id}/video_insights", metrics, _fb_token())
 
 
