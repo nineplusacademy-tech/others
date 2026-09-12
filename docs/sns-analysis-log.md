@@ -76,7 +76,7 @@
 `publishing-plan.md` §7 참고.
 
 - 인스타그램 계정: 팔로워 99, 게시물 수 63
-  - 계정 인사이트: reach=0, accounts_engaged=0
+  - 계정 인사이트: reach=0~1, accounts_engaged=0 (같은 날 재실행에서도 재현)
   - [VIDEO] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → reach=30, likes=1, comments=0, saved=1, shares=0, views=39 (https://www.instagram.com/reel/DdHGfMflGvP/)
   - [CAROUSEL_ALBUM] 2026-09-09 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 🤔  다들' → reach=27, likes=0, comments=1, saved=0, shares=0 (https://www.instagram.com/p/DdEOirDlpNC/)
   - [VIDEO] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → reach=149, likes=2, comments=1, saved=1, shares=0, views=170 (https://www.instagram.com/reel/Dc2KE6niQEJ/)
@@ -93,3 +93,11 @@
   - [릴스/영상] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → (값 없음, 원인 미확정 — 발행 직후라 진짜 0일 가능성) (/reel/1423279913202551/)
   - [릴스/영상] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → blue_reels_play_count=185 (/reel/2534315827035432/)
   - [릴스/영상] 2026-09-01·08-31×2 (오래된 홍보 안 된 일반 영상) → total_video_views=0 등 전부 0(정상 조회, 실제로 0인 게 타당)
+
+**2026-09-12 보안 사고 후속**: 이 로그의 초기 디버그 기록에 인스타그램·페이스북
+액세스 토큰이 평문 노출된 사고가 있었다(원인·수정은 위 문단과 `publishing-plan.md`
+§7 참고). 노출된 두 토큰 모두 사용자가 직접 무효화하고 재발급했다 — 인스타그램은
+Meta 앱 연결을 완전히 끊었다가 Instagram 테스터 초대·수락을 거쳐 재연결(60일
+장기 토큰, `instagram_business_manage_insights` 등 필요 권한 포함 확인), 페이스북은
+새 페이지 액세스 토큰 재발급(`read_insights` 권한 추가 포함). 재발급 후 재실행에서
+위와 동일한 결과가 정상 재현되어 새 토큰이 문제없이 작동함을 확인했다.
