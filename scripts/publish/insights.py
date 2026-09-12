@@ -65,27 +65,41 @@ def _latest_values(data: dict) -> dict:
     }
 
 
-def _fetch_metrics_one_by_one(url: str, metrics: list[str], token: str, extra: dict | None = None) -> dict:
+def _fetch_metrics_one_by_one(
+    url: str,
+    metrics: list[str | tuple[str, dict]],
+    token: str,
+    extra: dict | None = None,
+) -> dict:
     """메트릭을 하나씩 개별 요청해서 성공한 것만 values에, 실패한 것만 errors에 담는다.
 
     콤마로 묶어 한 번에 요청하면 그중 하나라도 무효한 메트릭이면 Graph API가
     요청 전체를 400으로 거부해 멀쩡한 메트릭 값까지 못 받아온다 — 이 함수는
     그 문제를 피하려고 메트릭당 별도 요청을 보낸다(호출 수는 늘지만, 계정당
     최근 N개 게시물만 보는 조회 스크립트라 부담이 크지 않다).
+
+    각 항목은 메트릭 이름(문자열) 또는 (메트릭 이름, 이 메트릭 전용 파라미터) 튜플이다
+    — 메트릭마다 지원하는 period가 다르기 때문(예: page_follows는 day만,
+    post_media_view는 lifetime만 지원 — Meta 공식 문서 기준, 2026-09-12 확인).
+    튜플의 파라미터가 공통 extra보다 우선한다.
     """
     values: dict = {}
     errors: dict = {}
-    for metric in metrics:
+    names: list[str] = []
+    for entry in metrics:
+        metric, per_metric_extra = entry if isinstance(entry, tuple) else (entry, {})
+        names.append(metric)
         params = {"metric": metric, "access_token": token}
         if extra:
             params.update(extra)
+        params.update(per_metric_extra)
         try:
             data = _get(url, params)
             item_values = _latest_values(data)
             values.update(item_values)
         except Exception as exc:  # noqa: BLE001 — 이 메트릭만 실패로 기록하고 계속
             errors[metric] = str(exc)
-    result: dict = {"requested": metrics}
+    result: dict = {"requested": names}
     if values:
         result["values"] = values
     if errors:
@@ -171,9 +185,15 @@ def list_recent_facebook_videos(limit: int = 5) -> list[dict]:
 
 def facebook_post_insights(post_id: str) -> dict:
     """post_impressions는 2025-11-15부로 폐기되고 post_media_view로 대체됐다
-    (Meta 개발자 블로그 2025-08-15 공지) — post_engaged_users 등은 그대로 두되
-    메트릭별 개별 요청이라 하나가 폐기됐어도 나머지는 받아온다."""
-    metrics = ["post_media_view", "post_engaged_users", "post_reactions_by_type_total"]
+    (Meta 개발자 블로그 2025-08-15 공지). post_media_view는 **period=lifetime만
+    지원**한다(Meta 공식 문서, 2026-09-12 확인 — 지정 안 하면 값 없이 빈 응답만
+    옴). post_engaged_users는 Meta 공식 참조 문서에 더 이상 등재돼 있지 않고
+    실제로도 400을 내서 제외했다 — 필요하면 이후 실행에서 총 반응수
+    (post_reactions_by_type_total) 등 살아있는 메트릭으로 대체 검토."""
+    metrics: list = [
+        ("post_media_view", {"period": "lifetime"}),
+        "post_reactions_by_type_total",
+    ]
     return _fetch_metrics_one_by_one(f"{FB_GRAPH}/{post_id}/insights", metrics, _fb_token())
 
 
@@ -184,7 +204,11 @@ def facebook_video_insights(video_id: str) -> dict:
 
 def facebook_page_summary() -> dict:
     """page_impressions·page_fans는 2025-11-15부로 폐기되고 page_follows·
-    page_media_view로 대체됐다(Meta 개발자 블로그 2025-08-15 공지)."""
+    page_media_view로 대체됐다(Meta 개발자 블로그 2025-08-15 공지). 이 둘은
+    지원하는 period가 서로 다르다(Meta 공식 문서, 2026-09-12 확인) —
+    page_follows는 **day만**, page_media_view는 day/week/days_28을 지원한다.
+    page_engaged_users는 2024-03-14부로 이미 폐기됐고 명시된 대체 메트릭이
+    없어 제외했다."""
     result: dict = {}
     try:
         result["page"] = _get(
@@ -196,9 +220,11 @@ def facebook_page_summary() -> dict:
 
     result["page_insights"] = _fetch_metrics_one_by_one(
         f"{FB_GRAPH}/{_fb_page_id()}/insights",
-        ["page_follows", "page_engaged_users", "page_media_view"],
+        [
+            ("page_follows", {"period": "day"}),
+            ("page_media_view", {"period": "week"}),
+        ],
         _fb_token(),
-        extra={"period": "week"},
     )
     return result
 

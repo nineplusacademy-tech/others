@@ -344,3 +344,26 @@ queue/_status.json에 남는 게시물 ID는 재사용하지 않는다 — 전 �
   Secret 값을 갱신해야 한다 — 페이지 게시글 인사이트·인스타그램 인사이트는 이미
   정상 작동하므로 급하지 않다면 페이스북 릴스 조회수만 계속 비어 있는 채로 둬도
   다른 기능에는 영향 없다.
+
+**2026-09-12 두 번째 실행 결과 및 후속 조치**: 인스타그램은 릴스·캐러셀 전부
+reach·likes·comments·saved·shares·views가 정상 조회됨(예: 릴스 reach=149,
+views=170) — 완전히 해결. 페이스북 페이지/게시물 쪽은 두 가지 문제가 더
+있었다:
+
+1. **`page_engaged_users`가 400 에러** — Meta 공식 "폐기된 메트릭" 문서
+   확인 결과 이 메트릭은 **2024-03-14부로 이미 폐기**됐고 명시된 대체
+   메트릭이 없다. 목록에서 제외했다.
+2. **`page_follows`·`page_media_view`·`post_media_view`가 에러 없이 값도
+   없이 빈 응답만 왔다** — 원인은 메트릭 이름이 아니라 **메트릭마다 지원하는
+   `period`가 다른데 전부 같은 period(`week`)로 묶어 요청**했기 때문(Meta
+   공식 문서 확인, 2026-09-12): `page_follows`는 **day만**,
+   `page_media_view`는 day/week/days_28, `post_media_view`는 **lifetime만**
+   지원한다. `_fetch_metrics_one_by_one()`이 메트릭마다 다른 파라미터를 줄 수
+   있도록 `(메트릭, 전용 파라미터)` 튜플을 받게 고치고, 각 메트릭에 맞는
+   period를 지정했다. `post_engaged_users`도 Meta 공식 참조 문서에 더 이상
+   등재돼 있지 않고 실제로 400을 내서 제외했다(대체 메트릭 미확인 —
+   `post_reactions_by_type_total`은 그대로 유지).
+
+다음 토요일(12:00 KST) 자동 실행에서 페이스북 페이지/게시물 값도 정상
+조회되는지 확인 예정. 페이스북 릴스(영상) 인사이트의 `read_insights` 권한
+문제는 여전히 미해결 — 사용자가 토큰을 재발급해야 한다.
