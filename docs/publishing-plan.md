@@ -364,6 +364,29 @@ views=170) — 완전히 해결. 페이스북 페이지/게시물 쪽은 두 가
    등재돼 있지 않고 실제로 400을 내서 제외했다(대체 메트릭 미확인 —
    `post_reactions_by_type_total`은 그대로 유지).
 
-다음 토요일(12:00 KST) 자동 실행에서 페이스북 페이지/게시물 값도 정상
-조회되는지 확인 예정. 페이스북 릴스(영상) 인사이트의 `read_insights` 권한
-문제는 여전히 미해결 — 사용자가 토큰을 재발급해야 한다.
+**2026-09-12 세 번째 실행 — `read_insights` 권한 추가 후**: 사용자가
+Meta for Developers(`blogTOsns_nineplus` 앱)에서 `read_insights` 권한을
+추가하고, Graph API Explorer로 만료 없는 새 페이지 토큰을 발급해
+`FACEBOOK_PAGE_ACCESS_TOKEN` Secret을 갱신했다. 그 결과:
+
+- **페이스북 페이지/게시물 인사이트가 전부 정상 조회됨** —
+  `page_follows=13`, `page_media_view=99`, 게시물별 `post_media_view`
+  (6~230 사이 실제 값), `post_reactions_by_type_total` 정상. `read_insights`
+  권한 누락이 페이지/게시물 인사이트가 에러 없이 빈 값만 나오던 진짜
+  원인이었다 — period 문제와 권한 문제가 동시에 있었던 것.
+- **페이스북 일반 영상 인사이트는 정상**(`total_video_views` 등, 값 0이지만
+  실제 조회 성공 — 오래된 홍보 안 된 영상이라 0인 게 타당함).
+- **페이스북 릴스(Reels)만 여전히 빈 응답** — 원인은 릴스가 일반 영상과
+  다른 전용 재생수 메트릭(`blue_reels_play_count`)을 쓰기 때문(Meta
+  개발자 블로그 2022-12-15 공지). `total_video_views` 등 일반 영상
+  메트릭을 릴스에 물으면 에러 없이 빈 응답만 온다. `insights.py`에
+  `blue_reels_play_count`를 추가해 둘 다 시도하도록 수정 — 다음 실행에서
+  확인 예정.
+- **인스타그램 계정 인사이트도 재점검**: `profile_views`는
+  2025-01-08부로 폐기됐고(Graph API v21+), `accounts_engaged`는
+  `metric_type=total_value` 파라미터가 있어야 값이 온다(없으면 에러 없이
+  빈 응답) — `profile_views`는 제거하고 `accounts_engaged`에 해당
+  파라미터를 추가했다.
+
+다음 토요일(12:00 KST) 자동 실행 또는 수동 실행에서 위 두 가지(릴스
+재생수·계정 참여 지표)가 정상 조회되는지 확인 예정.
