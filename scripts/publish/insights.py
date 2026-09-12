@@ -8,12 +8,19 @@ queue/_status.json에 남는 게시물 ID에 의존하지 않는다 — main.py�
 남지 않는다. 대신 계정의 "최근 미디어/게시물 목록"을 API로 직접 가져와 그
 안에서 최근 N개를 조회한다.
 
-Meta는 인사이트 메트릭 이름을 API 버전마다 바꾸거나 폐기하는 일이 잦다 —
-이 스크립트는 메트릭 요청 하나가 실패해도 나머지는 계속 진행하고, 실패한
-이유를 결과에 그대로 남긴다(조용히 누락시키거나 0으로 채우지 않는다). 처음
-실제로 돌려보기 전까지는 이 토큰들이 인사이트 조회 권한
+Meta는 인사이트 메트릭 이름을 API 버전마다 바꾸거나 폐기하는 일이 잦다(2025-11-15부로
+Facebook Page Insights의 impressions·page_fans 계열이 대거 폐기되고 views·
+page_follows·page_media_view로 대체됨 — Meta 개발자 블로그 2025-08-15 공지).
+그래서 **메트릭을 한 번에 콤마로 묶어 요청하지 않고 하나씩 개별 요청한다** —
+Graph API는 콤마로 묶은 메트릭 중 하나라도 무효면 요청 전체를 실패시키므로,
+묶어서 요청하면 멀쩡한 메트릭까지 전부 못 받아온다(2026-09-12 첫 실행에서
+실제로 겪은 문제). 메트릭 하나가 실패해도 나머지는 계속 진행하고, 실패한
+이유를 결과에 그대로 남긴다(조용히 누락시키거나 0으로 채우지 않는다). 그래도
+처음 실제로 돌려보기 전까지는 이 토큰들이 인사이트 조회 권한
 (instagram_manage_insights, read_insights 등)까지 가지고 있는지 확인된 바
-없다 — 첫 실행 결과를 반드시 확인할 것.
+없었다 — 2026-09-12 첫 실행 결과, 인스타그램 캐러셀·페이스북 게시글 일부는
+정상 조회됐지만 페이스북 영상(릴스) 인사이트는 `read_insights` 권한 자체가
+없다는 403이 났다(토큰 재발급/권한 추가가 필요, 코드로 고칠 수 없음).
 """
 
 from __future__ import annotations
@@ -58,6 +65,34 @@ def _latest_values(data: dict) -> dict:
     }
 
 
+def _fetch_metrics_one_by_one(url: str, metrics: list[str], token: str, extra: dict | None = None) -> dict:
+    """메트릭을 하나씩 개별 요청해서 성공한 것만 values에, 실패한 것만 errors에 담는다.
+
+    콤마로 묶어 한 번에 요청하면 그중 하나라도 무효한 메트릭이면 Graph API가
+    요청 전체를 400으로 거부해 멀쩡한 메트릭 값까지 못 받아온다 — 이 함수는
+    그 문제를 피하려고 메트릭당 별도 요청을 보낸다(호출 수는 늘지만, 계정당
+    최근 N개 게시물만 보는 조회 스크립트라 부담이 크지 않다).
+    """
+    values: dict = {}
+    errors: dict = {}
+    for metric in metrics:
+        params = {"metric": metric, "access_token": token}
+        if extra:
+            params.update(extra)
+        try:
+            data = _get(url, params)
+            item_values = _latest_values(data)
+            values.update(item_values)
+        except Exception as exc:  # noqa: BLE001 — 이 메트릭만 실패로 기록하고 계속
+            errors[metric] = str(exc)
+    result: dict = {"requested": metrics}
+    if values:
+        result["values"] = values
+    if errors:
+        result["errors"] = errors
+    return result
+
+
 # ---------- 인스타그램 ----------
 
 
@@ -74,22 +109,17 @@ def list_recent_instagram_media(limit: int = 5) -> list[dict]:
 
 
 def instagram_media_insights(media_id: str, media_product_type: str) -> dict:
-    """media_product_type(FEED/REELS 등)에 따라 지원되는 메트릭이 다르다."""
+    """media_product_type(FEED/REELS 등)에 따라 지원되는 메트릭이 다르다.
+
+    "plays"는 폐기되고 "views"로 통합됐다(2026-09-12 첫 실행에서 확인 —
+    Meta가 impressions·plays 등 조회수 계열을 전부 views로 정리).
+    """
     metrics = (
-        "reach,likes,comments,saved,shares,plays"
+        ["reach", "likes", "comments", "saved", "shares", "views"]
         if media_product_type == "REELS"
-        else "reach,likes,comments,saved,shares"
+        else ["reach", "likes", "comments", "saved", "shares"]
     )
-    result: dict = {"requested": metrics}
-    try:
-        data = _get(
-            f"{IG_GRAPH}/{media_id}/insights",
-            {"metric": metrics, "access_token": _ig_token()},
-        )
-        result["values"] = _latest_values(data)
-    except Exception as exc:  # noqa: BLE001 — 실패도 결과에 남기고 계속 진행
-        result["error"] = str(exc)
-    return result
+    return _fetch_metrics_one_by_one(f"{IG_GRAPH}/{media_id}/insights", metrics, _ig_token())
 
 
 def instagram_account_summary() -> dict:
@@ -102,18 +132,12 @@ def instagram_account_summary() -> dict:
     except Exception as exc:  # noqa: BLE001
         result["profile_error"] = str(exc)
 
-    try:
-        insights = _get(
-            f"{IG_GRAPH}/{_ig_id()}/insights",
-            {
-                "metric": "reach,profile_views,accounts_engaged",
-                "period": "day",
-                "access_token": _ig_token(),
-            },
-        )
-        result["account_insights"] = _latest_values(insights)
-    except Exception as exc:  # noqa: BLE001
-        result["account_insights_error"] = str(exc)
+    result["account_insights"] = _fetch_metrics_one_by_one(
+        f"{IG_GRAPH}/{_ig_id()}/insights",
+        ["reach", "profile_views", "accounts_engaged"],
+        _ig_token(),
+        extra={"period": "day"},
+    )
     return result
 
 
@@ -146,55 +170,36 @@ def list_recent_facebook_videos(limit: int = 5) -> list[dict]:
 
 
 def facebook_post_insights(post_id: str) -> dict:
-    metrics = "post_impressions,post_engaged_users,post_reactions_by_type_total"
-    result: dict = {"requested": metrics}
-    try:
-        data = _get(
-            f"{FB_GRAPH}/{post_id}/insights",
-            {"metric": metrics, "access_token": _fb_token()},
-        )
-        result["values"] = _latest_values(data)
-    except Exception as exc:  # noqa: BLE001
-        result["error"] = str(exc)
-    return result
+    """post_impressions는 2025-11-15부로 폐기되고 post_media_view로 대체됐다
+    (Meta 개발자 블로그 2025-08-15 공지) — post_engaged_users 등은 그대로 두되
+    메트릭별 개별 요청이라 하나가 폐기됐어도 나머지는 받아온다."""
+    metrics = ["post_media_view", "post_engaged_users", "post_reactions_by_type_total"]
+    return _fetch_metrics_one_by_one(f"{FB_GRAPH}/{post_id}/insights", metrics, _fb_token())
 
 
 def facebook_video_insights(video_id: str) -> dict:
-    metrics = "total_video_views,total_video_impressions,total_video_avg_time_watched"
-    result: dict = {"requested": metrics}
-    try:
-        data = _get(
-            f"{FB_GRAPH}/{video_id}/video_insights",
-            {"metric": metrics, "access_token": _fb_token()},
-        )
-        result["values"] = _latest_values(data)
-    except Exception as exc:  # noqa: BLE001
-        result["error"] = str(exc)
-    return result
+    metrics = ["total_video_views", "total_video_impressions", "total_video_avg_time_watched"]
+    return _fetch_metrics_one_by_one(f"{FB_GRAPH}/{video_id}/video_insights", metrics, _fb_token())
 
 
 def facebook_page_summary() -> dict:
+    """page_impressions·page_fans는 2025-11-15부로 폐기되고 page_follows·
+    page_media_view로 대체됐다(Meta 개발자 블로그 2025-08-15 공지)."""
     result: dict = {}
     try:
         result["page"] = _get(
             f"{FB_GRAPH}/{_fb_page_id()}",
-            {"fields": "fan_count", "access_token": _fb_token()},
+            {"fields": "fan_count,followers_count", "access_token": _fb_token()},
         )
     except Exception as exc:  # noqa: BLE001
         result["page_error"] = str(exc)
 
-    try:
-        insights = _get(
-            f"{FB_GRAPH}/{_fb_page_id()}/insights",
-            {
-                "metric": "page_impressions,page_engaged_users",
-                "period": "week",
-                "access_token": _fb_token(),
-            },
-        )
-        result["page_insights"] = _latest_values(insights)
-    except Exception as exc:  # noqa: BLE001
-        result["page_insights_error"] = str(exc)
+    result["page_insights"] = _fetch_metrics_one_by_one(
+        f"{FB_GRAPH}/{_fb_page_id()}/insights",
+        ["page_follows", "page_engaged_users", "page_media_view"],
+        _fb_token(),
+        extra={"period": "week"},
+    )
     return result
 
 

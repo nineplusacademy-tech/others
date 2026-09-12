@@ -21,6 +21,30 @@ def _fmt_values(values: dict | None) -> str:
     return ", ".join(f"{k}={v}" for k, v in values.items())
 
 
+def _short_error(message: str, limit: int = 100) -> str:
+    return message if len(message) <= limit else message[:limit] + "…"
+
+
+def _fmt_insight_result(result: dict) -> str:
+    """{"requested": [...], "values": {...}, "errors": {...}} 형태를 한 줄로 요약한다.
+
+    메트릭별 개별 요청 결과라 값과 실패가 섞여 있을 수 있다 — 둘 다 보여준다
+    (값이 하나도 없다고 전체가 실패한 게 아니고, 일부만 실패해도 나머지 값은
+    그대로 살아있다).
+    """
+    parts = []
+    values = result.get("values")
+    if values:
+        parts.append(_fmt_values(values))
+    errors = result.get("errors")
+    if errors:
+        failed = ", ".join(f"{metric}({_short_error(msg)})" for metric, msg in errors.items())
+        parts.append(f"실패: {failed}")
+    if not parts:
+        return "(값 없음)"
+    return " | ".join(parts)
+
+
 def format_section(report: dict) -> str:
     today = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d")
     lines = [f"\n### {today} — Meta(인스타·페이스북) 인사이트 자동 조회", ""]
@@ -37,13 +61,10 @@ def format_section(report: dict) -> str:
                 f"- 인스타그램 계정: 팔로워 {profile.get('followers_count', '?')}, "
                 f"게시물 수 {profile.get('media_count', '?')}"
             )
-        if "account_insights_error" in acct:
-            lines.append(f"  - 계정 인사이트 조회 실패: {acct['account_insights_error']}")
-        else:
-            lines.append(f"  - 계정 인사이트: {_fmt_values(acct.get('account_insights'))}")
+        lines.append(f"  - 계정 인사이트: {_fmt_insight_result(acct.get('account_insights', {}))}")
         for m in report.get("instagram_media", []):
             insights = m.get("insights", {})
-            status = insights.get("error") or _fmt_values(insights.get("values"))
+            status = _fmt_insight_result(insights)
             caption = (m.get("caption") or "").replace("\n", " ")[:30]
             lines.append(
                 f"  - [{m.get('media_type')}] {m.get('timestamp', '')[:10]} "
@@ -59,13 +80,10 @@ def format_section(report: dict) -> str:
             lines.append(f"- 페이스북 페이지 조회 실패: {page['page_error']}")
         else:
             lines.append(f"- 페이스북 페이지: 팔로워 {page_info.get('fan_count', '?')}")
-        if "page_insights_error" in page:
-            lines.append(f"  - 페이지 인사이트 조회 실패: {page['page_insights_error']}")
-        else:
-            lines.append(f"  - 페이지 인사이트: {_fmt_values(page.get('page_insights'))}")
+        lines.append(f"  - 페이지 인사이트: {_fmt_insight_result(page.get('page_insights', {}))}")
         for p in report.get("facebook_posts", []):
             insights = p.get("insights", {})
-            status = insights.get("error") or _fmt_values(insights.get("values"))
+            status = _fmt_insight_result(insights)
             message = (p.get("message") or "").replace("\n", " ")[:30]
             lines.append(
                 f"  - [게시글] {p.get('created_time', '')[:10]} "
@@ -73,7 +91,7 @@ def format_section(report: dict) -> str:
             )
         for v in report.get("facebook_videos", []):
             insights = v.get("insights", {})
-            status = insights.get("error") or _fmt_values(insights.get("values"))
+            status = _fmt_insight_result(insights)
             desc = (v.get("description") or "").replace("\n", " ")[:30]
             lines.append(
                 f"  - [릴스/영상] {v.get('created_time', '')[:10]} "
