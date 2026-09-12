@@ -15,16 +15,12 @@
 
 | 점검일 | 키워드 | 블로그탭 | 통합검색 | 플레이스 | 비고 |
 |---|---|---|---|---|---|
-| 2026-09-12 | 우만동 수학학원 | 1위 | 7위 | 미점검 | 기준선 |
-| 2026-09-12 | 동수원중 수학학원 | 2위 | 4위 | 미점검 | 기준선 |
-| 2026-09-12 | 수원 수학학원 | 8위 | 노출 안 됨(30위 밖) | 미점검 | 넓은 키워드, 경쟁 심함 — 기준선 |
-| 2026-09-12 | 동성중수학학원 | 미점검 | 미점검 | 8위 | 기준선 |
+| 2026-09-12 | 우만동 수학학원 | 1위 | 7위 | 7위(155개 중) | 기준선 |
+| 2026-09-12 | 동수원중 수학학원 | 2위 | 4위 | 순위권 밖(10위 밖, 485개 중, 전부 광교·매탄 지역) | 기준선 — **블로그는 강한데 플레이스는 약함** |
+| 2026-09-12 | 수원 수학학원 | 8위 | 노출 안 됨(30위 밖) | 순위권 밖(10위 밖, 1749개 중) | 넓은 키워드, 경쟁 심함 — 기준선 |
+| 2026-09-12 | 동성중수학학원 | 2위 | 4위 | 8위 | 기준선 |
 | 2026-09-12 | 창현고수학학원 | 미점검 | 미점검 | 순위권 밖(10위 밖, 301개 중) | 사용자 실기기 확인으로 일치 검증됨. 기준선 |
 | 2026-09-12 | 유신고수학학원 | 미점검 | 미점검 | 순위권 밖(10위 밖, 323개 중) | 사용자 실기기 확인으로 일치 검증됨. 기준선 |
-| 2026-09-12 | 동성중수학학원 | 2위 | 4위 | (플레이스 8위, 상동) | 2회차 — 블로그 SERP 신규 점검 |
-| 2026-09-12 | 우만동수학학원 | (블로그 1위, 상동) | (블로그 7위, 상동) | 7위(155개 중) | 2회차 — 플레이스 신규 점검 |
-| 2026-09-12 | 동수원중수학학원 | (블로그 2위, 상동) | (블로그 4위, 상동) | 순위권 밖(10위 밖, 485개 중, 전부 광교·매탄 지역) | 2회차 — 플레이스 신규 점검. **블로그는 강한데 플레이스는 약함** |
-| 2026-09-12 | 수원수학학원 | (블로그 8위, 상동) | (블로그 노출 안 됨, 상동) | 순위권 밖(10위 밖, 1749개 중) | 2회차 — 플레이스 신규 점검, 예상대로 광범위 키워드라 밖 |
 
 ## 실행 이력
 
@@ -70,117 +66,14 @@
 - **데이터 한계**: 동수원중의 실제 학군 배정 구조(창현고·유신고처럼 광교 학생도
   다니는지)는 아직 확인 안 됨 — 확인되면 이 추천의 근거가 더 명확해짐.
 
-### 2026-09-12 — Meta(인스타·페이스북) 인사이트 자동 조회
+### 2026-09-12 — Meta(인스타·페이스북) 인사이트 자동 조회 (최종 확인본)
 
-- 인스타그램 계정: 팔로워 99, 게시물 수 63
-  - 계정 인사이트: reach=2
-  - [VIDEO] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → 400 Bad Request for url: https://graph.instagram.com/18407674150083499/insights?metric=reach%2Clikes%2Ccomments%2Csaved%2Cshares%2Cplays&access_token=IGAAg2hFBn2CdBZAGE0cnc5M3ZA2TUpialo1LXAxTFBLMjdfRzNOYkJFSUdrVmp6ampIRDBmaFBYTVNTc0VQRU1xX29CZADZAHZAlZAjeG1JY1ZAIZAHRyUUUwcXRKbGxGeTRJblZAieWY1ZATh2VF9jUzZA3QnNHLWJCOHI3NkFVREVhVGxNNAZDZD — 응답 본문: {'error': {'message': 'metric[5] must be one of the following values: impressions, shares, comments, likes, saved, replies, total_interactions, navigation, follows, profile_visits, profile_activity, reach, ig_reels_video_view_total_time, ig_reels_avg_watch_time, views, thread_replies, reposts, quotes, thread_shares, threads_views, threads_media_clicks, reels_skip_rate, threads_reposts, facebook_views, crossposted_views, total_views, total_likes, total_comments, link_clicks', 'type': 'IGApiException', 'code': 100, 'fbtrace_id': 'A50MlTVcfqgcsv4x5wyeuA5'}} (https://www.instagram.com/reel/DdHGfMflGvP/)
-  - [CAROUSEL_ALBUM] 2026-09-09 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 🤔  다들' → reach=27, likes=0, comments=1, saved=0, shares=0 (https://www.instagram.com/p/DdEOirDlpNC/)
-  - [VIDEO] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → 400 Bad Request for url: https://graph.instagram.com/17998244126796206/insights?metric=reach%2Clikes%2Ccomments%2Csaved%2Cshares%2Cplays&access_token=IGAAg2hFBn2CdBZAGE0cnc5M3ZA2TUpialo1LXAxTFBLMjdfRzNOYkJFSUdrVmp6ampIRDBmaFBYTVNTc0VQRU1xX29CZADZAHZAlZAjeG1JY1ZAIZAHRyUUUwcXRKbGxGeTRJblZAieWY1ZATh2VF9jUzZA3QnNHLWJCOHI3NkFVREVhVGxNNAZDZD — 응답 본문: {'error': {'message': 'metric[5] must be one of the following values: impressions, shares, comments, likes, saved, replies, total_interactions, navigation, follows, profile_visits, profile_activity, reach, ig_reels_video_view_total_time, ig_reels_avg_watch_time, views, thread_replies, reposts, quotes, thread_shares, threads_views, threads_media_clicks, reels_skip_rate, threads_reposts, facebook_views, crossposted_views, total_views, total_likes, total_comments, link_clicks', 'type': 'IGApiException', 'code': 100, 'fbtrace_id': 'AUS8BiaF_HAxJTx04elhk2b'}} (https://www.instagram.com/reel/Dc2KE6niQEJ/)
-  - [CAROUSEL_ALBUM] 2026-09-03 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → reach=28, likes=2, comments=0, saved=1, shares=1 (https://www.instagram.com/p/Dc0Gfnun9nA/)
-  - [VIDEO] 2026-08-31 '"필기는 했는데 시험만 보면 기억이 안 나요" 🙋\u200d♂️' → 400 Bad Request for url: https://graph.instagram.com/17987610351057463/insights?metric=reach%2Clikes%2Ccomments%2Csaved%2Cshares%2Cplays&access_token=IGAAg2hFBn2CdBZAGE0cnc5M3ZA2TUpialo1LXAxTFBLMjdfRzNOYkJFSUdrVmp6ampIRDBmaFBYTVNTc0VQRU1xX29CZADZAHZAlZAjeG1JY1ZAIZAHRyUUUwcXRKbGxGeTRJblZAieWY1ZATh2VF9jUzZA3QnNHLWJCOHI3NkFVREVhVGxNNAZDZD — 응답 본문: {'error': {'message': 'metric[5] must be one of the following values: impressions, shares, comments, likes, saved, replies, total_interactions, navigation, follows, profile_visits, profile_activity, reach, ig_reels_video_view_total_time, ig_reels_avg_watch_time, views, thread_replies, reposts, quotes, thread_shares, threads_views, threads_media_clicks, reels_skip_rate, threads_reposts, facebook_views, crossposted_views, total_views, total_likes, total_comments, link_clicks', 'type': 'IGApiException', 'code': 100, 'fbtrace_id': 'AsJjB0NxagNDtDeRrXRqlRW'}} (https://www.instagram.com/reel/Dcs-l6uDXin/)
-- 페이스북 페이지: 팔로워 13
-  - 페이지 인사이트 조회 실패: 400 Bad Request for url: https://graph.facebook.com/v21.0/1265899359934473/insights?metric=page_impressions%2Cpage_engaged_users&period=week&access_token=EAAPQQCo8q38BSZAvMFidS4rSSNeeTVt0hoFEixoOqxfJPPt39kY0bjASj8lLQmabT71I2WUQHbFQOwIeojJgVWhnxRQAKcqQWZBCOW8P4S0E6M3mFL2ACmUBfpFE3983Gje0ZBqdLqpnrodcTJbKBLtawMcjbKQpYDJ01Y55BAe8qyQgLv82bn74wzn50A9JnVz — 응답 본문: {'error': {'message': '(#100) The value must be a valid insights metric', 'type': 'OAuthException', 'code': 100, 'fbtrace_id': 'ATDYBAykX-bFFmP_Hu0Ud6e'}}
-  - [게시글] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → 400 Bad Request for url: https://graph.facebook.com/v21.0/1265899359934473_122114755119424939/insights?metric=post_impressions%2Cpost_engaged_users%2Cpost_reactions_by_type_total&access_token=EAAPQQCo8q38BSZAvMFidS4rSSNeeTVt0hoFEixoOqxfJPPt39kY0bjASj8lLQmabT71I2WUQHbFQOwIeojJgVWhnxRQAKcqQWZBCOW8P4S0E6M3mFL2ACmUBfpFE3983Gje0ZBqdLqpnrodcTJbKBLtawMcjbKQpYDJ01Y55BAe8qyQgLv82bn74wzn50A9JnVz — 응답 본문: {'error': {'message': '(#100) The value must be a valid insights metric', 'type': 'OAuthException', 'code': 100, 'fbtrace_id': 'AN-CJ3YMJwh8zqa4cJMlfAP'}} (https://www.facebook.com/reel/1423279913202551/)
-  - [게시글] 2026-09-09 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 🤔  계획' → 400 Bad Request for url: https://graph.facebook.com/v21.0/1265899359934473_122114524905424939/insights?metric=post_impressions%2Cpost_engaged_users%2Cpost_reactions_by_type_total&access_token=EAAPQQCo8q38BSZAvMFidS4rSSNeeTVt0hoFEixoOqxfJPPt39kY0bjASj8lLQmabT71I2WUQHbFQOwIeojJgVWhnxRQAKcqQWZBCOW8P4S0E6M3mFL2ACmUBfpFE3983Gje0ZBqdLqpnrodcTJbKBLtawMcjbKQpYDJ01Y55BAe8qyQgLv82bn74wzn50A9JnVz — 응답 본문: {'error': {'message': '(#100) The value must be a valid insights metric', 'type': 'OAuthException', 'code': 100, 'fbtrace_id': 'A1mSqHRiVNkEsFbBgcgX91Y'}} (https://www.facebook.com/122115070323424939/posts/122114524905424939)
-  - [게시글] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → 400 Bad Request for url: https://graph.facebook.com/v21.0/1265899359934473_122113287171424939/insights?metric=post_impressions%2Cpost_engaged_users%2Cpost_reactions_by_type_total&access_token=EAAPQQCo8q38BSZAvMFidS4rSSNeeTVt0hoFEixoOqxfJPPt39kY0bjASj8lLQmabT71I2WUQHbFQOwIeojJgVWhnxRQAKcqQWZBCOW8P4S0E6M3mFL2ACmUBfpFE3983Gje0ZBqdLqpnrodcTJbKBLtawMcjbKQpYDJ01Y55BAe8qyQgLv82bn74wzn50A9JnVz — 응답 본문: {'error': {'message': '(#100) The value must be a valid insights metric', 'type': 'OAuthException', 'code': 100, 'fbtrace_id': 'AO6MC3lb2kYS7xqU-v_c4Qo'}} (https://www.facebook.com/reel/2534315827035432/)
-  - [게시글] 2026-09-03 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → 400 Bad Request for url: https://graph.facebook.com/v21.0/1265899359934473_122113120029424939/insights?metric=post_impressions%2Cpost_engaged_users%2Cpost_reactions_by_type_total&access_token=EAAPQQCo8q38BSZAvMFidS4rSSNeeTVt0hoFEixoOqxfJPPt39kY0bjASj8lLQmabT71I2WUQHbFQOwIeojJgVWhnxRQAKcqQWZBCOW8P4S0E6M3mFL2ACmUBfpFE3983Gje0ZBqdLqpnrodcTJbKBLtawMcjbKQpYDJ01Y55BAe8qyQgLv82bn74wzn50A9JnVz — 응답 본문: {'error': {'message': '(#100) The value must be a valid insights metric', 'type': 'OAuthException', 'code': 100, 'fbtrace_id': 'AgCX3z2rt9HPipdNvjbXunK'}} (https://www.facebook.com/122115070323424939/posts/122113120029424939)
-  - [게시글] 2026-08-31 '같은 수업을 들어도 성적이 갈리는 이유, "노트 정리 ' → 400 Bad Request for url: https://graph.facebook.com/v21.0/1265899359934473_122112527043424939/insights?metric=post_impressions%2Cpost_engaged_users%2Cpost_reactions_by_type_total&access_token=EAAPQQCo8q38BSZAvMFidS4rSSNeeTVt0hoFEixoOqxfJPPt39kY0bjASj8lLQmabT71I2WUQHbFQOwIeojJgVWhnxRQAKcqQWZBCOW8P4S0E6M3mFL2ACmUBfpFE3983Gje0ZBqdLqpnrodcTJbKBLtawMcjbKQpYDJ01Y55BAe8qyQgLv82bn74wzn50A9JnVz — 응답 본문: {'error': {'message': '(#100) The value must be a valid insights metric', 'type': 'OAuthException', 'code': 100, 'fbtrace_id': 'A9aSHrxwVyBY6_FRwfBLELS'}} (https://www.facebook.com/reel/1478134887701342/)
-  - [릴스/영상] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → 403 Forbidden for url: https://graph.facebook.com/v21.0/1423279913202551/video_insights?metric=total_video_views%2Ctotal_video_impressions%2Ctotal_video_avg_time_watched&access_token=EAAPQQCo8q38BSZAvMFidS4rSSNeeTVt0hoFEixoOqxfJPPt39kY0bjASj8lLQmabT71I2WUQHbFQOwIeojJgVWhnxRQAKcqQWZBCOW8P4S0E6M3mFL2ACmUBfpFE3983Gje0ZBqdLqpnrodcTJbKBLtawMcjbKQpYDJ01Y55BAe8qyQgLv82bn74wzn50A9JnVz — 응답 본문: {'error': {'message': '(#200) read_insights permission missing (https://developers.facebook.com/docs/permissions/reference/read_insights)', 'type': 'OAuthException', 'code': 200, 'fbtrace_id': 'AO5mRCvEh4xmkXUZ8IUCvfO'}} (/reel/1423279913202551/)
-  - [릴스/영상] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → 403 Forbidden for url: https://graph.facebook.com/v21.0/2534315827035432/video_insights?metric=total_video_views%2Ctotal_video_impressions%2Ctotal_video_avg_time_watched&access_token=EAAPQQCo8q38BSZAvMFidS4rSSNeeTVt0hoFEixoOqxfJPPt39kY0bjASj8lLQmabT71I2WUQHbFQOwIeojJgVWhnxRQAKcqQWZBCOW8P4S0E6M3mFL2ACmUBfpFE3983Gje0ZBqdLqpnrodcTJbKBLtawMcjbKQpYDJ01Y55BAe8qyQgLv82bn74wzn50A9JnVz — 응답 본문: {'error': {'message': '(#200) read_insights permission missing (https://developers.facebook.com/docs/permissions/reference/read_insights)', 'type': 'OAuthException', 'code': 200, 'fbtrace_id': 'A4oKtFzCViDPfoPRdc9CHS8'}} (/reel/2534315827035432/)
-  - [릴스/영상] 2026-09-01 '' → 403 Forbidden for url: https://graph.facebook.com/v21.0/1785021425985952/video_insights?metric=total_video_views%2Ctotal_video_impressions%2Ctotal_video_avg_time_watched&access_token=EAAPQQCo8q38BSZAvMFidS4rSSNeeTVt0hoFEixoOqxfJPPt39kY0bjASj8lLQmabT71I2WUQHbFQOwIeojJgVWhnxRQAKcqQWZBCOW8P4S0E6M3mFL2ACmUBfpFE3983Gje0ZBqdLqpnrodcTJbKBLtawMcjbKQpYDJ01Y55BAe8qyQgLv82bn74wzn50A9JnVz — 응답 본문: {'error': {'message': '(#200) read_insights permission missing (https://developers.facebook.com/docs/permissions/reference/read_insights)', 'type': 'OAuthException', 'code': 200, 'fbtrace_id': 'AXd-B0gNnKIHxU7_iGDcWiu'}} (/122115070323424939/videos/1785021425985952)
-  - [릴스/영상] 2026-08-31 '' → 403 Forbidden for url: https://graph.facebook.com/v21.0/4729289450632589/video_insights?metric=total_video_views%2Ctotal_video_impressions%2Ctotal_video_avg_time_watched&access_token=EAAPQQCo8q38BSZAvMFidS4rSSNeeTVt0hoFEixoOqxfJPPt39kY0bjASj8lLQmabT71I2WUQHbFQOwIeojJgVWhnxRQAKcqQWZBCOW8P4S0E6M3mFL2ACmUBfpFE3983Gje0ZBqdLqpnrodcTJbKBLtawMcjbKQpYDJ01Y55BAe8qyQgLv82bn74wzn50A9JnVz — 응답 본문: {'error': {'message': '(#200) read_insights permission missing (https://developers.facebook.com/docs/permissions/reference/read_insights)', 'type': 'OAuthException', 'code': 200, 'fbtrace_id': 'AwygFKF9KqIQ21yBHycqktL'}} (/122115070323424939/videos/4729289450632589)
-  - [릴스/영상] 2026-08-31 '' → 403 Forbidden for url: https://graph.facebook.com/v21.0/1732426651206801/video_insights?metric=total_video_views%2Ctotal_video_impressions%2Ctotal_video_avg_time_watched&access_token=EAAPQQCo8q38BSZAvMFidS4rSSNeeTVt0hoFEixoOqxfJPPt39kY0bjASj8lLQmabT71I2WUQHbFQOwIeojJgVWhnxRQAKcqQWZBCOW8P4S0E6M3mFL2ACmUBfpFE3983Gje0ZBqdLqpnrodcTJbKBLtawMcjbKQpYDJ01Y55BAe8qyQgLv82bn74wzn50A9JnVz — 응답 본문: {'error': {'message': '(#200) read_insights permission missing (https://developers.facebook.com/docs/permissions/reference/read_insights)', 'type': 'OAuthException', 'code': 200, 'fbtrace_id': 'A2fEyZ6Etw2pWBRofPzEfDO'}} (/122115070323424939/videos/1732426651206801)
-
-### 2026-09-12 — Meta(인스타·페이스북) 인사이트 자동 조회
-
-- 인스타그램 계정: 팔로워 99, 게시물 수 63
-  - 계정 인사이트: reach=0
-  - [VIDEO] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → reach=30, likes=1, comments=0, saved=1, shares=0, views=39 (https://www.instagram.com/reel/DdHGfMflGvP/)
-  - [CAROUSEL_ALBUM] 2026-09-09 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 🤔  다들' → reach=27, likes=0, comments=1, saved=0, shares=0 (https://www.instagram.com/p/DdEOirDlpNC/)
-  - [VIDEO] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → reach=149, likes=2, comments=1, saved=1, shares=0, views=170 (https://www.instagram.com/reel/Dc2KE6niQEJ/)
-  - [CAROUSEL_ALBUM] 2026-09-03 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → reach=28, likes=2, comments=0, saved=1, shares=1 (https://www.instagram.com/p/Dc0Gfnun9nA/)
-  - [VIDEO] 2026-08-31 '"필기는 했는데 시험만 보면 기억이 안 나요" 🙋\u200d♂️' → reach=133, likes=3, comments=1, saved=2, shares=0, views=193 (https://www.instagram.com/reel/Dcs-l6uDXin/)
-- 페이스북 페이지: 팔로워 13
-  - 페이지 인사이트: 실패: page_engaged_users(400 Bad Request for url: https://graph.facebook.com/v21.0/1265899359934473/insights?metric=page_enga…)
-  - [게시글] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → 실패: post_engaged_users(400 Bad Request for url: https://graph.facebook.com/v21.0/1265899359934473_122114755119424939/insigh…) (https://www.facebook.com/reel/1423279913202551/)
-  - [게시글] 2026-09-09 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 🤔  계획' → 실패: post_engaged_users(400 Bad Request for url: https://graph.facebook.com/v21.0/1265899359934473_122114524905424939/insigh…) (https://www.facebook.com/122115070323424939/posts/122114524905424939)
-  - [게시글] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → 실패: post_engaged_users(400 Bad Request for url: https://graph.facebook.com/v21.0/1265899359934473_122113287171424939/insigh…) (https://www.facebook.com/reel/2534315827035432/)
-  - [게시글] 2026-09-03 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → 실패: post_engaged_users(400 Bad Request for url: https://graph.facebook.com/v21.0/1265899359934473_122113120029424939/insigh…) (https://www.facebook.com/122115070323424939/posts/122113120029424939)
-  - [게시글] 2026-08-31 '같은 수업을 들어도 성적이 갈리는 이유, "노트 정리 ' → 실패: post_engaged_users(400 Bad Request for url: https://graph.facebook.com/v21.0/1265899359934473_122112527043424939/insigh…) (https://www.facebook.com/reel/1478134887701342/)
-  - [릴스/영상] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → 실패: total_video_views(403 Forbidden for url: https://graph.facebook.com/v21.0/1423279913202551/video_insights?metric=total…), total_video_impressions(403 Forbidden for url: https://graph.facebook.com/v21.0/1423279913202551/video_insights?metric=total…), total_video_avg_time_watched(403 Forbidden for url: https://graph.facebook.com/v21.0/1423279913202551/video_insights?metric=total…) (/reel/1423279913202551/)
-  - [릴스/영상] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → 실패: total_video_views(403 Forbidden for url: https://graph.facebook.com/v21.0/2534315827035432/video_insights?metric=total…), total_video_impressions(403 Forbidden for url: https://graph.facebook.com/v21.0/2534315827035432/video_insights?metric=total…), total_video_avg_time_watched(403 Forbidden for url: https://graph.facebook.com/v21.0/2534315827035432/video_insights?metric=total…) (/reel/2534315827035432/)
-  - [릴스/영상] 2026-09-01 '' → 실패: total_video_views(403 Forbidden for url: https://graph.facebook.com/v21.0/1785021425985952/video_insights?metric=total…), total_video_impressions(403 Forbidden for url: https://graph.facebook.com/v21.0/1785021425985952/video_insights?metric=total…), total_video_avg_time_watched(403 Forbidden for url: https://graph.facebook.com/v21.0/1785021425985952/video_insights?metric=total…) (/122115070323424939/videos/1785021425985952)
-  - [릴스/영상] 2026-08-31 '' → 실패: total_video_views(403 Forbidden for url: https://graph.facebook.com/v21.0/4729289450632589/video_insights?metric=total…), total_video_impressions(403 Forbidden for url: https://graph.facebook.com/v21.0/4729289450632589/video_insights?metric=total…), total_video_avg_time_watched(403 Forbidden for url: https://graph.facebook.com/v21.0/4729289450632589/video_insights?metric=total…) (/122115070323424939/videos/4729289450632589)
-  - [릴스/영상] 2026-08-31 '' → 실패: total_video_views(403 Forbidden for url: https://graph.facebook.com/v21.0/1732426651206801/video_insights?metric=total…), total_video_impressions(403 Forbidden for url: https://graph.facebook.com/v21.0/1732426651206801/video_insights?metric=total…), total_video_avg_time_watched(403 Forbidden for url: https://graph.facebook.com/v21.0/1732426651206801/video_insights?metric=total…) (/122115070323424939/videos/1732426651206801)
-
-### 2026-09-12 — Meta(인스타·페이스북) 인사이트 자동 조회
-
-- 인스타그램 계정: 팔로워 99, 게시물 수 63
-  - 계정 인사이트: reach=0
-  - [VIDEO] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → reach=30, likes=1, comments=0, saved=1, shares=0, views=39 (https://www.instagram.com/reel/DdHGfMflGvP/)
-  - [CAROUSEL_ALBUM] 2026-09-09 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 🤔  다들' → reach=27, likes=0, comments=1, saved=0, shares=0 (https://www.instagram.com/p/DdEOirDlpNC/)
-  - [VIDEO] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → reach=149, likes=2, comments=1, saved=1, shares=0, views=170 (https://www.instagram.com/reel/Dc2KE6niQEJ/)
-  - [CAROUSEL_ALBUM] 2026-09-03 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → reach=28, likes=2, comments=0, saved=1, shares=1 (https://www.instagram.com/p/Dc0Gfnun9nA/)
-  - [VIDEO] 2026-08-31 '"필기는 했는데 시험만 보면 기억이 안 나요" 🙋\u200d♂️' → reach=133, likes=3, comments=1, saved=2, shares=0, views=193 (https://www.instagram.com/reel/Dcs-l6uDXin/)
-- 페이스북 페이지: 팔로워 13
-  - 페이지 인사이트: (값 없음)
-  - [게시글] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → (값 없음) (https://www.facebook.com/reel/1423279913202551/)
-  - [게시글] 2026-09-09 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 🤔  계획' → (값 없음) (https://www.facebook.com/122115070323424939/posts/122114524905424939)
-  - [게시글] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → (값 없음) (https://www.facebook.com/reel/2534315827035432/)
-  - [게시글] 2026-09-03 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → (값 없음) (https://www.facebook.com/122115070323424939/posts/122113120029424939)
-  - [게시글] 2026-08-31 '같은 수업을 들어도 성적이 갈리는 이유, "노트 정리 ' → (값 없음) (https://www.facebook.com/reel/1478134887701342/)
-  - [릴스/영상] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → 실패: total_video_views(403 Forbidden for url: https://graph.facebook.com/v21.0/1423279913202551/video_insights?metric=total…), total_video_impressions(403 Forbidden for url: https://graph.facebook.com/v21.0/1423279913202551/video_insights?metric=total…), total_video_avg_time_watched(403 Forbidden for url: https://graph.facebook.com/v21.0/1423279913202551/video_insights?metric=total…) (/reel/1423279913202551/)
-  - [릴스/영상] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → 실패: total_video_views(403 Forbidden for url: https://graph.facebook.com/v21.0/2534315827035432/video_insights?metric=total…), total_video_impressions(403 Forbidden for url: https://graph.facebook.com/v21.0/2534315827035432/video_insights?metric=total…), total_video_avg_time_watched(403 Forbidden for url: https://graph.facebook.com/v21.0/2534315827035432/video_insights?metric=total…) (/reel/2534315827035432/)
-  - [릴스/영상] 2026-09-01 '' → 실패: total_video_views(403 Forbidden for url: https://graph.facebook.com/v21.0/1785021425985952/video_insights?metric=total…), total_video_impressions(403 Forbidden for url: https://graph.facebook.com/v21.0/1785021425985952/video_insights?metric=total…), total_video_avg_time_watched(403 Forbidden for url: https://graph.facebook.com/v21.0/1785021425985952/video_insights?metric=total…) (/122115070323424939/videos/1785021425985952)
-  - [릴스/영상] 2026-08-31 '' → 실패: total_video_views(403 Forbidden for url: https://graph.facebook.com/v21.0/4729289450632589/video_insights?metric=total…), total_video_impressions(403 Forbidden for url: https://graph.facebook.com/v21.0/4729289450632589/video_insights?metric=total…), total_video_avg_time_watched(403 Forbidden for url: https://graph.facebook.com/v21.0/4729289450632589/video_insights?metric=total…) (/122115070323424939/videos/4729289450632589)
-  - [릴스/영상] 2026-08-31 '' → 실패: total_video_views(403 Forbidden for url: https://graph.facebook.com/v21.0/1732426651206801/video_insights?metric=total…), total_video_impressions(403 Forbidden for url: https://graph.facebook.com/v21.0/1732426651206801/video_insights?metric=total…), total_video_avg_time_watched(403 Forbidden for url: https://graph.facebook.com/v21.0/1732426651206801/video_insights?metric=total…) (/122115070323424939/videos/1732426651206801)
-
-### 2026-09-12 — Meta(인스타·페이스북) 인사이트 자동 조회
-
-- 인스타그램 계정: 팔로워 99, 게시물 수 63
-  - 계정 인사이트: reach=0
-  - [VIDEO] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → reach=30, likes=1, comments=0, saved=1, shares=0, views=39 (https://www.instagram.com/reel/DdHGfMflGvP/)
-  - [CAROUSEL_ALBUM] 2026-09-09 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 🤔  다들' → reach=27, likes=0, comments=1, saved=0, shares=0 (https://www.instagram.com/p/DdEOirDlpNC/)
-  - [VIDEO] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → reach=149, likes=2, comments=1, saved=1, shares=0, views=170 (https://www.instagram.com/reel/Dc2KE6niQEJ/)
-  - [CAROUSEL_ALBUM] 2026-09-03 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → reach=28, likes=2, comments=0, saved=1, shares=1 (https://www.instagram.com/p/Dc0Gfnun9nA/)
-  - [VIDEO] 2026-08-31 '"필기는 했는데 시험만 보면 기억이 안 나요" 🙋\u200d♂️' → reach=133, likes=3, comments=1, saved=2, shares=0, views=193 (https://www.instagram.com/reel/Dcs-l6uDXin/)
-- 페이스북 페이지: 팔로워 13
-  - 페이지 인사이트: page_follows=13, page_media_view=99
-  - [게시글] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → post_media_view=13, post_reactions_by_type_total={} (https://www.facebook.com/reel/1423279913202551/)
-  - [게시글] 2026-09-09 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 🤔  계획' → post_media_view=16, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122114524905424939)
-  - [게시글] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → post_media_view=196, post_reactions_by_type_total={} (https://www.facebook.com/reel/2534315827035432/)
-  - [게시글] 2026-09-03 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → post_media_view=6, post_reactions_by_type_total={'like': 1} (https://www.facebook.com/122115070323424939/posts/122113120029424939)
-  - [게시글] 2026-08-31 '같은 수업을 들어도 성적이 갈리는 이유, "노트 정리 ' → post_media_view=230, post_reactions_by_type_total={'like': 1} (https://www.facebook.com/reel/1478134887701342/)
-  - [릴스/영상] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → (값 없음) (/reel/1423279913202551/)
-  - [릴스/영상] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → (값 없음) (/reel/2534315827035432/)
-  - [릴스/영상] 2026-09-01 '' → total_video_views=0, total_video_impressions=0, total_video_avg_time_watched=0 (/122115070323424939/videos/1785021425985952)
-  - [릴스/영상] 2026-08-31 '' → total_video_views=0, total_video_impressions=0, total_video_avg_time_watched=0 (/122115070323424939/videos/4729289450632589)
-  - [릴스/영상] 2026-08-31 '' → total_video_views=0, total_video_impressions=0, total_video_avg_time_watched=0 (/122115070323424939/videos/1732426651206801)
-
-### 2026-09-12 — Meta(인스타·페이스북) 인사이트 자동 조회
-
-- 인스타그램 계정: 팔로워 99, 게시물 수 63
-  - 계정 인사이트: reach=0, accounts_engaged=None
-  - [VIDEO] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → reach=30, likes=1, comments=0, saved=1, shares=0, views=39 (https://www.instagram.com/reel/DdHGfMflGvP/)
-  - [CAROUSEL_ALBUM] 2026-09-09 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 🤔  다들' → reach=27, likes=0, comments=1, saved=0, shares=0 (https://www.instagram.com/p/DdEOirDlpNC/)
-  - [VIDEO] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → reach=149, likes=2, comments=1, saved=1, shares=0, views=170 (https://www.instagram.com/reel/Dc2KE6niQEJ/)
-  - [CAROUSEL_ALBUM] 2026-09-03 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → reach=28, likes=2, comments=0, saved=1, shares=1 (https://www.instagram.com/p/Dc0Gfnun9nA/)
-  - [VIDEO] 2026-08-31 '"필기는 했는데 시험만 보면 기억이 안 나요" 🙋\u200d♂️' → reach=133, likes=3, comments=1, saved=2, shares=0, views=193 (https://www.instagram.com/reel/Dcs-l6uDXin/)
-- 페이스북 페이지: 팔로워 13
-  - 페이지 인사이트: page_follows=13, page_media_view=99
-  - [게시글] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → post_media_view=13, post_reactions_by_type_total={} (https://www.facebook.com/reel/1423279913202551/)
-  - [게시글] 2026-09-09 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 🤔  계획' → post_media_view=16, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122114524905424939)
-  - [게시글] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → post_media_view=196, post_reactions_by_type_total={} (https://www.facebook.com/reel/2534315827035432/)
-  - [게시글] 2026-09-03 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → post_media_view=6, post_reactions_by_type_total={'like': 1} (https://www.facebook.com/122115070323424939/posts/122113120029424939)
-  - [게시글] 2026-08-31 '같은 수업을 들어도 성적이 갈리는 이유, "노트 정리 ' → post_media_view=230, post_reactions_by_type_total={'like': 1} (https://www.facebook.com/reel/1478134887701342/)
-  - [릴스/영상] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → (값 없음) (/reel/1423279913202551/)
-  - [릴스/영상] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → blue_reels_play_count=185 (/reel/2534315827035432/)
-  - [릴스/영상] 2026-09-01 '' → total_video_views=0, total_video_impressions=0, total_video_avg_time_watched=0 (/122115070323424939/videos/1785021425985952)
-  - [릴스/영상] 2026-08-31 '' → total_video_views=0, total_video_impressions=0, total_video_avg_time_watched=0 (/122115070323424939/videos/4729289450632589)
-  - [릴스/영상] 2026-08-31 '' → total_video_views=0, total_video_impressions=0, total_video_avg_time_watched=0 (/122115070323424939/videos/1732426651206801)
-
-### 2026-09-12 — Meta(인스타·페이스북) 인사이트 자동 조회
+파이프라인 신설 당일 메트릭 이름 폐기·period 불일치·`read_insights` 권한 누락·
+응답 형식(합계형) 파싱 누락을 순서대로 고쳐가며 총 6회 재실행했다 — 중간 디버그
+기록(에러 메시지에 액세스 토큰이 그대로 노출된 것 포함, 2026-09-12 발견 즉시
+`common.py`에 `redact_url()` 추가로 근본 수정하고 이 파일에서도 제거)은 지우고
+**최종적으로 정상 조회된 결과만** 남긴다. 전체 디버깅 경위는
+`publishing-plan.md` §7 참고.
 
 - 인스타그램 계정: 팔로워 99, 게시물 수 63
   - 계정 인사이트: reach=0, accounts_engaged=0
@@ -188,7 +81,8 @@
   - [CAROUSEL_ALBUM] 2026-09-09 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 🤔  다들' → reach=27, likes=0, comments=1, saved=0, shares=0 (https://www.instagram.com/p/DdEOirDlpNC/)
   - [VIDEO] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → reach=149, likes=2, comments=1, saved=1, shares=0, views=170 (https://www.instagram.com/reel/Dc2KE6niQEJ/)
   - [CAROUSEL_ALBUM] 2026-09-03 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → reach=28, likes=2, comments=0, saved=1, shares=1 (https://www.instagram.com/p/Dc0Gfnun9nA/)
-  - [VIDEO] 2026-08-31 '"필기는 했는데 시험만 보면 기억이 안 나요" 🙋\u200d♂️' → reach=133, likes=3, comments=1, saved=2, shares=0, views=193 (https://www.instagram.com/reel/Dcs-l6uDXin/)
+  - [VIDEO] 2026-08-31 '"필기는 했는데 시험만 보면 기억이 안 나요" 🙋‍♂️' → reach=133, likes=3, comments=1, saved=2, shares=0, views=193 (https://www.instagram.com/reel/Dcs-l6uDXin/)
+  - **관측**: 릴스(VIDEO)가 캐러셀보다 reach가 뚜렷하게 높다(149·133·30 vs 27·28) — 표본 5건뿐이라 단정할 수는 없지만, 다음 인사이트 조회에서도 같은 패턴이 반복되는지 지켜볼 만하다.
 - 페이스북 페이지: 팔로워 13
   - 페이지 인사이트: page_follows=13, page_media_view=99
   - [게시글] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → post_media_view=13, post_reactions_by_type_total={} (https://www.facebook.com/reel/1423279913202551/)
@@ -196,8 +90,6 @@
   - [게시글] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → post_media_view=196, post_reactions_by_type_total={} (https://www.facebook.com/reel/2534315827035432/)
   - [게시글] 2026-09-03 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → post_media_view=6, post_reactions_by_type_total={'like': 1} (https://www.facebook.com/122115070323424939/posts/122113120029424939)
   - [게시글] 2026-08-31 '같은 수업을 들어도 성적이 갈리는 이유, "노트 정리 ' → post_media_view=230, post_reactions_by_type_total={'like': 1} (https://www.facebook.com/reel/1478134887701342/)
-  - [릴스/영상] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → (값 없음) (/reel/1423279913202551/)
+  - [릴스/영상] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → (값 없음, 원인 미확정 — 발행 직후라 진짜 0일 가능성) (/reel/1423279913202551/)
   - [릴스/영상] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → blue_reels_play_count=185 (/reel/2534315827035432/)
-  - [릴스/영상] 2026-09-01 '' → total_video_views=0, total_video_impressions=0, total_video_avg_time_watched=0 (/122115070323424939/videos/1785021425985952)
-  - [릴스/영상] 2026-08-31 '' → total_video_views=0, total_video_impressions=0, total_video_avg_time_watched=0 (/122115070323424939/videos/4729289450632589)
-  - [릴스/영상] 2026-08-31 '' → total_video_views=0, total_video_impressions=0, total_video_avg_time_watched=0 (/122115070323424939/videos/1732426651206801)
+  - [릴스/영상] 2026-09-01·08-31×2 (오래된 홍보 안 된 일반 영상) → total_video_views=0 등 전부 0(정상 조회, 실제로 0인 게 타당)

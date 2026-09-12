@@ -13,7 +13,7 @@ import time
 
 import requests
 
-from common import DRY_RUN, dry_run_log
+from common import DRY_RUN, dry_run_log, raise_for_status_with_body
 
 GRAPH = "https://graph.threads.net/v1.0"
 POLL_INTERVAL_SECONDS = 3
@@ -35,7 +35,7 @@ def _wait_until_finished(creation_id: str, token: str) -> None:
             params={"fields": "status", "access_token": token},
             timeout=30,
         )
-        resp.raise_for_status()
+        raise_for_status_with_body(resp)
         status = resp.json().get("status")
         if status == "FINISHED":
             return
@@ -59,7 +59,7 @@ def publish_text(text: str) -> str:
         data={"media_type": "TEXT", "text": text, "access_token": token},
         timeout=60,
     )
-    container.raise_for_status()
+    raise_for_status_with_body(container)
     creation_id = container.json()["id"]
 
     _wait_until_finished(creation_id, token)
@@ -69,7 +69,7 @@ def publish_text(text: str) -> str:
         data={"creation_id": creation_id, "access_token": token},
         timeout=60,
     )
-    publish.raise_for_status()
+    raise_for_status_with_body(publish)
     return publish.json()["id"]
 
 
@@ -85,5 +85,5 @@ def refresh_access_token(current_token: str) -> dict:
         params={"grant_type": "th_refresh_token", "access_token": current_token},
         timeout=30,
     )
-    resp.raise_for_status()
+    raise_for_status_with_body(resp)
     return resp.json()
