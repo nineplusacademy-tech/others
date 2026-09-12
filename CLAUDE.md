@@ -40,7 +40,7 @@
 
 모든 게시물(블로그·교육뉴스)의 기획안·포스팅 일정·채널별 자동/반자동 안내와 확인을
 전담하고(`docs/mainmanager-plan.md`), 다른 에이전트(algorithm-searching-team·
-naverblog_team·content-derivation-team·design_team·education-news-team)의 최근 상태를 취합해
+sns_analysis_team·content-derivation-team·design_team·education-news-team)의 최근 상태를 취합해
 보여줄 뿐 아니라 **조건이 갖춰지면 직접 해당 에이전트를 호출해 작업을 지시하고,
 결과물이 규격·CTA 노출·과장광고 체크리스트 등 기준을 통과했는지 확인한 뒤에만 완료로
 보고**한다(`mainmanager-plan.md` §8). 정규 기획안과 무관한 별도 작업 지시가 들어오면
@@ -53,7 +53,7 @@ naverblog_team·content-derivation-team·design_team·education-news-team)의 �
 기반)으로 학습·갱신하고 브리핑에 관련 인사이트를 반영한다(`mainmanager-plan.md` §9).
 스킬 정의: [.claude/skills/mainmanager/SKILL.md](.claude/skills/mainmanager/SKILL.md).
 
-## 블로그·플레이스 검색순위 최적화 — naverblog_team
+## 블로그·플레이스 검색순위 최적화 — sns_analysis_team
 
 **목표는 네이버 블로그(블로그탭·통합검색)와 네이버 플레이스 검색순위 둘 다
 상위권을 차지하는 것**이다. 이 에이전트는 매주 토요일 13:00 브리핑(§주간 일정)
@@ -62,10 +62,10 @@ naverblog_team·content-derivation-team·design_team·education-news-team)의 �
 분석해 "다음 순번 그대로 진행할지, 순위·유입 약점을 보완하는 소재로 교체할지"를
 근거와 함께 mainmanager에게 추천한다. 원고를 쓰거나 `blog-calendar.md`를 직접
 고치지 않는다 — 추천만 하고 실제 반영은 mainmanager가 사용자 승인 후에 한다.
-순위 추이는 **[docs/naverblog-seo-log.md](docs/naverblog-seo-log.md)** 에 매주
+순위 추이는 **[docs/sns-analysis-log.md](docs/sns-analysis-log.md)** 에 매주
 누적 기록한다. 데이터랩툴즈 크롬 확장 패널이 닫혀 있으면 억측하지 않고 그 사실만
 보고한다. 스킬 정의:
-[.claude/skills/naverblog_team/SKILL.md](.claude/skills/naverblog_team/SKILL.md).
+[.claude/skills/sns_analysis_team/SKILL.md](.claude/skills/sns_analysis_team/SKILL.md).
 
 ## 카드뉴스·숏츠 제작 — content-derivation-team
 
