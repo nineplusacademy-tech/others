@@ -1,11 +1,17 @@
 name: 스레드(메인 블로그) 자동 게시
 
-# 화요일 12:30 KST(블로그 발행 당일 점심) — docs/mainmanager-plan.md §1-1.
+# 2026-09-13부로 12:30 KST → 10:15 KST로 앞당김(docs/mainmanager-plan.md §1-1,
+# 모든 콘텐츠 업로드를 오전 10시대로 통일하라는 사용자 결정). 정확히 10:00으로는
+# 둘 수 없다 — 블로그 배치(10:00)가 끝난 뒤 사람이 네이버 블로그 URL을
+# set_naver_url.py로 기록해야만(naver-blog-url-reminder, 10:05 안내) 이 스레드가
+# 그 링크를 채워 게시할 수 있기 때문에, 최소한의 버퍼로 10:15을 유지한다. URL이
+# 아직 기록되지 않았으면 에러로 멈추고 잘못된 링크로 게시하지는 않는다
+# (main_thread.py) — 이 경우 URL 기록 후 workflow_dispatch로 수동 재실행한다.
 # main.py의 3단계 배치와는 독립적으로 실행된다. queue/의 스레드.md가 없으면
 # (이미지 첨부 주 등, content-playbook.md §9) 조용히 건너뛴다.
 on:
   schedule:
-    - cron: "30 3 * * 2"
+    - cron: "15 1 * * 2"
   workflow_dispatch:
     inputs:
       dry_run:
