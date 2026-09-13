@@ -7,26 +7,31 @@
 
 ## 1. 채널별 자동화 수준 (구현 상세 — 요약 안내는 mainmanager-plan.md §1 참고)
 
+**2026-09-13부로 모든 채널의 업로드 시각을 오전 10시대로 통일했다**(요일은 그대로,
+`mainmanager-plan.md` §1-1 참고). 스레드(메인 블로그)만 네이버 블로그 URL 기록이라는
+당일 앞선 단계에 의존해 10:15에 발행한다.
+
 | # | 채널 | 자동화 수준 | 발행 콘텐츠 | 구현 방식 |
 |---|---|---|---|---|
 | 1 | 네이버 블로그 | 반자동 | 블로그 원고(`원고.md`를 사용자가 직접 변형해서 사용, 2026-09-14부로 별도 사본 없음) | 원고 자동 준비 → 사람이 네이버 블로그에서 자체 예약발행 기능으로 **화요일 10:00** 예약 클릭 |
 | 2 | 구글 블로그(Blogger) | **완전자동** | 블로그 원고(`구글블로그용.md`, HTML) | Blogger API v3 — GitHub Actions가 **화요일 10:00 KST**(`--phase blog`)에 직접 게시 |
-| 3 | 유튜브 커뮤니티 게시판 | 반자동 | `유튜브_게시물.md` | Data API가 커뮤니티 탭 글쓰기 미지원 — 사람이 **목요일 20:00**(릴스·쇼츠와 동시) 직접 게시 |
-| 4a | 페이스북 카드뉴스 (캐러셀) | **완전자동** | 카드뉴스 9장+블로그 링크(멀티포토 게시글) | Meta Graph API(페이지 토큰) — 사진 9장을 `published=false`로 각각 업로드 후 `/feed`에 `attached_media`로 묶어 게시(`facebook.publish_photo_carousel`, `_status.json` 키 `facebook_carousel`). 릴스와 API 흐름이 완전히 달라 별도 단계로 성공/실패를 추적한다. GitHub Actions가 **수요일 20:00 KST**(`--phase cardnews`)에 직접 게시 |
-| 4b | 페이스북 릴스 | **완전자동** | 숏츠 9:16(`9x16_facebook.mp4`) | Meta Graph API(Resumable Upload, `facebook.publish_reel`, `_status.json` 키 `facebook_reel`) — **목요일 20:00 KST**(`--phase social`)에 직접 게시 |
-| 5a | 인스타그램 카드뉴스 (캐러셀) | **완전자동** | 카드뉴스 9장(캐러셀) | Instagram Graph API(`instagram.publish_carousel`, `_status.json` 키 `instagram_carousel`) — **수요일 20:00 KST**(`--phase cardnews`)에 직접 게시 |
-| 5b | 인스타그램 릴스 | **완전자동** | 숏츠 9:16(`9x16_instagram.mp4`) | Instagram Graph API(`instagram.publish_reel`, `_status.json` 키 `instagram_reel`) — **목요일 20:00 KST**(`--phase social`)에 직접 게시 |
-| 6 | 스레드 | 반자동(당분간) | `스레드.md` | Threads API 앱 별도 구축 전까지 사람이 **화요일 12:30** 직접 게시 |
-| 7 | 유튜브 쇼츠 | **완전자동** | 숏츠 9:16 mp4 | YouTube Data API v3 — **목요일 20:00 KST**(`--phase social`)에 직접 업로드 |
-| 8 | 네이버클립 | 반자동 | 숏츠 9:16 mp4 + `네이버클립_소개글.md` | 업로드 API 없음 — 사람이 **목요일 20:00**(위와 동시) 직접 업로드 |
-| - | 당근마켓 | 반자동 | 채널별 캡션 | 예약 기능 없음 — 사람이 **수요일 18:00** 직접 게시 |
-| - | 카카오톡채널 | 반자동 | 채널별 캡션 | 사람이 **목요일 10:30**(야간 발송 제한 회피) 직접 게시 |
-| - | 네이버플레이스 | 반자동 | 채널별 캡션(제목40자/설명1000자) | 사람이 **수요일 11:00** 직접 게시 |
+| 3 | 유튜브 커뮤니티 게시판 | 반자동 | `유튜브_게시물.md` | Data API가 커뮤니티 탭 글쓰기 미지원 — 사람이 **목요일 10:00**(릴스·쇼츠와 동시, 2026-09-13 20:00→10:00) 직접 게시 |
+| 4a | 페이스북 카드뉴스 (캐러셀) | **완전자동** | 카드뉴스 9장+블로그 링크(멀티포토 게시글) | Meta Graph API(페이지 토큰) — 사진 9장을 `published=false`로 각각 업로드 후 `/feed`에 `attached_media`로 묶어 게시(`facebook.publish_photo_carousel`, `_status.json` 키 `facebook_carousel`). 릴스와 API 흐름이 완전히 달라 별도 단계로 성공/실패를 추적한다. GitHub Actions가 **수요일 10:00 KST**(`--phase cardnews`, 2026-09-13 20:00→10:00)에 직접 게시 |
+| 4b | 페이스북 릴스 | **완전자동** | 숏츠 9:16(`9x16_facebook.mp4`) | Meta Graph API(Resumable Upload, `facebook.publish_reel`, `_status.json` 키 `facebook_reel`) — **목요일 10:00 KST**(`--phase social`, 2026-09-13 20:00→10:00)에 직접 게시 |
+| 5a | 인스타그램 카드뉴스 (캐러셀) | **완전자동** | 카드뉴스 9장(캐러셀) | Instagram Graph API(`instagram.publish_carousel`, `_status.json` 키 `instagram_carousel`) — **수요일 10:00 KST**(`--phase cardnews`, 2026-09-13 20:00→10:00)에 직접 게시 |
+| 5b | 인스타그램 릴스 | **완전자동** | 숏츠 9:16(`9x16_instagram.mp4`) | Instagram Graph API(`instagram.publish_reel`, `_status.json` 키 `instagram_reel`) — **목요일 10:00 KST**(`--phase social`, 2026-09-13 20:00→10:00)에 직접 게시 |
+| 6 | 스레드 | **완전자동**(메인 블로그, 2026-09-09 전환) | `스레드.md` | `publish-thread.yml`이 **화요일 10:15 KST**(2026-09-13 12:30→10:15 — 네이버 URL 기록 직후 최소 버퍼)에 직접 게시. 교육뉴스 스레드는 별개 파이프라인이라 여전히 반자동(목요일, §6 참고) |
+| 7 | 유튜브 쇼츠 | **완전자동** | 숏츠 9:16 mp4 | YouTube Data API v3 — **목요일 10:00 KST**(`--phase social`, 2026-09-13 20:00→10:00)에 직접 업로드 |
+| 8 | 네이버클립 | 반자동 | 숏츠 9:16 mp4 + `네이버클립_소개글.md` | 업로드 API 없음 — 사람이 **목요일 10:00**(위와 동시, 2026-09-13 20:00→10:00) 직접 업로드 |
+| - | 당근마켓 | 반자동 | 채널별 캡션 | 예약 기능 없음 — 사람이 **수요일 10:00**(2026-09-13 18:00→10:00) 직접 게시 |
+| - | 카카오톡채널 | 반자동 | 채널별 캡션 | 사람이 **목요일 10:00**(2026-09-13 10:30→10:00, 야간 발송 제한과 무관하게 안전) 직접 게시 |
+| - | 네이버플레이스 | 반자동 | 채널별 캡션(제목40자/설명1000자) | 사람이 **수요일 10:00**(2026-09-13 11:00→10:00) 직접 게시 |
 
 **완전자동 채널**은 이미 API 자격증명 발급이 끝났고, GitHub Actions에서 지정 시각에
 직접 API를 호출해 발행한다. 사람이 Meta Business Suite나 유튜브 스튜디오에 로그인해서
 예약 버튼을 누를 필요가 없다. **2026-09-09부로 발행이 3단계 배치로 나뉜다**: 구글
-블로그(화 10:00) → 카드뉴스 캐러셀(수 20:00) → 릴스·쇼츠(목 20:00). 카드뉴스와
+블로그(화 10:00) → 카드뉴스 캐러셀(수 10:00) → 릴스·쇼츠(목 10:00, 2026-09-13부로
+카드뉴스·릴스/쇼츠 시각을 20:00→10:00으로 통일 — `mainmanager-plan.md` §1-1). 카드뉴스와
 릴스/쇼츠를 애초에 같은 목요일에 함께 냈었는데, 같은 계정이 같은 팔로워에게 같은
 시각 두 게시물을 내면 알고리즘 노출을 서로 갉아먹고 카드뉴스(저장·정독, 팔로워
 대상)와 릴스(발견·확산, 비팔로워 대상)는 노출 경로 자체가 달라 따로 낼 이유가
@@ -58,7 +63,7 @@ queue/<번호>_<주제요약>/
   숏츠/9x16_youtube.mp4            ← 유튜브 쇼츠 전용
   숏츠/채널별_캡션.md               ← 릴스용 인스타·페이스북 캡션
   숏츠/캡션_유튜브쇼츠.md
-  스레드.md                         ← (선택) 화요일 12:30 스레드 자동 게시용, §6 참고
+  스레드.md                         ← (선택) 화요일 10:15 스레드 자동 게시용, §6 참고
   _status.json                      ← 발행 워크플로가 자동 생성/갱신 (직접 만들 필요 없음)
 ```
 
@@ -152,16 +157,19 @@ title: 영상 제목(100자 이내)
    `content-playbook.md` §9)가 이 파일을 읽는다. `queue-edu/`는 구글 블로그 발행
    성공 즉시 삭제되는 구조라 그 안에는 목요일까지 상태를 못 들고 있어서, 큐 폴더와
    무관한 별도 파일에 보관한다.
-2-2. **같은 날 12:30 KST**, 별도 워크플로(`publish-thread.yml`)가 `queue/` 폴더에
-   `스레드.md`가 있으면 `naver_blog_url`을 채워 넣어 자동 게시한다(§6). 성공 여부는
-   `_status.json`의 `thread` 키에 기록하지만, 이 키는 `ALL_STEPS`(6채널 완료 판정)에
-   포함되지 않는다 — 스레드 게시가 지연되거나 실패해도 기존 6채널 완료 후 큐 폴더
-   삭제에 영향을 주지 않는다.
-3. **수요일 20:00 KST**, 같은 워크플로가 `--phase cardnews`로 실행돼 카드뉴스
-   캐러셀 2채널(페이스북·인스타그램)에 게시한다(2026-09-09부터 — 릴스와 같은 날
-   같은 시각에 내면 같은 팔로워에게 알고리즘 노출이 서로 갉아먹혀서 하루 뺐다).
-4. **목요일 20:00 KST**, 같은 워크플로가 `--phase social`로 실행돼 릴스·쇼츠
-   3채널(페이스북·인스타그램·유튜브 쇼츠)에 동시에 게시한다.
+2-2. **같은 날 10:15 KST**(2026-09-13 12:30→10:15), 별도 워크플로(`publish-thread.yml`)가
+   `queue/` 폴더에 `스레드.md`가 있으면 `naver_blog_url`을 채워 넣어 자동 게시한다
+   (§6). `naver_blog_url`이 아직 기록 전이면(2-1의 사람 작업이 늦어진 경우) 조용히
+   잘못된 링크를 넣지 않고 에러로 멈춘다 — 기록 후 `workflow_dispatch`로 수동
+   재실행한다. 성공 여부는 `_status.json`의 `thread` 키에 기록하지만, 이 키는
+   `ALL_STEPS`(6채널 완료 판정)에 포함되지 않는다 — 스레드 게시가 지연되거나
+   실패해도 기존 6채널 완료 후 큐 폴더 삭제에 영향을 주지 않는다.
+3. **수요일 10:00 KST**(2026-09-13 20:00→10:00), 같은 워크플로가 `--phase cardnews`로
+   실행돼 카드뉴스 캐러셀 2채널(페이스북·인스타그램)에 게시한다(요일 분리는
+   2026-09-09부터 — 릴스와 같은 날 같은 시각에 내면 같은 팔로워에게 알고리즘 노출이
+   서로 갉아먹혀서 하루 뺐다는 논리는 유지, 시각만 아침으로 통일).
+4. **목요일 10:00 KST**(2026-09-13 20:00→10:00), 같은 워크플로가 `--phase social`로
+   실행돼 릴스·쇼츠 3채널(페이스북·인스타그램·유튜브 쇼츠)에 동시에 게시한다.
 5. **6채널 모두 게시에 성공하면**, 그 시점 워크플로가 `queue/<번호>_<주제요약>/`
    폴더를 삭제하는 커밋을 자동으로 만들어 푸시한다 — 깃허브에는 다시 남지 않고,
    로컬 원본만 계속 보관된다.
@@ -193,8 +201,9 @@ title: 영상 제목(100자 이내)
   3채널까지인지, 한 번에 전부인지 고른다(§3-1).
 - `scripts/publish/{blogger,facebook,instagram,youtube}.py` — 채널별 API 호출.
 - `.github/workflows/publish.yml` — cron 3개(화요일 01:00 UTC=10:00 KST →
-  `--phase blog`, 수요일 11:00 UTC=20:00 KST → `--phase cardnews`, 목요일
-  11:00 UTC=20:00 KST → `--phase social`) + `workflow_dispatch`로 phase를 골라
+  `--phase blog`, 수요일 01:00 UTC=10:00 KST → `--phase cardnews`, 목요일
+  01:00 UTC=10:00 KST → `--phase social`, 2026-09-13부로 카드뉴스·소셜 시각
+  11:00 UTC(20:00 KST)→01:00 UTC(10:00 KST)) + `workflow_dispatch`로 phase를 골라
   수동 테스트 가능. 실행 후 `_status.json` 변경이나 큐 폴더 삭제를 항상 커밋·
   푸시한다(중간에 실패해도 `if: always()`로 상태는 저장됨).
 - `scripts/publish/refresh_instagram_token.py` + `.github/workflows/refresh-instagram-token.yml`
@@ -206,8 +215,9 @@ title: 영상 제목(100자 이내)
   `--edu` 플래그를 주면 교육뉴스용(`queue/_edu_thread_link.json`, 목요일 스레드가
   읽음)으로 기록한다.
 - `scripts/publish/main_thread.py` + `.github/workflows/publish-thread.yml` — 화요일
-  12:30 KST(03:30 UTC)에 `queue/`의 `스레드.md`를 텍스트로 자동 게시(§6, 2026-09-09
-  구현). `scripts/publish/threads.py`가 실제 그래프 API 호출을 담당한다.
+  10:15 KST(01:15 UTC, 2026-09-13 12:30→10:15)에 `queue/`의 `스레드.md`를 텍스트로
+  자동 게시(§6, 2026-09-09 구현). `scripts/publish/threads.py`가 실제 그래프 API
+  호출을 담당한다.
 - `scripts/publish/refresh_threads_token.py` + `.github/workflows/refresh-threads-token.yml`
   — 매달 2일·16일에 스레드 토큰을 갱신하고 GitHub Secret에 자동으로 다시 저장(§6).
 
@@ -290,7 +300,7 @@ Threads API는 같은 Meta 앱 안에서 Facebook 로그인/페이지 관리 이
 "Threads API 액세스" 이용 사례만 선택해 `nineplus_math` 계정을 테스터로 연결한 뒤
 장기 액세스 토큰을 발급받았다.
 
-- **화요일 12:30 KST**, `.github/workflows/publish-thread.yml`이 `main.py`의 3단계
+- **화요일 10:15 KST**(2026-09-13 12:30→10:15), `.github/workflows/publish-thread.yml`이 `main.py`의 3단계
   배치와는 독립적으로 실행돼 `scripts/publish/main_thread.py`가 `queue/`의
   `스레드.md`를 텍스트 게시물로 올린다(`scripts/publish/threads.py`,
   `graph.threads.net/v1.0`).
