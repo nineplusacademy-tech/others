@@ -19,6 +19,11 @@ from common import DRY_RUN, dry_run_log, raise_for_status_with_body, raw_github_
 GRAPH = "https://graph.instagram.com"
 POLL_INTERVAL_SECONDS = 10
 POLL_MAX_ATTEMPTS = 30  # 최대 5분 대기
+MEDIA_FETCH_RETRY_DELAYS = (3, 6, 12)  # 초 — raw.githubusercontent.com에서 이미지를
+# 가져오지 못했다는 응답(code 9004, subcode 2207052 "Media download has failed")이
+# 가끔 온다(2026-09-16 37주차 카드뉴스 실사고 — URL 자체는 정상, 같은 순간 재시도하면
+# 대개 성공). is_transient는 false로 오지만 실제로는 재시도로 해결되는 경우가 많다.
+MEDIA_DOWNLOAD_FAILED_SUBCODE = 2207052
 
 
 def _ig_id() -> str:
@@ -46,6 +51,28 @@ def _wait_until_finished(creation_id: str) -> None:
     raise TimeoutError(f"인스타그램 미디어 처리 시간 초과 (creation_id={creation_id})")
 
 
+def _create_carousel_child(path: Path, ig_id: str, token: str) -> str:
+    image_url = raw_github_url(path)
+    last_error: Exception | None = None
+    for attempt, delay in enumerate((0, *MEDIA_FETCH_RETRY_DELAYS)):
+        if delay:
+            time.sleep(delay)
+        resp = requests.post(
+            f"{GRAPH}/{ig_id}/media",
+            data={"image_url": image_url, "is_carousel_item": "true", "access_token": token},
+            timeout=60,
+        )
+        if resp.ok:
+            return resp.json()["id"]
+        body = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else {}
+        subcode = body.get("error", {}).get("error_subcode")
+        if subcode != MEDIA_DOWNLOAD_FAILED_SUBCODE or attempt == len(MEDIA_FETCH_RETRY_DELAYS):
+            raise_for_status_with_body(resp)
+        last_error = RuntimeError(f"{path.name} 이미지 fetch 재시도 가능한 오류 (attempt {attempt + 1}): {body}")
+        print(f"[instagram] {path.name} 재시도 {attempt + 1}/{len(MEDIA_FETCH_RETRY_DELAYS)}: {last_error}")
+    raise last_error  # pragma: no cover — 위 루프에서 항상 반환/발생함
+
+
 def publish_carousel(image_paths: list[Path], caption: str) -> str:
     if DRY_RUN:
         dry_run_log(
@@ -58,19 +85,7 @@ def publish_carousel(image_paths: list[Path], caption: str) -> str:
     ig_id = _ig_id()
     token = _token()
 
-    child_ids = []
-    for path in image_paths:
-        resp = requests.post(
-            f"{GRAPH}/{ig_id}/media",
-            data={
-                "image_url": raw_github_url(path),
-                "is_carousel_item": "true",
-                "access_token": token,
-            },
-            timeout=60,
-        )
-        raise_for_status_with_body(resp)
-        child_ids.append(resp.json()["id"])
+    child_ids = [_create_carousel_child(path, ig_id, token) for path in image_paths]
 
     container = requests.post(
         f"{GRAPH}/{ig_id}/media",
