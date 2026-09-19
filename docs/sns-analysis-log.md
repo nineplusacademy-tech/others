@@ -149,3 +149,25 @@ Meta 앱 연결을 완전히 끊었다가 Instagram 테스터 초대·수락을 
   중 하나에 반영하는 안을 제안(사용자 확인 대기).
 - **데이터 한계**: 플레이스는 상위 10곳까지만 확인(그 밖 순위는 미상), 수원 수학학원
   플레이스 미점검, 스마트블록 영역 미확인, 시점 관찰값.
+
+### 2026-09-19 — Meta(인스타·페이스북) 인사이트 자동 조회
+
+- 인스타그램 계정: 팔로워 98, 게시물 수 65
+  - 계정 인사이트: reach=0, accounts_engaged=3
+  - [VIDEO] 2026-09-17 '"6등급이 3등급 된 진짜 비결" 📈 원장이 직접 말합' → reach=45, likes=4, comments=0, saved=1, shares=0, views=57 (https://www.instagram.com/reel/DdYIV9smgJW/)
+  - [CAROUSEL_ALBUM] 2026-09-16 '"6등급이 3등급 된 진짜 비결" — 원장이 직접 말합' → reach=29, likes=2, comments=2, saved=0, shares=0 (https://www.instagram.com/p/DdV800XDJy5/)
+  - [VIDEO] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → reach=37, likes=2, comments=0, saved=1, shares=0, views=48 (https://www.instagram.com/reel/DdHGfMflGvP/)
+  - [CAROUSEL_ALBUM] 2026-09-09 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 🤔  다들' → reach=31, likes=1, comments=1, saved=0, shares=0 (https://www.instagram.com/p/DdEOirDlpNC/)
+  - [VIDEO] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → reach=152, likes=2, comments=1, saved=1, shares=0, views=173 (https://www.instagram.com/reel/Dc2KE6niQEJ/)
+- 페이스북 페이지: 팔로워 13
+  - 페이지 인사이트: page_follows=13, page_media_view=44
+  - [게시글] 2026-09-17 '"6등급이 3등급 된 진짜 비결" — 원장이 직접 말합' → post_media_view=3, post_reactions_by_type_total={} (https://www.facebook.com/reel/4498317460439791/)
+  - [게시글] 2026-09-16 '"6등급이 3등급 된 진짜 비결" — 원장이 직접 말합' → post_media_view=4, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122115847761424939)
+  - [게시글] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → post_media_view=16, post_reactions_by_type_total={} (https://www.facebook.com/reel/1423279913202551/)
+  - [게시글] 2026-09-09 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 🤔  계획' → post_media_view=17, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122114524905424939)
+  - [게시글] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → post_media_view=196, post_reactions_by_type_total={} (https://www.facebook.com/reel/2534315827035432/)
+  - [릴스/영상] 2026-09-17 '"6등급이 3등급 된 진짜 비결" — 원장이 직접 말합' → blue_reels_play_count=3 (/reel/4498317460439791/)
+  - [릴스/영상] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → (값 없음) (/reel/1423279913202551/)
+  - [릴스/영상] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → blue_reels_play_count=185 (/reel/2534315827035432/)
+  - [릴스/영상] 2026-09-01 '' → total_video_views=0, total_video_impressions=0, total_video_avg_time_watched=0 (/122115070323424939/videos/1785021425985952)
+  - [릴스/영상] 2026-08-31 '' → total_video_views=0, total_video_impressions=0, total_video_avg_time_watched=0 (/122115070323424939/videos/4729289450632589)
