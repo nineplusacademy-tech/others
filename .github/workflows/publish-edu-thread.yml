@@ -1,0 +1,55 @@
+name: 스레드(교육뉴스) 자동 게시
+
+# 목요일 10:00 KST에 그 주 교육뉴스의 네이버 블로그 링크를 스레드로 게시한다
+# (docs/content-playbook.md §9). queue/_edu_thread_link.json(set_naver_url.py --edu)과
+# queue/_edu_thread.md가 둘 다 있을 때만 게시하고, 성공하면 두 파일을 삭제한다.
+on:
+  schedule:
+    - cron: "0 1 * * 4"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "true면 실제로 게시하지 않고 무엇을 올릴지만 로그로 출력"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-queue
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 의존성 설치
+        run: pip install -r scripts/publish/requirements.txt
+
+      - name: 교육뉴스 스레드 게시
+        env:
+          PYTHONPATH: scripts/publish
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+        run: python scripts/publish/main_edu_thread.py
+
+      - name: 발행 결과 커밋 (사용한 파일 삭제 반영)
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A queue/
+          if ! git diff --cached --quiet; then
+            git commit -m "교육뉴스 스레드 발행 결과 갱신 [skip ci]"
+            git push
+          else
+            echo "변경 없음 — 커밋 생략"
+          fi
