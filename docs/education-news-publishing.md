@@ -27,7 +27,7 @@
    `queue-edu/<YYYY-MM-DD>_<주제요약>/구글블로그용.md` 로 저장해 이 저장소에 커밋·
    푸시한다(로컬 원본은 그대로 둔 채 복사만 — 메인 파이프라인의 `queue/`와 동일한
    패턴).
-5. 발행 워크플로(`.github/workflows/publish-edu.yml`)가 **화요일 10:00 KST**(메인
+5. 발행 워크플로(`.github/workflows/publish-edu.yml`)가 **월요일 10:00 KST(2026-09-28호부터, 화요일 재시도 포함)**(메인
    블로그와 동시, 2026-09-08 변경 — 이전 월요일 12:00 KST)에 자동 실행되거나, 그전에
    급하면 `workflow_dispatch`로 즉시 실행할 수 있다 — `queue-edu/` 폴더 하나를 찾아
    Blogger API로 게시하고, 성공하면 그 폴더를 삭제하는 커밋을 자동으로 만든다.
@@ -63,7 +63,7 @@ labels: [교육뉴스]
 - `scripts/publish/main_edu.py` — `queue-edu/` 폴더 하나를 찾아 `scripts/publish/blogger.py`의
   `publish()`를 그대로 재사용해 발행. 채널이 하나뿐이라 `main.py`처럼 병렬화·단계별
   상태 파일이 필요 없다.
-- `.github/workflows/publish-edu.yml` — 매주 화요일 01:00 UTC(10:00 KST) 실행(메인
+- `.github/workflows/publish-edu.yml` — 매주 월요일·화요일 01:00 UTC(10:00 KST) 실행(2026-09-21 변경: 9/28호부터 월요일 발행, 화요일은 재시도용)(메인
   블로그의 `--phase blog` 배치와 동시) + `workflow_dispatch`로 즉시 실행 가능.
   `queue-edu/`가 비어있으면(아직 승인 전) 조용히 "발행할 콘텐츠 없음"으로 끝난다.
 - 자격증명은 메인 파이프라인과 동일한 Secrets(`GOOGLE_OAUTH_CLIENT_ID` 등,
