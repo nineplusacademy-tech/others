@@ -6,7 +6,7 @@ import os
 
 from googleapiclient.discovery import build
 
-from common import DRY_RUN, dry_run_log
+from common import DRY_RUN, dry_run_log, log
 from google_auth import get_credentials
 
 
@@ -44,11 +44,20 @@ def publish(title: str, html_content: str, labels: list[str], search_description
     post_id = result["id"]
 
     # Blogger API v3의 알려진 결함 — posts.insert에 searchDescription을(가끔 labels도)
-    # 함께 보내도 저장되지 않는 경우가 있다(2026-09-15 37주차 실사고로 확인, 구글
-    # 지원 포럼에도 동일 사례 다수 보고됨). 게시 직후 실제로 반영됐는지 다시 읽어
-    # 확인하고, 빠진 필드만 patch로 최대 2회까지 재시도한다 — "보냈으니 됐겠지"로
-    # 끝내지 않고 끝까지 확인해서, 여전히 안 붙으면 발행 자체를 에러로 멈춘다(조용히
-    # 라벨·검색설명 없이 게시되지 않게).
+    # 함께 보내도 저장되지 않는 경우가 있다(2026-09-15 37주차, 2026-09-22 9주차·
+    # 교육뉴스 실사고로 확인, 구글 지원 포럼에도 동일 사례 다수 보고됨). 게시 직후
+    # 실제로 반영됐는지 다시 읽어 확인하고, 빠진 필드만 patch로 최대 2회까지
+    # 재시도한다.
+    #
+    # 2026-09-22 변경: 글 자체는 이미 공개(insert)됐으므로, 이 시점부터는 절대
+    # 예외를 던지지 않는다 — 예전엔 2회 재시도 후에도 안 붙으면 RuntimeError를
+    # 던졌는데, 그러면 main.py/main_edu.py가 "발행 실패"로 처리해 _status.json에
+    # blogger 완료를 기록하지 못했고, 다음 배치(수/목)나 재실행이 이미 라이브인
+    # 글을 다시 insert해서 중복 게시를 만들 위험이 있었다(9/22 실제 확인). 라벨·
+    # 검색설명 미반영은 Blogger 관리 화면에서 사람이 손으로 채워도 되는 사소한
+    # 문제이지, 발행 자체를 막을 이유가 아니다 — 안 붙으면 경고만 남기고 URL을
+    # 그대로 반환한다.
+    url = result["url"]
     for attempt in range(2):
         fetched = service.posts().get(blogId=os.environ["BLOGGER_BLOG_ID"], postId=post_id).execute()
         missing_description = bool(search_description) and fetched.get("searchDescription") != search_description
@@ -68,9 +77,10 @@ def publish(title: str, html_content: str, labels: list[str], search_description
         if (bool(search_description) and fetched.get("searchDescription") != search_description) or (
             bool(labels) and set(fetched.get("labels", [])) != set(labels)
         ):
-            raise RuntimeError(
-                f"[blogger] 게시는 됐지만({fetched.get('url')}) 라벨·검색설명이 2번 재시도 후에도 "
-                "반영되지 않았습니다 — Blogger 관리 화면에서 직접 확인해주세요."
+            log(
+                f"[blogger] 경고 — 게시는 됐지만({url}) 라벨·검색설명이 2번 재시도 후에도 "
+                "반영되지 않았습니다. 발행은 완료로 처리하고 계속 진행합니다 — "
+                "Blogger 관리 화면에서 직접 채워주세요."
             )
 
-    return result["url"]
+    return url
