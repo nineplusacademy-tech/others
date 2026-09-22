@@ -77,8 +77,12 @@ def publish(title: str, html_content: str, labels: list[str], search_description
         if (bool(search_description) and fetched.get("searchDescription") != search_description) or (
             bool(labels) and set(fetched.get("labels", [])) != set(labels)
         ):
+            # "::warning::"는 GitHub Actions 워크플로 명령 문법 — 이 줄이 일반 로그에
+            # 묻히지 않고 Actions 실행 화면 상단 Annotations에 노란 경고로 뜬다(2026-09-22
+            # 신설). 발행 자체는 성공(초록)으로 끝나므로, 이게 없으면 아무도 로그를
+            # 들여다보지 않는 한 검색설명 누락을 놓치기 쉽다.
             log(
-                f"[blogger] 경고 — 게시는 됐지만({url}) 라벨·검색설명이 2번 재시도 후에도 "
+                f"::warning::[blogger] 게시는 됐지만({url}) 라벨·검색설명이 2번 재시도 후에도 "
                 "반영되지 않았습니다. 발행은 완료로 처리하고 계속 진행합니다 — "
                 "Blogger 관리 화면에서 직접 채워주세요."
             )
