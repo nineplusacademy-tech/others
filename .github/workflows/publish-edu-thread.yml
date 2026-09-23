@@ -3,11 +3,13 @@ name: 스레드(교육뉴스) 자동 게시
 # 목요일 10:00 KST에 그 주 교육뉴스의 네이버 블로그 링크를 스레드로 게시한다
 # (docs/content-playbook.md §9). queue/_edu_thread_link.json(set_naver_url.py --edu)과
 # queue/_edu_thread.md가 둘 다 있을 때만 게시하고, 성공하면 두 파일을 삭제한다.
-# 2026-09-22: 분을 :00에서 :20으로 옮겨 매시 정각 congestion을 피하고, 같은 날
-# 소셜(릴스/쇼츠) 배치(:06)와도 겹치지 않게 분산했다(publish.yml 참고).
+# 2026-09-22: 분을 :00에서 :20으로 옮겨 매시 정각 congestion을 피하려 했으나 효과
+# 없었음(publish.yml 상단 주석 참고).
+# 2026-09-23 변경(2차): 목표 10:20 KST보다 5시간 앞선 전날 20:20 UTC(=05:20 KST)에
+# 예약 — GitHub Free 플랜 예약 작업의 4.5~5.3시간 지연을 거꾸로 이용한다.
 on:
   schedule:
-    - cron: "20 1 * * 4"
+    - cron: "20 20 * * 3"
   workflow_dispatch:
     inputs:
       dry_run:
