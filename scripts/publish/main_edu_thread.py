@@ -18,7 +18,7 @@ import sys
 from pathlib import Path
 
 import threads
-from common import DRY_RUN, QUEUE_DIR, fill_placeholders
+from common import DRY_RUN, QUEUE_DIR, fill_placeholders, naver_post_not_found
 
 LINK_FILE = QUEUE_DIR / "_edu_thread_link.json"
 TEXT_FILE = QUEUE_DIR / "_edu_thread.md"
@@ -35,6 +35,10 @@ def run() -> None:
     url = json.loads(LINK_FILE.read_text(encoding="utf-8")).get("url")
     if not url:
         raise RuntimeError("_edu_thread_link.json에 url이 없습니다.")
+
+    if not DRY_RUN and naver_post_not_found(url):
+        print(f"::warning::교육뉴스 네이버 블로그 글({url})이 아직 공개 전이라 스레드를 미뤘습니다 — 다음 catch-up 실행 때 다시 시도합니다.")
+        return
 
     text = fill_placeholders(TEXT_FILE.read_text(encoding="utf-8").strip(), BLOG_URL=url)
     result_id = threads.publish_text(text)
