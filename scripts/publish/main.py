@@ -77,6 +77,13 @@ def _require_caption(caption: str, channel: str, section: str) -> str:
             f"[{channel}] 캡션이 비어 있어 발행을 중단합니다 — "
             f"채널별_캡션.md의 '## {section}' 섹션을 확인하세요."
         )
+    # 치환되지 않은 {{자리표시자}}가 남아 있으면 그대로 게시되므로 발행 전에 막는다
+    # (2026-09-24 9주차 유튜브 설명란 실사고 재발 방지).
+    if "{{" in caption and "}}" in caption:
+        raise RuntimeError(
+            f"[{channel}] 캡션에 치환되지 않은 {{{{...}}}} 자리표시자가 남아 있어 발행을 중단합니다 — "
+            "fill_placeholders()가 이 채널에 빠져 있는지 확인하세요."
+        )
     return caption
 
 
@@ -200,6 +207,9 @@ def run(folder: Path, phase: str = "all") -> None:
         def _youtube_shorts() -> str:
             video_path = folder / "숏츠" / "9x16_youtube.mp4"
             yt_meta, yt_description = parse_frontmatter(folder / "숏츠" / "캡션_유튜브쇼츠.md")
+            # 2026-09-24: 유튜브 설명란만 {{BLOG_URL}} 치환이 빠져 있어 "{{BLOG_URL}}" 글자 그대로
+            # 게시된 실사고(9주차) — 다른 채널처럼 여기서도 반드시 채운다.
+            yt_description = fill_placeholders(yt_description, BLOG_URL=blog_url)
             yt_description = _require_caption(yt_description, "youtube_shorts", "(캡션_유튜브쇼츠.md 본문)")
             return youtube.upload_shorts(video_path, yt_meta.get("title", ""), yt_description)
 
