@@ -20,6 +20,7 @@ import sys
 from pathlib import Path
 
 import blogger
+import main_edu_thread
 from common import DRY_RUN, parse_frontmatter
 
 QUEUE_EDU_DIR = Path("queue-edu")
@@ -43,12 +44,24 @@ def run(folder: Path) -> None:
     )
     print(f"[교육뉴스-blogger] 발행 완료: {url}")
 
+    # 2026-09-24 변경: 교육뉴스 스레드도 블로그 발행과 같은 실행에서 바로 게시한다(예전엔
+    # 목요일 별도 워크플로). 블로그는 이미 라이브이므로 스레드 실패가 폴더 삭제(=중복
+    # 발행 방지)를 막지 않게, 실패는 모아뒀다가 정리 후에 알린다.
+    thread_error: Exception | None = None
+    try:
+        main_edu_thread.run()
+    except Exception as exc:  # noqa: BLE001
+        thread_error = exc
+        print(f"[교육뉴스-thread] 발행 실패: {exc}")
+
     if DRY_RUN:
         print(f"[DRY RUN] '{folder.name}' 시뮬레이션 완료 — 큐 폴더는 삭제하지 않음")
         return
 
     shutil.rmtree(folder)
     print(f"'{folder.name}' 발행 완료 — 큐에서 삭제")
+    if thread_error:
+        raise RuntimeError(f"교육뉴스 스레드 게시 실패(블로그는 발행 완료): {thread_error}")
 
 
 def main() -> None:

@@ -7,9 +7,10 @@ name: 스레드(교육뉴스) 자동 게시
 # 없었음(publish.yml 상단 주석 참고).
 # 2026-09-23 변경(2차): 목표 10:20 KST보다 5시간 앞선 전날 20:20 UTC(=05:20 KST)에
 # 예약 — GitHub Free 플랜 예약 작업의 4.5~5.3시간 지연을 거꾸로 이용한다.
+# 2026-09-24 변경: 스레드는 이제 블로그 발행과 같은 실행(publish.yml / publish-edu.yml)에서
+# 바로 게시된다. 이 워크플로는 네이버 URL이 늦게 기록됐거나 스레드만 실패했을 때 수동으로
+# 이어서 올리는 용도(workflow_dispatch)로만 남긴다 — 자동 예약 없음.
 on:
-  schedule:
-    - cron: "20 20 * * 3"
   workflow_dispatch:
     inputs:
       dry_run:
