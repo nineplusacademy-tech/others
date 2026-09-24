@@ -25,11 +25,16 @@ TEXT_FILE = QUEUE_DIR / "_edu_thread.md"
 
 
 def run() -> None:
-    if not LINK_FILE.exists():
-        print("교육뉴스 네이버 URL(_edu_thread_link.json)이 없음 — 종료")
-        return
     if not TEXT_FILE.exists():
         print("교육뉴스 스레드 본문(_edu_thread.md)이 없음 — 종료")
+        return
+    if not LINK_FILE.exists():
+        # 본문은 올라와 있는데 네이버 주소가 아직 기록 전 — 조용히 넘어가면 아무도 모른다.
+        print(
+            "::warning::교육뉴스 스레드 본문은 있지만 네이버 URL(_edu_thread_link.json)이 기록되지 않아 "
+            "스레드를 게시하지 않았습니다 — 'python scripts/publish/set_naver_url.py --edu <URL>' 기록 후 "
+            "publish-edu-thread 워크플로를 수동 실행하세요."
+        )
         return
 
     url = json.loads(LINK_FILE.read_text(encoding="utf-8")).get("url")
