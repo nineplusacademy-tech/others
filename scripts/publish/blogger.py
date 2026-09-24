@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import time
 
 from googleapiclient.discovery import build
 
@@ -58,33 +59,56 @@ def publish(title: str, html_content: str, labels: list[str], search_description
     # 문제이지, 발행 자체를 막을 이유가 아니다 — 안 붙으면 경고만 남기고 URL을
     # 그대로 반환한다.
     url = result["url"]
-    for attempt in range(2):
-        fetched = service.posts().get(blogId=os.environ["BLOGGER_BLOG_ID"], postId=post_id).execute()
-        missing_description = bool(search_description) and fetched.get("searchDescription") != search_description
-        missing_labels = bool(labels) and set(fetched.get("labels", [])) != set(labels)
+    blog_id = os.environ["BLOGGER_BLOG_ID"]
+
+    def _missing() -> tuple[bool, bool]:
+        fetched = service.posts().get(blogId=blog_id, postId=post_id).execute()
+        return (
+            bool(search_description) and fetched.get("searchDescription") != search_description,
+            bool(labels) and set(fetched.get("labels", [])) != set(labels),
+        )
+
+    # 2026-09-24 개선 — 예전엔 대기 없이 patch만 2번 시도했는데(9/15·9/22 두 번 다 실패),
+    # ①저장 반영에 시간이 걸릴 수 있어 매 시도 전에 점점 늘어나는 간격(2·5·10·20초)을 두고
+    # ②patch를 2번 시도해도 안 되면 posts.update(PUT, 제목·본문·라벨·검색설명 전체)로
+    # 방식을 바꿔 4번까지 시도한다. 그래도 안 되면 위 원칙대로 경고만 남긴다.
+    delays = (2, 5, 10, 20)
+    for attempt, delay in enumerate(delays):
+        time.sleep(delay)
+        missing_description, missing_labels = _missing()
         if not missing_description and not missing_labels:
-            break
-        patch_body: dict = {}
-        if missing_description:
-            patch_body["searchDescription"] = search_description
-        if missing_labels:
-            patch_body["labels"] = labels
-        service.posts().patch(
-            blogId=os.environ["BLOGGER_BLOG_ID"], postId=post_id, body=patch_body
-        ).execute()
-    else:
-        fetched = service.posts().get(blogId=os.environ["BLOGGER_BLOG_ID"], postId=post_id).execute()
-        if (bool(search_description) and fetched.get("searchDescription") != search_description) or (
-            bool(labels) and set(fetched.get("labels", [])) != set(labels)
-        ):
-            # "::warning::"는 GitHub Actions 워크플로 명령 문법 — 이 줄이 일반 로그에
-            # 묻히지 않고 Actions 실행 화면 상단 Annotations에 노란 경고로 뜬다(2026-09-22
-            # 신설). 발행 자체는 성공(초록)으로 끝나므로, 이게 없으면 아무도 로그를
-            # 들여다보지 않는 한 검색설명 누락을 놓치기 쉽다.
-            log(
-                f"::warning::[blogger] 게시는 됐지만({url}) 라벨·검색설명이 2번 재시도 후에도 "
-                "반영되지 않았습니다. 발행은 완료로 처리하고 계속 진행합니다 — "
-                "Blogger 관리 화면에서 직접 채워주세요."
-            )
+            return url
+        if attempt < 2:
+            patch_body: dict = {}
+            if missing_description:
+                patch_body["searchDescription"] = search_description
+            if missing_labels:
+                patch_body["labels"] = labels
+            service.posts().patch(blogId=blog_id, postId=post_id, body=patch_body).execute()
+        else:
+            full_body = {
+                "id": post_id,
+                "blog": {"id": blog_id},
+                "title": title,
+                "content": html_content,
+            }
+            if labels:
+                full_body["labels"] = labels
+            if search_description:
+                full_body["searchDescription"] = search_description
+            service.posts().update(blogId=blog_id, postId=post_id, body=full_body).execute()
+        log(f"[blogger] 라벨·검색설명 보정 시도 {attempt + 1}/{len(delays)} ({'patch' if attempt < 2 else 'update'})")
+
+    time.sleep(5)
+    missing_description, missing_labels = _missing()
+    if missing_description or missing_labels:
+        # "::warning::"는 GitHub Actions 워크플로 명령 문법 — 일반 로그에 묻히지 않고 실행
+        # 화면 상단 Annotations에 노란 경고로 뜬다. 발행 자체는 성공(초록)이라 이게 없으면
+        # 검색설명 누락을 놓치기 쉽다.
+        log(
+            f"::warning::[blogger] 게시는 됐지만({url}) 라벨·검색설명이 {len(delays)}번 보정 후에도 "
+            "반영되지 않았습니다. 발행은 완료로 처리하고 계속 진행합니다 — "
+            "Blogger 관리 화면에서 직접 채워주세요."
+        )
 
     return url

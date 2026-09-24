@@ -54,6 +54,7 @@ from common import (
     find_queue_folder,
     load_status,
     log,
+    naver_post_not_found,
     parse_caption_sections,
     parse_frontmatter,
     save_status,
@@ -147,6 +148,12 @@ def _publish_thread(folder: Path, status: dict) -> None:
         log(
             "::warning::[thread] naver_blog_url이 아직 기록되지 않아 스레드를 게시하지 않았습니다 — "
             "'python scripts/publish/set_naver_url.py <URL>' 기록 후 스레드 워크플로를 수동 실행하세요."
+        )
+        return
+    if not DRY_RUN and naver_post_not_found(naver_url):
+        log(
+            f"::warning::[thread] 네이버 블로그 글({naver_url})이 아직 공개 전이라 스레드를 미뤘습니다 — "
+            "네이버 예약발행 시각 이후 스레드 워크플로(catch-up 예약 또는 수동 실행)가 이어서 올립니다."
         )
         return
     text = fill_placeholders(thread_md.read_text(encoding="utf-8").strip(), BLOG_URL=naver_url)
