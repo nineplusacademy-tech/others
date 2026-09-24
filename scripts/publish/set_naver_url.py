@@ -37,6 +37,28 @@ from common import QUEUE_DIR, find_queue_folder, load_status, save_status
 
 EDU_LINK_FILE = QUEUE_DIR / "_edu_thread_link.json"
 
+# 2026-09-24: 발행 시점에 자동 치환하지 않고, URL을 기록하는 이 시점에 캡션 파일의
+# {{BLOG_URL}} 자리를 실제 주소로 미리 채워둔다 — 파일에 적힌 그대로 게시되므로
+# 채널별로 치환이 빠지는 실사고(9주차 유튜브 설명란)를 원천 차단하고, 올라갈
+# 글을 파일에서 그대로 눈으로 확인할 수 있다. main.py의 발행 시점 치환·미치환 차단
+# 가드는 안전망으로 그대로 둔다.
+CAPTION_FILES = [
+    "카드뉴스/채널별_캡션.md",
+    "숏츠/채널별_캡션.md",
+    "숏츠/캡션_유튜브쇼츠.md",
+    "스레드.md",
+]
+
+
+def _prefill(path: Path, url: str) -> bool:
+    if not path.exists():
+        return False
+    raw = path.read_bytes().decode("utf-8")
+    if "{{BLOG_URL}}" not in raw:
+        return False
+    path.write_bytes(raw.replace("{{BLOG_URL}}", url).encode("utf-8"))
+    return True
+
 
 def _usage_and_exit() -> None:
     print(
@@ -66,6 +88,8 @@ def main() -> None:
             encoding="utf-8",
         )
         print(f"교육뉴스 스레드용 URL 기록 완료 ({EDU_LINK_FILE}): {url}")
+        if _prefill(QUEUE_DIR / "_edu_thread.md", url):
+            print("  queue/_edu_thread.md의 {{BLOG_URL}}도 실제 주소로 채움")
         print("목요일 스레드 게시 후에는 이 파일을 지워도 됩니다(다음 주 화요일에 다시 기록됨).")
         return
 
@@ -78,6 +102,9 @@ def main() -> None:
     status["naver_blog_url"] = url
     save_status(folder, status)
     print(f"'{folder.name}' 큐에 네이버 블로그 URL 기록 완료: {url}")
+    for rel in CAPTION_FILES:
+        if _prefill(folder / rel, url):
+            print(f"  {rel}의 {{{{BLOG_URL}}}}를 실제 주소로 채움")
 
 
 if __name__ == "__main__":
