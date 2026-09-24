@@ -166,6 +166,33 @@ def fill_placeholders(text: str, **values: str) -> str:
     return text
 
 
+def naver_post_not_found(url: str) -> bool:
+    """네이버 블로그 글이 아직 공개 전(예약발행 대기 등)이라 "확실히 없다"고 확인되면 True.
+
+    2026-09-24 신설 — 예약을 5시간 앞당긴 뒤로 GitHub 예약이 네이버 예약발행(10:00)보다 먼저
+    실행될 수 있어, 스레드가 아직 안 열린 글 링크를 달고 먼저 나가는 걸 막기 위한 확인이다.
+    모바일 주소(m.blog.naver.com/<블로그ID>/<글번호>)가 공개 글이면 200, 없는 글이면 404를
+    돌려주는 걸 확인했다. **확실한 404(또는 '삭제/존재하지 않음' 문구)일 때만 True** —
+    네이버가 GitHub 서버 IP를 막거나 일시 오류(403·5xx·타임아웃)가 나는 경우는 False로
+    두어(=게시 진행) 오탐 때문에 스레드가 영영 안 나가는 일이 없게 한다."""
+    m = re.match(r"https?://(?:m\.)?blog\.naver\.com/([^/?#]+)/(\d+)", url or "")
+    if not m:
+        return False
+    try:
+        resp = requests.get(
+            f"https://m.blog.naver.com/{m.group(1)}/{m.group(2)}",
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=20,
+        )
+    except requests.RequestException:
+        return False
+    if resp.status_code == 404:
+        return True
+    if resp.status_code == 200 and any(k in resp.text for k in ("삭제되었거나", "존재하지 않는 게시글", "존재하지 않는 블로그")):
+        return True
+    return False
+
+
 def raise_for_status_with_body(resp: requests.Response) -> None:
     """`resp.raise_for_status()`와 같지만, Meta Graph API가 돌려준 실제 오류 메시지
     (JSON 본문)까지 예외 메시지에 포함한다.

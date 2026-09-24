@@ -20,7 +20,7 @@ from __future__ import annotations
 import sys
 
 import threads
-from common import DRY_RUN, fill_placeholders, find_queue_folder, load_status, save_status, step_done
+from common import DRY_RUN, fill_placeholders, find_queue_folder, load_status, naver_post_not_found, save_status, step_done
 
 
 def run() -> None:
@@ -51,6 +51,10 @@ def run() -> None:
     thread_md = folder / "스레드.md"
     if not thread_md.exists():
         print(f"'{folder.name}'에 스레드.md가 없음 — 이번 주는 자동 게시 대상 아님(건너뜀)")
+        return
+
+    if not DRY_RUN and naver_post_not_found(naver_url):
+        print(f"::warning::네이버 블로그 글({naver_url})이 아직 공개 전이라 스레드를 미뤘습니다 — 다음 catch-up 실행 때 다시 시도합니다.")
         return
 
     text = fill_placeholders(thread_md.read_text(encoding="utf-8").strip(), BLOG_URL=naver_url)
