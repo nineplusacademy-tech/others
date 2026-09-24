@@ -44,6 +44,7 @@ from pathlib import Path
 import blogger
 import facebook
 import instagram
+import threads
 import youtube
 from common import (
     DRY_RUN,
@@ -129,18 +130,51 @@ def _publish_blog(folder: Path, status: dict) -> None:
         log("[blogger] 이미 완료됨 — 건너뜀")
 
 
+def _publish_thread(folder: Path, status: dict) -> None:
+    """메인블로그 글 스레드를 블로그 발행과 같은 실행에서 바로 게시한다(2026-09-24 변경 —
+    예전엔 화요일 10:15 별도 워크플로). 네이버 블로그 URL이 아직 기록 전이면 게시하지
+    않고 경고만 남긴다 — 잘못된 링크로 나가지 않게, 나중에 `publish-thread.yml`
+    (workflow_dispatch)로 이어서 올릴 수 있다."""
+    if step_done(status, "thread"):
+        log("[thread] 이미 완료됨 — 건너뜀")
+        return
+    thread_md = folder / "스레드.md"
+    if not thread_md.exists():
+        log("[thread] 스레드.md가 없음 — 이번 주는 자동 게시 대상 아님(건너뜀)")
+        return
+    naver_url = status.get("naver_blog_url")
+    if not naver_url:
+        log(
+            "::warning::[thread] naver_blog_url이 아직 기록되지 않아 스레드를 게시하지 않았습니다 — "
+            "'python scripts/publish/set_naver_url.py <URL>' 기록 후 스레드 워크플로를 수동 실행하세요."
+        )
+        return
+    text = fill_placeholders(thread_md.read_text(encoding="utf-8").strip(), BLOG_URL=naver_url)
+    text = _require_caption(text, "thread", "스레드.md")
+    result_id = threads.publish_text(text)
+    _record(folder, status, "thread", "id", result_id)
+    log(f"[thread] 발행 완료: {result_id}")
+
+
 def run(folder: Path, phase: str = "all") -> None:
     # DRY_RUN에서는 실제 상태 파일을 읽거나 쓰지 않는다 — 진짜 실행 때 이 큐가
     # 처리된 것처럼 보이면 안 되고, 매번 처음부터 필요한 단계를 전부 시뮬레이션한다.
     status = {} if DRY_RUN else load_status(folder)
 
     # 1. 구글 블로그 — 다른 채널 캡션이 이 URL을 참조하므로 반드시 먼저 끝난다.
+    thread_error: Exception | None = None
     if phase in ("all", "blog"):
         _publish_blog(folder, status)
+        # 블로그가 이미 기록된 뒤이므로 스레드가 실패해도 블로그는 다시 올라가지 않는다.
+        try:
+            _publish_thread(folder, status)
+        except Exception as exc:  # noqa: BLE001
+            thread_error = exc
+            log(f"[thread] 발행 실패: {exc}")
 
     if phase == "blog":
         # 화요일 배치는 여기서 끝 — 소셜 채널은 목요일 배치(--phase social)가 처리한다.
-        _finish(folder, status, {})
+        _finish(folder, status, {"thread": thread_error} if thread_error else {})
         return
 
     if not step_done(status, "blogger"):
@@ -221,6 +255,8 @@ def run(folder: Path, phase: str = "all") -> None:
     pending = {key: fn_field for key, fn_field in tasks.items() if not step_done(status, key)}
 
     errors: dict[str, Exception] = {}
+    if thread_error:
+        errors["thread"] = thread_error
     if pending:
         with ThreadPoolExecutor(max_workers=len(pending)) as pool:
             future_to_key = {pool.submit(fn): (key, field) for key, (fn, field) in pending.items()}
