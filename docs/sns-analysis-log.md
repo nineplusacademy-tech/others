@@ -196,3 +196,25 @@ Meta 앱 연결을 완전히 끊었다가 Instagram 테스터 초대·수락을 
 - **가능한 설명**: 블로그탭은 우만동·동성중·유신고·동수원중이 여전히 1~2위로 강하지만, **통합검색은 우만동(3→5)·동성중(3→9)·유신고(3→14)·창현고(5→미노출)에서 뒷걸음**했고 광교고(블로그탭 4→11)·산남중(14→19)도 하락. 검색 결과는 시점마다 흔들릴 수 있어 1회 관측만으로 추세를 단정할 수 없음(상관 관찰, 원인 미확인). 플레이스는 지난주와 같은 구조적 약점(창현고·유신고·동수원중·산남중 전부 10위 밖, 상위 10곳 광교·매탄 학원)이 그대로.
 - **추천**: 10주차는 **P9(수시 6장 수리논술) 그대로 진행**(사용자 확정 2026-09-24). 신규 근거로 **P9 본문·도입에 창현고·유신고·광교고를 앞세워 통합검색 약점을 보완**하는 안을 제안 — 고등 수리논술 글이라 자연스럽고 홍보형은 6개 학교 전체 표기 규칙과도 맞는다(효과는 추정, 단정 아님). P23(창현·유신 배정 학생 후기) 앞당김은 플레이스 약점을 겨냥하지만 인터뷰 자료가 필요해 시간상 다음 기회로 두는 것이 무리 없음. 산남중 약점(블로그 19위)은 11~13주차 정보형에 산남중 내신 소재를 반영하는 9/19 제안 유지.
 - **데이터 한계**: 유입 검색어 표본 3건, 통합검색·블로그탭은 1회 시점 관찰값(스마트블록 미확인), 플레이스는 상위 10곳까지만 확인, 방문 급증 원인 미확인.
+
+### 2026-09-26 — Meta(인스타·페이스북) 인사이트 자동 조회
+
+- 인스타그램 계정: 팔로워 98, 게시물 수 67
+  - 계정 인사이트: reach=6, accounts_engaged=6
+  - [VIDEO] 2026-09-23 '성적표 받은 날, 가장 먼저 물을 건 점수가 아닙니다 ' → reach=163, likes=2, comments=1, saved=1, shares=0, views=198 (https://www.instagram.com/reel/Ddpbmg2jutX/)
+  - [CAROUSEL_ALBUM] 2026-09-23 '성적표 받은 날, 뭐라고 말할까요? 📉  부모님이 할 ' → reach=26, likes=1, comments=0, saved=0, shares=0 (https://www.instagram.com/p/DdnmhSOlHfP/)
+  - [VIDEO] 2026-09-17 '"6등급이 3등급 된 진짜 비결" 📈 원장이 직접 말합' → reach=48, likes=4, comments=0, saved=1, shares=0, views=61 (https://www.instagram.com/reel/DdYIV9smgJW/)
+  - [CAROUSEL_ALBUM] 2026-09-16 '"6등급이 3등급 된 진짜 비결" — 원장이 직접 말합' → reach=34, likes=2, comments=2, saved=0, shares=0 (https://www.instagram.com/p/DdV800XDJy5/)
+  - [VIDEO] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → reach=39, likes=2, comments=0, saved=1, shares=0, views=50 (https://www.instagram.com/reel/DdHGfMflGvP/)
+- 페이스북 페이지: 팔로워 13
+  - 페이지 인사이트: page_follows=13, page_media_view=356
+  - [게시글] 2026-09-23 '성적표 받은 날, 가장 먼저 물을 건 점수가 아닙니다 ' → post_media_view=6, post_reactions_by_type_total={} (https://www.facebook.com/reel/1058235277219003/)
+  - [게시글] 2026-09-23 '성적표 받은 날, 뭐라고 말할까요? 📉  부모님이 할 ' → post_media_view=5, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122117399511424939)
+  - [게시글] 2026-09-17 '"6등급이 3등급 된 진짜 비결" — 원장이 직접 말합' → post_media_view=4, post_reactions_by_type_total={} (https://www.facebook.com/reel/4498317460439791/)
+  - [게시글] 2026-09-16 '"6등급이 3등급 된 진짜 비결" — 원장이 직접 말합' → post_media_view=4, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122115847761424939)
+  - [게시글] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → post_media_view=16, post_reactions_by_type_total={} (https://www.facebook.com/reel/1423279913202551/)
+  - [릴스/영상] 2026-09-23 '성적표 받은 날, 가장 먼저 물을 건 점수가 아닙니다 ' → blue_reels_play_count=6 (/reel/1058235277219003/)
+  - [릴스/영상] 2026-09-17 '"6등급이 3등급 된 진짜 비결" — 원장이 직접 말합' → blue_reels_play_count=4 (/reel/4498317460439791/)
+  - [릴스/영상] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → (값 없음) (/reel/1423279913202551/)
+  - [릴스/영상] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → blue_reels_play_count=185 (/reel/2534315827035432/)
+  - [릴스/영상] 2026-09-01 '' → total_video_views=0, total_video_impressions=0, total_video_avg_time_watched=0 (/122115070323424939/videos/1785021425985952)
