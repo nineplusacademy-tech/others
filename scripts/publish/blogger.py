@@ -72,35 +72,55 @@ def publish(title: str, html_content: str, labels: list[str], search_description
     # ①저장 반영에 시간이 걸릴 수 있어 매 시도 전에 점점 늘어나는 간격(2·5·10·20초)을 두고
     # ②patch를 2번 시도해도 안 되면 posts.update(PUT, 제목·본문·라벨·검색설명 전체)로
     # 방식을 바꿔 4번까지 시도한다. 그래도 안 되면 위 원칙대로 경고만 남긴다.
+    # 2026-09-28 개선 — 이 루프 안의 모든 API 호출(_missing의 get 포함)을 try/except로
+    # 감싼다. 감싸지 않았던 탓에 교육뉴스 9/28호에서 patch 단계의 일시적 HttpError 503
+    # (Blogger 백엔드 일시 장애)이 그대로 위로 전파돼 "발행 실패"로 잘못 기록됐다 —
+    # 글 자체(insert)는 이미 성공해 라이브였는데도 워크플로가 실패 처리되면서 큐 폴더가
+    # 안 지워졌고, 다음 재시도가 같은 글을 다시 insert해 중복 게시할 뻔했다. 이 시점부터
+    # 절대 예외를 던지지 않는다는 원칙(위 주석)을 코드로도 지키도록, 무엇이 됐든 실패하면
+    # 즉시 루프를 멈추고 경고만 남긴 뒤 url을 반환한다.
     delays = (2, 5, 10, 20)
     for attempt, delay in enumerate(delays):
         time.sleep(delay)
-        missing_description, missing_labels = _missing()
-        if not missing_description and not missing_labels:
+        try:
+            missing_description, missing_labels = _missing()
+            if not missing_description and not missing_labels:
+                return url
+            if attempt < 2:
+                patch_body: dict = {}
+                if missing_description:
+                    patch_body["searchDescription"] = search_description
+                if missing_labels:
+                    patch_body["labels"] = labels
+                service.posts().patch(blogId=blog_id, postId=post_id, body=patch_body).execute()
+            else:
+                full_body = {
+                    "id": post_id,
+                    "blog": {"id": blog_id},
+                    "title": title,
+                    "content": html_content,
+                }
+                if labels:
+                    full_body["labels"] = labels
+                if search_description:
+                    full_body["searchDescription"] = search_description
+                service.posts().update(blogId=blog_id, postId=post_id, body=full_body).execute()
+            log(f"[blogger] 라벨·검색설명 보정 시도 {attempt + 1}/{len(delays)} ({'patch' if attempt < 2 else 'update'})")
+        except Exception as exc:  # noqa: BLE001 — Blogger API의 일시적 오류(503 등)까지 포함
+            log(
+                f"::warning::[blogger] 게시는 됐지만({url}) 라벨·검색설명 보정 {attempt + 1}번째 시도 중 "
+                f"오류가 나서 중단합니다: {exc}. 발행은 완료로 처리하고 계속 진행합니다 — "
+                "Blogger 관리 화면에서 직접 채워주세요."
+            )
             return url
-        if attempt < 2:
-            patch_body: dict = {}
-            if missing_description:
-                patch_body["searchDescription"] = search_description
-            if missing_labels:
-                patch_body["labels"] = labels
-            service.posts().patch(blogId=blog_id, postId=post_id, body=patch_body).execute()
-        else:
-            full_body = {
-                "id": post_id,
-                "blog": {"id": blog_id},
-                "title": title,
-                "content": html_content,
-            }
-            if labels:
-                full_body["labels"] = labels
-            if search_description:
-                full_body["searchDescription"] = search_description
-            service.posts().update(blogId=blog_id, postId=post_id, body=full_body).execute()
-        log(f"[blogger] 라벨·검색설명 보정 시도 {attempt + 1}/{len(delays)} ({'patch' if attempt < 2 else 'update'})")
 
-    time.sleep(5)
-    missing_description, missing_labels = _missing()
+    try:
+        time.sleep(5)
+        missing_description, missing_labels = _missing()
+    except Exception as exc:  # noqa: BLE001
+        log(f"::warning::[blogger] 최종 확인 중 오류(무시하고 계속): {exc}")
+        return url
+
     if missing_description or missing_labels:
         # "::warning::"는 GitHub Actions 워크플로 명령 문법 — 일반 로그에 묻히지 않고 실행
         # 화면 상단 Annotations에 노란 경고로 뜬다. 발행 자체는 성공(초록)이라 이게 없으면
