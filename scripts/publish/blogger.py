@@ -62,10 +62,19 @@ def publish(title: str, html_content: str, labels: list[str], search_description
     blog_id = os.environ["BLOGGER_BLOG_ID"]
 
     def _missing() -> tuple[bool, bool]:
+        # 2026-09-29 개선 — 재발 원인 진단을 위해 실제로 무엇이 돌아왔는지 로그에 남긴다
+        # (그동안은 "안 붙었다"는 결론만 남고 실제 API 응답값이 안 보여 왜 안 붙는지
+        # 알 수 없었다 — 9/29 10주차에서 라벨·검색설명이 4번 보정 후에도 전부 실패).
         fetched = service.posts().get(blogId=blog_id, postId=post_id).execute()
+        actual_description = fetched.get("searchDescription")
+        actual_labels = fetched.get("labels", [])
+        log(
+            f"[blogger] 확인: searchDescription={actual_description!r} "
+            f"labels={actual_labels!r} (기대: description={search_description!r} labels={labels!r})"
+        )
         return (
-            bool(search_description) and fetched.get("searchDescription") != search_description,
-            bool(labels) and set(fetched.get("labels", [])) != set(labels),
+            bool(search_description) and actual_description != search_description,
+            bool(labels) and set(actual_labels) != set(labels),
         )
 
     # 2026-09-24 개선 — 예전엔 대기 없이 patch만 2번 시도했는데(9/15·9/22 두 번 다 실패),
@@ -92,7 +101,7 @@ def publish(title: str, html_content: str, labels: list[str], search_description
                     patch_body["searchDescription"] = search_description
                 if missing_labels:
                     patch_body["labels"] = labels
-                service.posts().patch(blogId=blog_id, postId=post_id, body=patch_body).execute()
+                patch_result = service.posts().patch(blogId=blog_id, postId=post_id, body=patch_body).execute()
             else:
                 full_body = {
                     "id": post_id,
@@ -104,8 +113,12 @@ def publish(title: str, html_content: str, labels: list[str], search_description
                     full_body["labels"] = labels
                 if search_description:
                     full_body["searchDescription"] = search_description
-                service.posts().update(blogId=blog_id, postId=post_id, body=full_body).execute()
-            log(f"[blogger] 라벨·검색설명 보정 시도 {attempt + 1}/{len(delays)} ({'patch' if attempt < 2 else 'update'})")
+                patch_result = service.posts().update(blogId=blog_id, postId=post_id, body=full_body).execute()
+            log(
+                f"[blogger] 라벨·검색설명 보정 시도 {attempt + 1}/{len(delays)} "
+                f"({'patch' if attempt < 2 else 'update'}) — 응답: "
+                f"searchDescription={patch_result.get('searchDescription')!r} labels={patch_result.get('labels')!r}"
+            )
         except Exception as exc:  # noqa: BLE001 — Blogger API의 일시적 오류(503 등)까지 포함
             log(
                 f"::warning::[blogger] 게시는 됐지만({url}) 라벨·검색설명 보정 {attempt + 1}번째 시도 중 "
