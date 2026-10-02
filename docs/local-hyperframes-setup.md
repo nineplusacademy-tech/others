@@ -67,6 +67,40 @@ Get-ChildItem .claude\skills | Where-Object { $_.Name -like "hyperframes*" }
 남겨둔다 — 사용자 레벨 설치가 없는 다른 컴퓨터에서 작업하거나, 나중에 그 설치가
 사라지는 경우에 대비한 대체 경로다.
 
+## 나레이션(TTS) 생성 — HeyGen CLI는 이 PC에서 윈도우 네이티브 미지원 (2026-10-02 신설)
+
+HyperFrames 숏츠의 내레이션은 원래 HeyGen CLI(`heygen voice speech create`,
+원장님 클론 목소리 `5a123c0779304a2b99fa98d2c1be9e17`)로 생성하는 게 기본 경로지만,
+**HeyGen CLI는 Windows 네이티브를 지원하지 않는다**(공식 문서: macOS/Linux만 지원,
+Windows는 WSL 권장). 10주차에서 처음 이 문제를 만나 해결한 기록:
+
+1. **WSL 설치**: 이 PC에는 이제 WSL(Ubuntu, 사용자명 `nineplus-aca`)이 설치돼 있다 —
+   `wsl -d Ubuntu`로 열면 된다. `~/.local/bin`에 PATH를 추가해야 `heygen` 명령이
+   인식된다(`export PATH="$HOME/.local/bin:$PATH"`, `~/.bashrc`에도 추가됨).
+   WSL 설치 직후 `heygen auth login --oauth`의 브라우저 자동 실행이 막히면(WSL엔
+   GUI 브라우저가 없음) 터미널에 출력되는 인증 URL을 윈도우 브라우저에 직접 열어
+   로그인하면 된다 — 단, 이게 `ERR_CONNECTION_REFUSED`로 실패하면 `C:\Users\<계정>\.wslconfig`에
+   `[wsl2]\nnetworkingMode=mirrored`를 추가하고 PowerShell에서 `wsl --shutdown` 후
+   재시도한다(WSL2 NAT 모드에서 localhost 포트가 윈도우로 자동 전달 안 되는 경우가
+   있음).
+2. **무료 음성 생성 크레딧 소진**: 10주차 시점 기준 HeyGen 무료 플랜의 월간 음성
+   생성 할당량이 거의 소진된 상태였다(`heygen user me get`으로 `Plan: free` 확인
+   가능). 이 경우 당장 쓸 수 있는 대안:
+   - **네이버 클로바더빙**(clovadubbing.naver.com) — 공개 API는 없어 웹사이트에서
+     직접 문장별로 생성·다운로드해야 하지만, 무료이고 음질이 자연스럽다. 10주차는
+     이 방식으로 전환해 완료했다.
+   - **Edge-TTS**(`pip install edge-tts`) — 완전 무료·무제한·API 키 불필요, 한국어
+     음성 3종(`ko-KR-InJoonNeural`·`ko-KR-HyunsuMultilingualNeural`·
+     `ko-KR-SunHiNeural`) 지원하지만 합성 음성 티가 나서(AI스러움) 사용자가 거부한
+     적 있다 — 급할 때 임시 대안 정도로만 쓴다.
+   - **HeyGen API 직접 호출**(`POST https://api.heygen.com/v3/voices/speech`,
+     `X-Api-Key` 헤더) — CLI의 무료 OAuth 경로가 아니라 유료 API 크레딧을 쓰는
+     경로라 사용자 승인 후에만 진행한다.
+   - `npx hyperframes tts`(로컬 Kokoro) — **한국어를 지원하지 않는다**(en/es/fr/hi/
+     it/pt-br/ja/zh만 있음). 한국어 프로젝트에는 쓸 수 없다.
+3. 다음 주차부터는 ①HeyGen 무료 할당량이 갱신됐는지 먼저 `heygen user me get`으로
+   확인 → 남아있으면 CLI로 바로 생성, 소진됐으면 처음부터 클로바더빙으로 안내한다.
+
 ## 유지 관리
 
 - `claude_pro`에서 HyperFrames가 업데이트되면(버전 갱신 등) 정션은 항상 최신 파일을
