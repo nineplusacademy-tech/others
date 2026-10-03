@@ -242,3 +242,25 @@ Meta 앱 연결을 완전히 끊었다가 Instagram 테스터 초대·수락을 
   4. **광고 예산 재배치 제안**: 사용자가 이미 네이버 광고주센터에서 광고 중이라면, 오가닉으로 이기기 구조적으로 어려운 이 4개 학교 키워드(창현고·유신고·동수원중·산남중)에 광고 예산을 우선 배정하는 게 합리적이다 — 반대로 우만동·동성중은 오가닉이 이미 강하니(6위/7위, 통합검색도 3~4위) 광고 예산 비중을 낮춰도 되는 후보. **다만 실제 광고 성과(클릭률·전환·소진 현황)는 이 세션의 데이터랩 도구로 확인할 수 없어 네이버 광고주센터 대시보드에서 직접 확인이 필요하다.**
   5. 산남중은 블로그탭도 약함(9/24 기준 19위, 이번엔 재확인 안 함) — 기존 계획대로 11~13주차 정보형 콘텐츠에 산남중 소재를 반영해 블로그 쪽부터 보완.
 - **데이터 한계**: 플레이스 순위는 로그인 계정·검색 시점의 위치 정보에 따라 달라질 수 있어(개인화) 이 조회값이 실제 학부모가 보는 순위와 다를 수 있다. 리뷰 수·저장수 같은 세부 신호는 이번엔 조회하지 않음(선택 절차, §2-3). 광고 성과는 미확인.
+
+### 2026-10-03 — Meta(인스타·페이스북) 인사이트 자동 조회
+
+- 인스타그램 계정: 팔로워 97, 게시물 수 69
+  - 계정 인사이트: reach=3, accounts_engaged=1
+  - [VIDEO] 2026-09-30 '수시 6장 넣었다면, 진짜 할 일은 지금부터입니다 📚 ' → reach=169, likes=1, comments=0, saved=1, shares=0, views=190 (https://www.instagram.com/reel/Dd7isG2DGbm/)
+  - [CAROUSEL_ALBUM] 2026-09-30 '수시 6장 넣었다면, 진짜 할 일은 지금부터입니다 📚 ' → reach=22, likes=2, comments=0, saved=2, shares=0 (https://www.instagram.com/p/Dd5WrIQGxsj/)
+  - [VIDEO] 2026-09-23 '성적표 받은 날, 가장 먼저 물을 건 점수가 아닙니다 ' → reach=170, likes=3, comments=1, saved=1, shares=0, views=209 (https://www.instagram.com/reel/Ddpbmg2jutX/)
+  - [CAROUSEL_ALBUM] 2026-09-23 '성적표 받은 날, 뭐라고 말할까요? 📉  부모님이 할 ' → reach=32, likes=2, comments=0, saved=0, shares=0 (https://www.instagram.com/p/DdnmhSOlHfP/)
+  - [VIDEO] 2026-09-17 '"6등급이 3등급 된 진짜 비결" 📈 원장이 직접 말합' → reach=51, likes=4, comments=0, saved=1, shares=0, views=64 (https://www.instagram.com/reel/DdYIV9smgJW/)
+- 페이스북 페이지: 팔로워 13
+  - 페이지 인사이트: page_follows=13, page_media_view=4707
+  - [게시글] 2026-09-30 '수시 6장 넣었다면, 진짜 할 일은 지금부터입니다 📚 ' → post_media_view=7, post_reactions_by_type_total={} (https://www.facebook.com/reel/4665535350400679/)
+  - [게시글] 2026-09-30 '수시 6장 넣었다면, 진짜 할 일은 지금부터입니다 📚 ' → post_media_view=3, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122119597077424939)
+  - [게시글] 2026-09-23 '성적표 받은 날, 가장 먼저 물을 건 점수가 아닙니다 ' → post_media_view=12, post_reactions_by_type_total={} (https://www.facebook.com/reel/1058235277219003/)
+  - [게시글] 2026-09-23 '성적표 받은 날, 뭐라고 말할까요? 📉  부모님이 할 ' → post_media_view=9, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122117399511424939)
+  - [게시글] 2026-09-17 '"6등급이 3등급 된 진짜 비결" — 원장이 직접 말합' → post_media_view=4, post_reactions_by_type_total={} (https://www.facebook.com/reel/4498317460439791/)
+  - [릴스/영상] 2026-09-30 '수시 6장 넣었다면, 진짜 할 일은 지금부터입니다 📚 ' → blue_reels_play_count=5 (/reel/4665535350400679/)
+  - [릴스/영상] 2026-09-23 '성적표 받은 날, 가장 먼저 물을 건 점수가 아닙니다 ' → blue_reels_play_count=11 (/reel/1058235277219003/)
+  - [릴스/영상] 2026-09-17 '"6등급이 3등급 된 진짜 비결" — 원장이 직접 말합' → blue_reels_play_count=4 (/reel/4498317460439791/)
+  - [릴스/영상] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → (값 없음) (/reel/1423279913202551/)
+  - [릴스/영상] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → blue_reels_play_count=185 (/reel/2534315827035432/)
