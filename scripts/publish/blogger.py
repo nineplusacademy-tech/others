@@ -72,10 +72,26 @@ def publish(title: str, html_content: str, labels: list[str], search_description
             f"[blogger] 확인: searchDescription={actual_description!r} "
             f"labels={actual_labels!r} (기대: description={search_description!r} labels={labels!r})"
         )
+        # 2026-10-05: 검색설명은 보정 대상에서 뺐다 — Blogger API v3의 Post 리소스에는 애초에
+        # searchDescription 필드가 없다(discovery 문서의 Post 속성: author·blog·content·
+        # customMetaData·etag·id·images·kind·labels·location·published·readerComments·replies·
+        # selfLink·status·title·titleLink·trashed·updated·url). insert/patch/update에 보내도
+        # 서버가 조용히 무시하므로 몇 번을 재시도해도 반영되지 않는다(9/15·9/22·9/28·9/29·10/5
+        # 반복 실사고의 진짜 원인). 그래서 라벨만 재시도 대상으로 두고, 검색설명은 끝에서
+        # 붙여넣을 문구를 경고로 남겨 사람이 Blogger 관리 화면에서 넣게 한다.
         return (
-            bool(search_description) and actual_description != search_description,
+            False,
             bool(labels) and set(actual_labels) != set(labels),
         )
+
+    def _done() -> str:
+        if search_description:
+            log(
+                f"::warning::[blogger] 검색설명은 Blogger API가 지원하지 않아 자동 입력되지 않습니다 — "
+                f"{url} 글의 Blogger 관리 화면(게시물 설정 > 검색 설명)에 아래 문구를 붙여넣어 주세요: "
+                f"{search_description}"
+            )
+        return url
 
     # 2026-09-24 개선 — 예전엔 대기 없이 patch만 2번 시도했는데(9/15·9/22 두 번 다 실패),
     # ①저장 반영에 시간이 걸릴 수 있어 매 시도 전에 점점 늘어나는 간격(2·5·10·20초)을 두고
@@ -93,8 +109,8 @@ def publish(title: str, html_content: str, labels: list[str], search_description
         time.sleep(delay)
         try:
             missing_description, missing_labels = _missing()
-            if not missing_description and not missing_labels:
-                return url
+            if not missing_labels:
+                return _done()
             if attempt < 2:
                 patch_body: dict = {}
                 if missing_description:
@@ -125,23 +141,23 @@ def publish(title: str, html_content: str, labels: list[str], search_description
                 f"오류가 나서 중단합니다: {exc}. 발행은 완료로 처리하고 계속 진행합니다 — "
                 "Blogger 관리 화면에서 직접 채워주세요."
             )
-            return url
+            return _done()
 
     try:
         time.sleep(5)
         missing_description, missing_labels = _missing()
     except Exception as exc:  # noqa: BLE001
         log(f"::warning::[blogger] 최종 확인 중 오류(무시하고 계속): {exc}")
-        return url
+        return _done()
 
-    if missing_description or missing_labels:
+    if missing_labels:
         # "::warning::"는 GitHub Actions 워크플로 명령 문법 — 일반 로그에 묻히지 않고 실행
         # 화면 상단 Annotations에 노란 경고로 뜬다. 발행 자체는 성공(초록)이라 이게 없으면
         # 검색설명 누락을 놓치기 쉽다.
         log(
-            f"::warning::[blogger] 게시는 됐지만({url}) 라벨·검색설명이 {len(delays)}번 보정 후에도 "
+            f"::warning::[blogger] 게시는 됐지만({url}) 라벨이 {len(delays)}번 보정 후에도 "
             "반영되지 않았습니다. 발행은 완료로 처리하고 계속 진행합니다 — "
             "Blogger 관리 화면에서 직접 채워주세요."
         )
 
-    return url
+    return _done()
