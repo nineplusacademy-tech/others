@@ -286,3 +286,10 @@ Meta 앱 연결을 완전히 끊었다가 Instagram 테스터 초대·수락을 
   - [릴스/영상] 2026-09-23 '성적표 받은 날, 가장 먼저 물을 건 점수가 아닙니다 ' → blue_reels_play_count=12 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1058235277219003/video_insights?metric=tot…) (/reel/1058235277219003/)
   - [릴스/영상] 2026-09-17 '"6등급이 3등급 된 진짜 비결" — 원장이 직접 말합' → blue_reels_play_count=4 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/4498317460439791/video_insights?metric=tot…) (/reel/4498317460439791/)
   - [릴스/영상] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1423279913202551/video_insights?metric=tot…) (/reel/1423279913202551/)
+
+### 2026-10-10 (2회차) — 12주차 주제 확정 브리핑, 데이터랩 연결 안 됨
+
+- **연결 상태**: 데이터랩툴즈 MCP 연결 끊김 → 이번 주는 실통계(방문·유입·SERP·플레이스 순위) 기반 추천 불가. 추측으로 채우지 않음.
+- **추천(폴백)**: `blog-calendar.md` 다음 순번(12주차 P10 "중등 90점이 고등 4등급 되는 이유") 그대로 진행. 근거 없는 순서 변경 제안 없음.
+- **참고(Meta 인사이트, 위 10-10 자동 조회분)**: 릴스 도달 68~177, 카드뉴스 캐러셀 도달 22~25 — 순위 추천 근거로는 쓰지 않음.
+- **데이터 한계**: 9/24 이후 순위·유입 변화 미확인. 데이터랩툴즈 패널을 열면 다음 점검 때 반영 가능.
