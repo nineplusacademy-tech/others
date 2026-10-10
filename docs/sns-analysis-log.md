@@ -264,3 +264,25 @@ Meta 앱 연결을 완전히 끊었다가 Instagram 테스터 초대·수락을 
   - [릴스/영상] 2026-09-17 '"6등급이 3등급 된 진짜 비결" — 원장이 직접 말합' → blue_reels_play_count=4 (/reel/4498317460439791/)
   - [릴스/영상] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → (값 없음) (/reel/1423279913202551/)
   - [릴스/영상] 2026-09-04 '우리 아이 수시 원서, 마감일까지 정확히 알고 계신가요' → blue_reels_play_count=185 (/reel/2534315827035432/)
+
+### 2026-10-10 — Meta(인스타·페이스북) 인사이트 자동 조회
+
+- 인스타그램 계정: 팔로워 96, 게시물 수 71
+  - 계정 인사이트: reach=2, accounts_engaged=3
+  - [VIDEO] 2026-10-08 '시험 전날, 아이에게 필요한 건 더 많은 공부가 아닙니' → reach=68, likes=4, comments=0, saved=1, shares=1, views=92 (https://www.instagram.com/reel/DeNnP_jlGAm/)
+  - [CAROUSEL_ALBUM] 2026-10-06 '시험 전날, 공부보다 먼저 할 일 3가지 📚  시험 전' → reach=22, likes=3, comments=0, saved=1, shares=1 (https://www.instagram.com/p/DeK_x_jGjHo/)
+  - [VIDEO] 2026-09-30 '수시 6장 넣었다면, 진짜 할 일은 지금부터입니다 📚 ' → reach=177, likes=1, comments=0, saved=1, shares=0, views=201 (https://www.instagram.com/reel/Dd7isG2DGbm/)
+  - [CAROUSEL_ALBUM] 2026-09-30 '수시 6장 넣었다면, 진짜 할 일은 지금부터입니다 📚 ' → reach=25, likes=2, comments=0, saved=2, shares=0 (https://www.instagram.com/p/Dd5WrIQGxsj/)
+  - [VIDEO] 2026-09-23 '성적표 받은 날, 가장 먼저 물을 건 점수가 아닙니다 ' → reach=171, likes=3, comments=1, saved=1, shares=0, views=210 (https://www.instagram.com/reel/Ddpbmg2jutX/)
+- 페이스북 페이지: 팔로워 14
+  - 페이지 인사이트: page_follows=14, page_media_view=30
+  - [게시글] 2026-10-08 '시험 전날, 아이에게 필요한 건 더 많은 공부가 아닙니' → post_media_view=3, post_reactions_by_type_total={} (https://www.facebook.com/reel/1420099636993126/)
+  - [게시글] 2026-10-07 'https://m.blog.naver.com/math2' → post_media_view=4, post_reactions_by_type_total={'like': 1} (https://www.facebook.com/122115070323424939/posts/122121239493424939)
+  - [게시글] 2026-10-06 '시험 전날, 공부보다 먼저 할 일 3가지 📚  시험 전' → post_media_view=0, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122121172485424939)
+  - [게시글] 2026-09-30 '수시 6장 넣었다면, 진짜 할 일은 지금부터입니다 📚 ' → post_media_view=10, post_reactions_by_type_total={} (https://www.facebook.com/reel/4665535350400679/)
+  - [게시글] 2026-09-30 '수시 6장 넣었다면, 진짜 할 일은 지금부터입니다 📚 ' → post_media_view=8, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122119597077424939)
+  - [릴스/영상] 2026-10-08 '시험 전날, 아이에게 필요한 건 더 많은 공부가 아닙니' → blue_reels_play_count=2 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1420099636993126/video_insights?metric=tot…) (/reel/1420099636993126/)
+  - [릴스/영상] 2026-09-30 '수시 6장 넣었다면, 진짜 할 일은 지금부터입니다 📚 ' → blue_reels_play_count=7 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/4665535350400679/video_insights?metric=tot…) (/reel/4665535350400679/)
+  - [릴스/영상] 2026-09-23 '성적표 받은 날, 가장 먼저 물을 건 점수가 아닙니다 ' → blue_reels_play_count=12 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1058235277219003/video_insights?metric=tot…) (/reel/1058235277219003/)
+  - [릴스/영상] 2026-09-17 '"6등급이 3등급 된 진짜 비결" — 원장이 직접 말합' → blue_reels_play_count=4 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/4498317460439791/video_insights?metric=tot…) (/reel/4498317460439791/)
+  - [릴스/영상] 2026-09-10 '스터디플래너, 왜 항상 작심삼일로 끝날까요? 계획 채우' → 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1423279913202551/video_insights?metric=tot…) (/reel/1423279913202551/)
