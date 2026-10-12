@@ -54,7 +54,8 @@ sns_analysis_team·content-derivation-team·design_team·education-news-team)의
 **반자동 채널 자동 게시(2026-10-12 사용자 지시, `mainmanager-plan.md` §13)**: 당근마켓·카카오톡채널 소식·
 유튜브 커뮤니티·밴드는 발행 요일(월 교육뉴스·수 카드뉴스·목 숏츠) 11:00에 예약 작업 `semi-auto-posting`이
 사용자 PC 크롬의 로그인 세션으로 자동 게시한다. 하루 전·당일 아침 브리핑이 사용자가 미리 준비할 것을
-알려주고, 네이버 계열(플레이스·클립·블로그)은 접속이 차단돼 사용자가 직접 게시한다.
+알려주고, 네이버 계열(플레이스·클립·블로그)은 접속이 차단돼 사용자가 직접 게시한다. 월·화에는 같은 실행에서
+구글 블로그 검색설명(Blogger 글 설정)도 확인·입력한다.
 
 스킬 정의: [.claude/skills/mainmanager/SKILL.md](.claude/skills/mainmanager/SKILL.md).
 
