@@ -315,3 +315,25 @@ Meta 앱 연결을 완전히 끊었다가 Instagram 테스터 초대·수락을 
 - **추천**: **12주차는 일정표대로 P10 "우만2동 — 중등 90점이 고등 4등급 되는 이유" 그대로 진행**하되, 약점 보완 장치를 더한다 — ① 산남중·동수원중(블로그탭 이탈·하락)과 동성중을 제목·도입에 앞세우고 키워드 `우만동 수학학원`을 제목에 넣어 통합검색 이탈을 겨냥, ② 홍보형이라 6개 학교 전체를 본문에 표기(playbook 규칙), ③ 광교고·창현고·유신고는 후반부에 배치. 교체 소재(P23 후기)는 인터뷰 자료가 없어 지금은 권하지 않음. 효과는 추정이며 단정하지 않는다.
 - **참고(Meta 인사이트, 위 10-10 자동 조회분)**: 10/8 릴스 도달 68, 10/6 카드뉴스 도달 22 — 추천 근거로는 쓰지 않음.
 - **데이터 한계**: 블로그 통합검색·블로그탭은 1회 시점 관찰값(스마트블록 미확인, 상위 24~32개만 확인), 유입 검색어 표본 6건, 플레이스는 상위 10곳까지만 확인(개인화 가능성), 직전 구간 비교는 진행 중 기간 효과 포함.
+
+### 2026-10-17 — Meta(인스타·페이스북) 인사이트 자동 조회
+
+- 인스타그램 계정: 팔로워 98, 게시물 수 73
+  - 계정 인사이트: reach=9, accounts_engaged=1
+  - [VIDEO] 2026-10-14 '중학교 수학 90점인데 고1 첫 시험은 4등급? 📚  ' → reach=145, likes=1, comments=0, saved=1, shares=0, views=161 (https://www.instagram.com/reel/DefiAu7Cc5J/)
+  - [CAROUSEL_ALBUM] 2026-10-13 '중학교 수학 90점, 고등학교에서 4등급? 📚  90점' → reach=25, likes=2, comments=0, saved=0, shares=0 (https://www.instagram.com/p/DedBBdlkdjB/)
+  - [VIDEO] 2026-10-08 '시험 전날, 아이에게 필요한 건 더 많은 공부가 아닙니' → reach=78, likes=5, comments=0, saved=1, shares=1, views=112 (https://www.instagram.com/reel/DeNnP_jlGAm/)
+  - [CAROUSEL_ALBUM] 2026-10-06 '시험 전날, 공부보다 먼저 할 일 3가지 📚  시험 전' → reach=30, likes=5, comments=0, saved=2, shares=1 (https://www.instagram.com/p/DeK_x_jGjHo/)
+  - [VIDEO] 2026-09-30 '수시 6장 넣었다면, 진짜 할 일은 지금부터입니다 📚 ' → reach=179, likes=2, comments=0, saved=1, shares=0, views=203 (https://www.instagram.com/reel/Dd7isG2DGbm/)
+- 페이스북 페이지: 팔로워 15
+  - 페이지 인사이트: page_follows=15, page_media_view=8
+  - [게시글] 2026-10-14 '중학교 수학 90점인데 고1 첫 시험은 4등급? 📚  ' → post_media_view=6, post_reactions_by_type_total={} (https://www.facebook.com/reel/1441450524629738/)
+  - [게시글] 2026-10-13 '중학교 수학 90점, 고등학교에서 4등급? 📚  90점' → post_media_view=0, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122122579569424939)
+  - [게시글] 2026-10-08 '시험 전날, 아이에게 필요한 건 더 많은 공부가 아닙니' → post_media_view=3, post_reactions_by_type_total={} (https://www.facebook.com/reel/1420099636993126/)
+  - [게시글] 2026-10-07 'https://m.blog.naver.com/math2' → post_reactions_by_type_total={'like': 1} | 실패: post_media_view(500 Internal Server Error for url: https://graph.facebook.com/v21.0/1265899359934473_122121239493424…) (https://www.facebook.com/122115070323424939/posts/122121239493424939)
+  - [게시글] 2026-10-06 '시험 전날, 공부보다 먼저 할 일 3가지 📚  시험 전' → post_media_view=0, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122121172485424939)
+  - [릴스/영상] 2026-10-14 '중학교 수학 90점인데 고1 첫 시험은 4등급? 📚  ' → blue_reels_play_count=4 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1441450524629738/video_insights?metric=tot…) (/reel/1441450524629738/)
+  - [릴스/영상] 2026-10-08 '시험 전날, 아이에게 필요한 건 더 많은 공부가 아닙니' → blue_reels_play_count=2 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1420099636993126/video_insights?metric=tot…) (/reel/1420099636993126/)
+  - [릴스/영상] 2026-09-30 '수시 6장 넣었다면, 진짜 할 일은 지금부터입니다 📚 ' → blue_reels_play_count=7 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/4665535350400679/video_insights?metric=tot…) (/reel/4665535350400679/)
+  - [릴스/영상] 2026-09-23 '성적표 받은 날, 가장 먼저 물을 건 점수가 아닙니다 ' → blue_reels_play_count=12 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1058235277219003/video_insights?metric=tot…) (/reel/1058235277219003/)
+  - [릴스/영상] 2026-09-17 '"6등급이 3등급 된 진짜 비결" — 원장이 직접 말합' → blue_reels_play_count=4 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/4498317460439791/video_insights?metric=tot…) (/reel/4498317460439791/)
