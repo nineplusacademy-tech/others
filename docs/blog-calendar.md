@@ -158,3 +158,4 @@
 - 홍보형(P)과 정보형(I/L/M)을 번갈아 배치하는 원칙은 계속 유지한다.
 - 정보형은 시의성(입시 일정·계절)이 있는 주제를 우선 배치하고, 학습법·학부모
   마음가짐은 상시 주제라 빈 자리를 채우는 용도로 유연하게 배치한다.
+- **큐 히스토리 정리(2026-10-23, 사용자 승인)**: git 히스토리에서 `queue/<주차>/`·`queue-edu/<날짜>/` 아래 과거 파일(영상·이미지·글·_status.json) 전부를 제거(`git filter-repo` + force-with-lease 푸시). 로컬 팩 크기 778MB→24MB, HEAD 트리는 동일(55개 파일 해시 일치), `.gitkeep`·`docs/`·`assets/`·workflow 유지. GitHub 쪽 용량 표시는 내부 gc 후 줄어듦. 정리 전 전체 백업(mirror): `/c/Users/user/Desktop/claude_pro/repo_backup_20261023_1548.git`(이상 없으면 며칠 뒤 삭제 가능). 이후 이 저장소의 다른 복제본(다른 컴퓨터·클라우드 세션)은 `git fetch` 후 `git reset --hard origin/claude/academy-marketing-automation-lquj1w`로 맞춰야 한다.
