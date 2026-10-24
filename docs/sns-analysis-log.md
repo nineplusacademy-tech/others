@@ -367,3 +367,25 @@ Meta 앱 연결을 완전히 끊었다가 Instagram 테스터 초대·수락을 
 - **가능한 설명(상관관계, 단정 아님)**: 학교명 키워드 순위는 주 단위로 크게 출렁인다(동성중 4→10→7, 광교고 4→22→30). 학교 시험 분석글이 올라간 직후엔 상위에 노출됐다가 빠지는 패턴이 반복되고, 유입 검색어에는 `광교고 수학 분석`·창현고 분석류가 실제로 들어오고 있어 학교별 분석글 자체는 읽히고 있다. 반면 산남중은 이번에도 상위 30개에 없고 유신고는 20위권 초반에서 정체.
 - **추천**: **14주차 P11(홍보형, 원#12 강사진이 원장 철학을 공유한다는 것의 중요성)은 그대로 진행.** 근거: ① 약점 키워드(산남중·유신고·창현고)를 직접 겨냥할 예비 소재 P23(재학생 후기)은 사용자 인터뷰 자료가 있어야 쓸 수 있어 이번 주 대체 불가, ② 우만동·동수원중·동성중은 최근 홍보형·논술형 글 덕에 2~3위·7위로 개선 중이라 홍보형 흐름을 끊을 근거가 약함, ③ P11 홍보형은 `우만동 수학학원`류 본체 키워드를 받쳐 줌. 다만 P11 제목·본문에 학교명을 억지로 끼워 넣지는 말 것. 약점 보완은 15주차 이후 학교 분석글(산남중·유신고) 보강이나 P23 인터뷰 확보로 별도 검토.
 - **데이터 한계**: 블로그탭 상위 30개만 확인, 통합검색·스마트블록 미확인, 1회 시점 값이라 순위는 주 단위 변동이 큼, 방문·유입 표본이 작음(유입 검색어 약 26건 비중), 진행 중 기간 비교 포함.
+
+### 2026-10-24 — Meta(인스타·페이스북) 인사이트 자동 조회
+
+- 인스타그램 계정: 팔로워 99, 게시물 수 75
+  - 계정 인사이트: reach=1684, accounts_engaged=3
+  - [VIDEO] 2026-10-21 '오답노트를 써도 같은 유형을 또 틀린다면? 📚  정답을' → reach=147, likes=0, comments=0, saved=0, shares=0, views=170 (https://www.instagram.com/reel/DexkBg9Di1q/)
+  - [CAROUSEL_ALBUM] 2026-10-20 '오답노트, 베껴 쓰고 계신가요? 📚  수학 오답노트는 ' → reach=23, likes=1, comments=0, saved=1, shares=0 (https://www.instagram.com/p/Deu-tV1D0oL/)
+  - [VIDEO] 2026-10-14 '중학교 수학 90점인데 고1 첫 시험은 4등급? 📚  ' → reach=149, likes=2, comments=0, saved=1, shares=0, views=165 (https://www.instagram.com/reel/DefiAu7Cc5J/)
+  - [CAROUSEL_ALBUM] 2026-10-13 '중학교 수학 90점, 고등학교에서 4등급? 📚  90점' → reach=28, likes=3, comments=0, saved=0, shares=0 (https://www.instagram.com/p/DedBBdlkdjB/)
+  - [VIDEO] 2026-10-08 '시험 전날, 아이에게 필요한 건 더 많은 공부가 아닙니' → reach=80, likes=5, comments=0, saved=1, shares=1, views=115 (https://www.instagram.com/reel/DeNnP_jlGAm/)
+- 페이스북 페이지: 팔로워 15
+  - 페이지 인사이트: page_follows=15, page_media_view=14
+  - [게시글] 2026-10-21 '오답노트를 써도 같은 유형을 또 틀린다면? 📚  정답을' → post_media_view=11, post_reactions_by_type_total={} (https://www.facebook.com/reel/1690846562402287/)
+  - [게시글] 2026-10-20 '오답노트, 베껴 쓰고 계신가요? 📚  수학 오답노트는 ' → post_media_view=3, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122123723877424939)
+  - [게시글] 2026-10-14 '중학교 수학 90점인데 고1 첫 시험은 4등급? 📚  ' → post_media_view=6, post_reactions_by_type_total={} (https://www.facebook.com/reel/1441450524629738/)
+  - [게시글] 2026-10-13 '중학교 수학 90점, 고등학교에서 4등급? 📚  90점' → post_media_view=0, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122122579569424939)
+  - [게시글] 2026-10-08 '시험 전날, 아이에게 필요한 건 더 많은 공부가 아닙니' → post_media_view=3, post_reactions_by_type_total={} (https://www.facebook.com/reel/1420099636993126/)
+  - [릴스/영상] 2026-10-21 '오답노트를 써도 같은 유형을 또 틀린다면? 📚  정답을' → blue_reels_play_count=5 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1690846562402287/video_insights?metric=tot…) (/reel/1690846562402287/)
+  - [릴스/영상] 2026-10-14 '중학교 수학 90점인데 고1 첫 시험은 4등급? 📚  ' → blue_reels_play_count=4 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1441450524629738/video_insights?metric=tot…) (/reel/1441450524629738/)
+  - [릴스/영상] 2026-10-08 '시험 전날, 아이에게 필요한 건 더 많은 공부가 아닙니' → blue_reels_play_count=2 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1420099636993126/video_insights?metric=tot…) (/reel/1420099636993126/)
+  - [릴스/영상] 2026-09-30 '수시 6장 넣었다면, 진짜 할 일은 지금부터입니다 📚 ' → blue_reels_play_count=7 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/4665535350400679/video_insights?metric=tot…) (/reel/4665535350400679/)
+  - [릴스/영상] 2026-09-23 '성적표 받은 날, 가장 먼저 물을 건 점수가 아닙니다 ' → blue_reels_play_count=12 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1058235277219003/video_insights?metric=tot…) (/reel/1058235277219003/)
