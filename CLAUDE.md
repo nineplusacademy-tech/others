@@ -74,6 +74,9 @@ sns_analysis_team·content-derivation-team·design_team·education-news-team)의
 2026-09-12 신설)도 매주 토요일 12:00 KST에 `.github/workflows/insights.yml`이
 자동 조회해 같은 로그에 append한다(발행용 Meta 토큰 재사용, 게시 없이 조회만,
 `publishing-plan.md` §7) — 다만 이건 검색순위 추천 로직과는 별개의 참고자료다.
+**2026-10-24부터 페이스북·인스타그램·스레드·Meta 광고 분석도 이 에이전트가 전담**하며
+블로그·플레이스 순위 분석과 병행한다(로컬 읽기 전용 MCP `meta-readonly`, 광고 집행·예산
+변경은 하지 않음 — SKILL.md §2-A).
 스킬 정의:
 [.claude/skills/sns_analysis_team/SKILL.md](.claude/skills/sns_analysis_team/SKILL.md).
 
