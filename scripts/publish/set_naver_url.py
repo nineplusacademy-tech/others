@@ -36,6 +36,9 @@ from pathlib import Path
 from common import QUEUE_DIR, find_queue_folder, load_status, save_status
 
 EDU_LINK_FILE = QUEUE_DIR / "_edu_thread_link.json"
+# 2026-10-30: 교육뉴스 페이스북 글(main_fb_post.py)도 같은 주소를 쓰되, 스레드가 먼저 끝나 위 파일을
+# 지워도 영향받지 않게 별도 파일에 한 번 더 기록한다.
+EDU_FB_LINK_FILE = QUEUE_DIR / "_edu_fb_link.json"
 
 # 2026-09-24: 발행 시점에 자동 치환하지 않고, URL을 기록하는 이 시점에 캡션 파일의
 # {{BLOG_URL}} 자리를 실제 주소로 미리 채워둔다 — 파일에 적힌 그대로 게시되므로
@@ -47,6 +50,7 @@ CAPTION_FILES = [
     "숏츠/채널별_캡션.md",
     "숏츠/캡션_유튜브쇼츠.md",
     "스레드.md",
+    "페이스북글.md",
 ]
 
 
@@ -90,6 +94,13 @@ def main() -> None:
         print(f"교육뉴스 스레드용 URL 기록 완료 ({EDU_LINK_FILE}): {url}")
         if _prefill(QUEUE_DIR / "_edu_thread.md", url):
             print("  queue/_edu_thread.md의 {{BLOG_URL}}도 실제 주소로 채움")
+        EDU_FB_LINK_FILE.write_text(
+            json.dumps({"url": url, "recorded_at": date.today().isoformat()}, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        print(f"교육뉴스 페이스북 글용 URL 기록 완료 ({EDU_FB_LINK_FILE})")
+        if _prefill(QUEUE_DIR / "_edu_fb.md", url):
+            print("  queue/_edu_fb.md의 {{BLOG_URL}}도 실제 주소로 채움")
         print("목요일 스레드 게시 후에는 이 파일을 지워도 됩니다(다음 주 화요일에 다시 기록됨).")
         return
 

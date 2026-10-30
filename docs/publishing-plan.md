@@ -361,6 +361,22 @@ Threads API는 같은 Meta 앱 안에서 Facebook 로그인/페이지 관리 이
   이 자동화 대상이 아니고, 예약 작업 `edu-thread-reminder`가 초안을 제시하면 사람이
   같은 `threads_nineplus` 앱/토큰이 아니라 직접 앱에서 게시한다.
 
+## 6-1. 페이스북 페이지 글 — 교육뉴스(월)·메인 블로그(화) 소개글 (구현됨, 2026-10-30)
+
+사용자 지시로 교육뉴스와 메인 블로그 내용을 페이스북 페이지에도 올린다. 형식은 **삽화(교육뉴스) 또는
+대표이미지(메인 블로그) 1장 + 요약 3~5줄 + 원문 링크**, 메인 블로그는 카드뉴스 캡션처럼 상담 안내를 넣고
+교육뉴스는 CTA 없이 정보와 해시태그만 쓴다. 카드뉴스·릴스(`main.py`)와 별개이며 스레드와 같은 방식이다.
+
+- 코드: `scripts/publish/facebook.py`의 `publish_post()`, `scripts/publish/main_fb_post.py`, 워크플로 `.github/workflows/publish-fb-post.yml`
+  (일요일·월요일 22:37 UTC / 월·화요일 03:37 UTC 예약 — GitHub 지연 약 5시간을 고려해 월·화 오전~낮 게시).
+- 교육뉴스 입력: `queue/_edu_fb.md`(본문, `{{BLOG_URL}}` 포함), 선택 `queue/_edu_fb.png`(삽화), `queue/_edu_fb_link.json`
+  (`set_naver_url.py --edu`가 스레드용 파일과 함께 기록, 본문 `{{BLOG_URL}}`도 미리 채움). 게시 후 세 파일 삭제.
+- 메인 블로그 입력: `queue/<주차폴더>/페이스북글.md`(프런트매터 `image:`에 폴더 안 이미지 상대경로, 예: `블로그/대표이미지.png`)
+  + `_status.json`의 `naver_blog_url`. 구글 블로그가 먼저 발행돼야 하고, 게시 후 `facebook_post` 키를 기록한다(ALL_STEPS 제외).
+- 네이버 글이 아직 공개 전이면 미뤘다가 다음 실행에서 재시도한다. 중복 게시는 파일 삭제·상태 키로 막는다.
+- 수동 실행(`workflow_dispatch`)과 `dry_run` 지원. 페이지 토큰은 기존 `FACEBOOK_PAGE_ID`·`FACEBOOK_PAGE_ACCESS_TOKEN` 그대로 쓴다.
+- 주의: 링크 포함 게시물의 도달이 줄 수 있어(월 2개 제한 여부 미확인) 첫 몇 주 반응을 `sns_analysis_team`이 확인한다.
+
 ## 7. SNS 인사이트 조회 (읽기 전용, 신설 2026-09-12)
 
 `sns_analysis_team`이 네이버 블로그·플레이스뿐 아니라 인스타그램·페이스북 성과도
