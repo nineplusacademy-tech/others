@@ -1,4 +1,4 @@
-name: 페이스북 글(교육뉴스·메인 블로그) 자동 게시
+name: 페이스북 글·교육뉴스 인스타 캐러셀 자동 게시
 
 # 2026-10-30 신설(사용자 지시). 교육뉴스(월)·메인 블로그(화) 네이버 글을 소개하는 페이스북 페이지
 # 글을 올린다. 네이버 글이 공개되기 전이면 미뤘다가 다음 실행에서 다시 시도한다(스레드와 같은 방식).
@@ -43,6 +43,9 @@ jobs:
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
           FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
           FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+          INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          GITHUB_SHA: ${{ github.sha }}
         run: python scripts/publish/main_fb_post.py
 
       - name: 발행 결과 커밋 (사용한 파일 삭제·상태 반영)
