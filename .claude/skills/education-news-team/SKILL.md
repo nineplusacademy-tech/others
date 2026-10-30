@@ -127,6 +127,7 @@ mainmanager가 확정한 주제를 받아 착수하거나, mainmanager가 후보
    author/committer 오류가 나면 `GIT_AUTHOR_NAME="nineplusacademy-tech"
    GIT_AUTHOR_EMAIL="nineplusacademy@gmail.com"` 등 환경변수로 지정한다(저장소 git
    config는 절대 변경하지 않는다).
+2-1. **페이스북 페이지 글(2026-10-30 신설, `publishing-plan.md` §6-1)**: 요약 3~4줄 + `📝 원문 보기 👉 {{BLOG_URL}}` + 함께 읽어보면 좋은 글 3개 + 해시태그(CTA 없음)를 `queue/_edu_fb.md`로, 삽화를 `queue/_edu_fb.png`로 저장소 `queue/`에 올려 커밋·push한다(스레드 본문 `queue/_edu_thread.md`와 같은 방식). 네이버 주소는 `set_naver_url.py --edu`가 스레드용과 함께 기록하며 월요일 정규 실행이 자동 게시한다.
 3. 나머지 7채널(네이버 블로그·밴드·유튜브 커뮤니티/설명란·당근·네이버플레이스·
    카카오톡)은 큐에 올리지 않는다 — 로컬 산출물 그대로 두고, 사용자가
    `업로드체크리스트.md`를 보고 직접 게시한다.
