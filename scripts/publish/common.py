@@ -191,6 +191,21 @@ def naver_post_not_found(url: str) -> bool:
         return True
     if resp.status_code == 200 and any(k in resp.text for k in ("삭제되었거나", "존재하지 않는 게시글", "존재하지 않는 블로그")):
         return True
+    # 2026-10-30 추가: 비공개 상태로 올려 두었다가 발행일에 공개로 바꾸는 글은 위 모바일 주소가 껍데기
+    # 페이지(200)만 돌려줘 구분이 안 된다. 본문 주소(PostView)는 공개 글이면 본문 컨테이너
+    # (se-main-container)가 있고, 비공개 글이면 '비공개' 안내만 있다(11/2호 글로 확인).
+    # 비공개 안내가 있고 본문이 없을 때만 True.
+    try:
+        post = requests.get(
+            "https://blog.naver.com/PostView.naver",
+            params={"blogId": m.group(1), "logNo": m.group(2)},
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=20,
+        )
+    except requests.RequestException:
+        return False
+    if post.status_code == 200 and "비공개" in post.text and "se-main-container" not in post.text:
+        return True
     return False
 
 
