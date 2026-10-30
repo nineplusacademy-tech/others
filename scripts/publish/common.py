@@ -75,7 +75,8 @@ def find_queue_folder() -> Path | None:
     """queue/ 아래에서 처리할 폴더 하나를 찾는다 (.gitkeep 등 파일은 무시)."""
     if not QUEUE_DIR.exists():
         return None
-    candidates = sorted(p for p in QUEUE_DIR.iterdir() if p.is_dir())
+    # '_'로 시작하는 폴더(예: _edu_ig, 교육뉴스 인스타 캐러셀용)는 주간 콘텐츠 큐가 아니므로 제외한다.
+    candidates = sorted(p for p in QUEUE_DIR.iterdir() if p.is_dir() and not p.name.startswith("_"))
     return candidates[0] if candidates else None
 
 
