@@ -374,6 +374,7 @@ Threads API는 같은 Meta 앱 안에서 Facebook 로그인/페이지 관리 이
 - 메인 블로그 입력: `queue/<주차폴더>/페이스북글.md`(프런트매터 `image:`에 폴더 안 이미지 상대경로, 예: `블로그/대표이미지.png`)
   + `_status.json`의 `naver_blog_url`. 구글 블로그가 먼저 발행돼야 하고, 게시 후 `facebook_post` 키를 기록한다(ALL_STEPS 제외).
 - 네이버 글이 아직 공개 전이면 미뤘다가 다음 실행에서 재시도한다. 중복 게시는 파일 삭제·상태 키로 막는다.
+- **교육뉴스 인스타 캐러셀(2026-10-30 추가)**: `queue/_edu_ig/01~05.png` + `캡션.md`를 같은 워크플로·스크립트(`run_edu_ig`)가 인스타에 게시한다(네이버 글 공개 확인 후, 게시 후 폴더 삭제). 팔로우·네이버 블로그 조회 증가 목적의 시험이며 비교 기준은 `sns-analysis-log.md` 10/30 항목.
 - 수동 실행(`workflow_dispatch`)과 `dry_run` 지원. 페이지 토큰은 기존 `FACEBOOK_PAGE_ID`·`FACEBOOK_PAGE_ACCESS_TOKEN` 그대로 쓴다.
 - 주의: 링크 포함 게시물의 도달이 줄 수 있어(월 2개 제한 여부 미확인) 첫 몇 주 반응을 `sns_analysis_team`이 확인한다.
 
