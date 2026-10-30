@@ -108,3 +108,37 @@ def publish_reel(video_path: Path, caption: str) -> str:
     )
     raise_for_status_with_body(finish)
     return video_id
+
+
+def publish_post(message: str, image_path: Path | None = None) -> str:
+    """페이스북 페이지에 글을 올린다 — 이미지가 있으면 사진 1장 게시글(캡션=본문), 없으면 텍스트 글.
+
+    2026-10-30 신설: 교육뉴스(월)·메인 블로그(화) 소개글. 본문에 네이버 블로그 주소가
+    들어 있으므로 사진 게시글은 캡션의 링크가 그대로 눌러지고, 텍스트 글은 링크 미리보기가 붙는다.
+    """
+    if DRY_RUN:
+        dry_run_log("Facebook 글", image=str(image_path or ""), message=message)
+        return "dryrun-facebook-post"
+
+    token = _page_token()
+    page_id = _page_id()
+
+    if image_path is not None:
+        with open(image_path, "rb") as f:
+            resp = requests.post(
+                f"{GRAPH}/{page_id}/photos",
+                data={"caption": message, "published": "true", "access_token": token},
+                files={"source": (image_path.name, f)},
+                timeout=120,
+            )
+        raise_for_status_with_body(resp)
+        data = resp.json()
+        return data.get("post_id") or data["id"]
+
+    resp = requests.post(
+        f"{GRAPH}/{page_id}/feed",
+        json={"message": message, "access_token": token},
+        timeout=60,
+    )
+    raise_for_status_with_body(resp)
+    return resp.json()["id"]
