@@ -428,3 +428,25 @@ Meta 앱 연결을 완전히 끊었다가 Instagram 테스터 초대·수락을 
 - **비교 기준**: 인스타 카드뉴스 평균 도달 약 31(25~35, 7주 연속), 릴스 평균 약 118(9/23 이후 약 147). 이 캐러셀이 약 31을 눈에 띄게 넘고 팔로워가 늘어나는지, 월요일·화요일 네이버 블로그 유입이 늘어나는지 11/9·11/16 두 번 본 뒤 판단.
 - **측정 항목**: 게시물별 도달·저장·공유·프로필 방문·팔로우(가능한 범위), 게시 후 3일간 팔로워 증감, 네이버 블로그 글별 조회수·유입 경로.
 - **참고**: 인스타 캡션의 링크는 눌러지지 않아 프로필 링크가 홈페이지에 연결돼 있다. 블로그 조회수가 목적이면 프로필 링크를 네이버 블로그로 바꾸거나 링크 모음 서비스를 쓰는 것을 사용자에게 제안(사용자 결정 대기).
+
+### 2026-10-31 — Meta(인스타·페이스북) 인사이트 자동 조회
+
+- 인스타그램 계정: 팔로워 99, 게시물 수 78
+  - 계정 인사이트: reach=16, accounts_engaged=0
+  - [CAROUSEL_ALBUM] 2026-10-30 '고3 수리논술 직전 특강, 11월 19일 개강해요 📝 ' → reach=14, likes=0, comments=0, saved=0, shares=0 (https://www.instagram.com/p/DfHz6ESkt6a/)
+  - [VIDEO] 2026-10-28 '선생님이 바뀌면 공부도 처음부터일까요? 🎬  강사가 달' → reach=132, likes=0, comments=0, saved=0, shares=0, views=155 (https://www.instagram.com/reel/DfDqtcECXmA/)
+  - [CAROUSEL_ALBUM] 2026-10-27 '선생님이 바뀌면 공부도 처음부터일까요? 📚  강사가 달' → reach=26, likes=1, comments=0, saved=1, shares=0 (https://www.instagram.com/p/DfBEP76FVPe/)
+  - [VIDEO] 2026-10-21 '오답노트를 써도 같은 유형을 또 틀린다면? 📚  정답을' → reach=156, likes=1, comments=0, saved=1, shares=0, views=179 (https://www.instagram.com/reel/DexkBg9Di1q/)
+  - [CAROUSEL_ALBUM] 2026-10-20 '오답노트, 베껴 쓰고 계신가요? 📚  수학 오답노트는 ' → reach=29, likes=1, comments=0, saved=1, shares=0 (https://www.instagram.com/p/Deu-tV1D0oL/)
+- 페이스북 페이지: 팔로워 16
+  - 페이지 인사이트: page_follows=16, page_media_view=824
+  - [게시글] 2026-10-30 '고3 수리논술 직전 특강, 11월 19일 개강해요 📝 ' → post_media_view=1, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122125277283424939)
+  - [게시글] 2026-10-28 '선생님이 바뀌면 공부도 처음부터일까요? 🎬  강사가 달' → post_media_view=6, post_reactions_by_type_total={} (https://www.facebook.com/reel/4826101941005689/)
+  - [게시글] 2026-10-27 '선생님이 바뀌면 공부도 처음부터일까요? 📚  강사가 달' → post_media_view=4, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122124858153424939)
+  - [게시글] 2026-10-21 '오답노트를 써도 같은 유형을 또 틀린다면? 📚  정답을' → post_media_view=14, post_reactions_by_type_total={} (https://www.facebook.com/reel/1690846562402287/)
+  - [게시글] 2026-10-20 '오답노트, 베껴 쓰고 계신가요? 📚  수학 오답노트는 ' → post_media_view=6, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122123723877424939)
+  - [릴스/영상] 2026-10-28 '선생님이 바뀌면 공부도 처음부터일까요? 🎬  강사가 달' → blue_reels_play_count=6 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/4826101941005689/video_insights?metric=tot…) (/reel/4826101941005689/)
+  - [릴스/영상] 2026-10-21 '오답노트를 써도 같은 유형을 또 틀린다면? 📚  정답을' → blue_reels_play_count=7 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1690846562402287/video_insights?metric=tot…) (/reel/1690846562402287/)
+  - [릴스/영상] 2026-10-14 '중학교 수학 90점인데 고1 첫 시험은 4등급? 📚  ' → blue_reels_play_count=5 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1441450524629738/video_insights?metric=tot…) (/reel/1441450524629738/)
+  - [릴스/영상] 2026-10-08 '시험 전날, 아이에게 필요한 건 더 많은 공부가 아닙니' → blue_reels_play_count=2 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1420099636993126/video_insights?metric=tot…) (/reel/1420099636993126/)
+  - [릴스/영상] 2026-09-30 '수시 6장 넣었다면, 진짜 할 일은 지금부터입니다 📚 ' → blue_reels_play_count=7 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/4665535350400679/video_insights?metric=tot…) (/reel/4665535350400679/)
