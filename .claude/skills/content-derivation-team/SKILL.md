@@ -119,6 +119,8 @@ mainmanager의 "결과물 보고 및 자동 진행"(`docs/mainmanager-plan.md` �
   예: 77초 → `ffmpeg -i 9x16_instagram.mp4 -t 39 -c:v libx264 -crf 24 -c:a aac -movflags +faststart 9x16_instagram_story1.mp4` 와
   `ffmpeg -ss 39 -i 9x16_instagram.mp4 -c:v libx264 -crf 24 -c:a aac -movflags +faststart 9x16_instagram_story2.mp4`
   (문장 중간에서 끊기지 않게 장면 경계 시각을 고른다). 60초 이하 릴스는 조각을 만들 필요 없다.
+  **스토리용 세이프존 처리(2026-11-05 휴대폰에서 양옆이 잘려 보인다는 지적)**: 휴대폰 화면이 9:16보다 길어 스토리가 양옆 약 10%씩 잘리고, 상단(프로필)·하단(답장줄)은 인스타 UI가 가린다. 그래서 스토리용은 완성된 릴스를 **82%로 줄여 블러 배경 한가운데(위에서 262px 아래)에** 넣고 그 결과를 나눈다:
+  `ffmpeg -i 9x16_instagram_small.mp4 -filter_complex "[0:v]split[a][b];[a]scale=1080:1920,boxblur=40:6,eq=brightness=-0.18[bg];[b]scale=886:1574[fg];[bg][fg]overlay=(W-w)/2:262,format=yuv420p[v]" -map "[v]" -map 0:a -c:v libx264 -crf 23 -c:a aac -b:a 160k -movflags +faststart 9x16_instagram_story_full.mp4` 로 만든 뒤 `-t 43.17`(장면 6 시작)·`-ss 43.17`로 `…_story1/2.mp4`를 만든다(페이스북도 `9x16_facebook_small.mp4`로 같은 방식). 로컬 작업 폴더 `숏츠/_make_story.sh`가 이 과정을 한 번에 처리한다. 카드뉴스 스토리(4:5)는 현재 원본 그대로 올린다.
 
 ## 5. 렌더링 후 마무리
 
