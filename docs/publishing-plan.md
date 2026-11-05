@@ -470,10 +470,10 @@ Meta for Developers(`blogTOsns_nineplus` 앱)에서 `read_insights` 권한을
 다음 토요일(12:00 KST) 자동 실행 또는 수동 실행에서 위 두 가지(릴스
 재생수·계정 참여 지표)가 정상 조회되는지 확인 예정.
 
-### 인스타그램 스토리 자동 게시 (사용자 지시 2026-11-05)
+### 인스타그램·페이스북 스토리 자동 게시 (사용자 지시 2026-11-05)
 
 "인스타에 올리는 모든 게시물을 스토리에도 올려 달라"는 지시로, 피드 게시물과 **같은 실행**에서 스토리도 올린다
-(`scripts/publish/main.py`의 `_publish_instagram_stories`, `instagram.py`의 `publish_story_image/video`,
+(`scripts/publish/main.py`의 `_publish_stories`, `instagram.py`의 `publish_story_image/video`,
 Graph API `media_type=STORIES`).
 - 수요일(카드뉴스 배치): `카드뉴스/instagram/*.png` 전부를 순서대로 스토리 프레임으로 게시(인스타 캐러셀 성공 후).
 - 목요일(숏츠 배치): `숏츠/9x16_instagram_story*.mp4`가 있으면 조각 전부, 없으면 `9x16_instagram.mp4`(스토리 영상은 60초 제한이라 초과 시 API가 거부 → 경고만 남김). 긴 릴스는 content-derivation-team이 조각을 만든다.
@@ -481,3 +481,5 @@ Graph API `media_type=STORIES`).
 - 스토리는 `ALL_STEPS`(큐 폴더 삭제 조건)에 넣지 않았고, 실패해도 워크플로를 실패시키지 않고 `::warning::`만 남긴다(피드 발행 우선).
 - API 한계: 링크·멘션·스티커·캡션은 스토리에 넣을 수 없다(원본 이미지/영상만). 카드뉴스(1080×1350)는 9:16 화면에 맞춰 표시되며 여백 처리는 인스타가 한다.
 - **첫 실제 게시(11/11 수요일 카드뉴스)는 결과를 인스타 앱에서 확인**한다(프레임 배치·여백·재생 여부).
+- **페이스북 페이지 스토리도 같은 실행에서 올린다(사용자 지시 2026-11-05)**: `카드뉴스/facebook/*.png` 전부(사진 스토리 `/photo_stories`)와 `숏츠/9x16_facebook_story*.mp4`(없으면 `9x16_facebook.mp4`, 영상 스토리 `/video_stories` 3단계 업로드, 최대 60초 → 긴 영상은 `9x16_facebook_story1/2.mp4`로 나눠 큐에 올린다). 상태 키 `facebook_carousel_story`·`facebook_reel_story`. 인스타 스토리와 같은 규칙(ALL_STEPS 제외·실패 시 경고만·프레임별 중복 방지). 페이지 토큰의 스토리 게시 권한은 첫 실제 게시로 확인한다.
+- 이 저장소 밖 1회성 보정: 15주차(11/5)는 큐 삭제 뒤라 로컬 파일로 임시 큐를 만들어 `publish.yml`(phase=all)을 수동 실행해 인스타 스토리(카드 9장+릴스 2조각)를 올렸다.
