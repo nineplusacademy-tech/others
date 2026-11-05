@@ -111,6 +111,14 @@ mainmanager의 "결과물 보고 및 자동 진행"(`docs/mainmanager-plan.md` �
   `카드뉴스/반자동/네이버플레이스/01~05.png`로 함께 만든다(+ `README.txt`에 원본 번호 대응). 선택 기준:
   표지 → 핵심 데이터 1~2장 → 점검 체크리스트(또는 해결책) → CTA 없는 마무리 카드 순. 글은
   `채널별_캡션.md`의 `## 네이버플레이스` 섹션. 네이버플레이스는 자동화 불가라 사용자가 직접 올린다.
+- **인스타그램 스토리용 영상 조각(2026-11-05 신설, 사용자 지시: 카드뉴스 전체·릴스 영상을 인스타 스토리에도 자동 게시)**:
+  발행 스크립트(`scripts/publish/main.py` `_publish_instagram_stories`)가 인스타 피드 게시물과 같은 실행에서
+  카드뉴스 `카드뉴스/instagram/*.png` 전부와 숏츠 영상을 스토리로 올린다. **스토리 영상은 최대 60초**라,
+  인스타 릴스(`9x16_instagram.mp4`)가 60초를 넘으면(15주차는 77초) 큐에 올리기 전에 59초 이하 조각으로
+  나눠 `숏츠/9x16_instagram_story1.mp4`, `…_story2.mp4`로 함께 둔다(없으면 릴스 파일을 그대로 올려 보려다 실패하고 경고만 남는다).
+  예: 77초 → `ffmpeg -i 9x16_instagram.mp4 -t 39 -c:v libx264 -crf 24 -c:a aac -movflags +faststart 9x16_instagram_story1.mp4` 와
+  `ffmpeg -ss 39 -i 9x16_instagram.mp4 -c:v libx264 -crf 24 -c:a aac -movflags +faststart 9x16_instagram_story2.mp4`
+  (문장 중간에서 끊기지 않게 장면 경계 시각을 고른다). 60초 이하 릴스는 조각을 만들 필요 없다.
 
 ## 5. 렌더링 후 마무리
 

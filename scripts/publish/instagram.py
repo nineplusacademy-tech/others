@@ -1,4 +1,4 @@
-"""인스타그램 캐러셀(카드뉴스) + 릴스 발행.
+"""인스타그램 캐러셀(카드뉴스) + 릴스 + 스토리 발행.
 
 인스타그램 Graph API는 파일 직접 업로드를 지원하지 않고 반드시 공개적으로
 접근 가능한 image_url/video_url을 요구한다 — 그래서 이 저장소를 퍼블릭으로
@@ -141,6 +141,60 @@ def publish_reel(video_path: Path, caption: str) -> str:
     )
     raise_for_status_with_body(publish)
     return publish.json()["id"]
+
+
+def _create_story_container(media_url_field: str, media_url: str, label: str) -> str:
+    """스토리 컨테이너를 만든다(이미지는 image_url, 영상은 video_url).
+
+    raw.githubusercontent.com fetch 실패(2207052)는 캐러셀 자식과 같은 이유로 재시도한다."""
+    ig_id = _ig_id()
+    token = _token()
+    last_error: Exception | None = None
+    for attempt, delay in enumerate((0, *MEDIA_FETCH_RETRY_DELAYS)):
+        if delay:
+            time.sleep(delay)
+        resp = requests.post(
+            f"{GRAPH}/{ig_id}/media",
+            data={"media_type": "STORIES", media_url_field: media_url, "access_token": token},
+            timeout=60,
+        )
+        if resp.ok:
+            return resp.json()["id"]
+        body = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else {}
+        subcode = body.get("error", {}).get("error_subcode")
+        if subcode != MEDIA_DOWNLOAD_FAILED_SUBCODE or attempt == len(MEDIA_FETCH_RETRY_DELAYS):
+            raise_for_status_with_body(resp)
+        last_error = RuntimeError(f"{label} 스토리 미디어 fetch 재시도 가능한 오류 (attempt {attempt + 1}): {body}")
+        print(f"[instagram] {label} 스토리 재시도 {attempt + 1}/{len(MEDIA_FETCH_RETRY_DELAYS)}: {last_error}")
+    raise last_error  # pragma: no cover
+
+
+def _publish_story(media_url_field: str, path: Path) -> str:
+    creation_id = _create_story_container(media_url_field, raw_github_url(path), path.name)
+    _wait_until_finished(creation_id)
+    publish = requests.post(
+        f"{GRAPH}/{_ig_id()}/media_publish",
+        data={"creation_id": creation_id, "access_token": _token()},
+        timeout=60,
+    )
+    raise_for_status_with_body(publish)
+    return publish.json()["id"]
+
+
+def publish_story_image(image_path: Path) -> str:
+    """이미지 1장을 인스타그램 스토리로 올린다(캡션·링크 스티커는 API로 지원되지 않음)."""
+    if DRY_RUN:
+        dry_run_log("Instagram 스토리(이미지)", image=str(image_path))
+        return "dryrun-instagram-story-image"
+    return _publish_story("image_url", image_path)
+
+
+def publish_story_video(video_path: Path) -> str:
+    """영상 1개를 인스타그램 스토리로 올린다. 스토리 영상은 최대 60초라 더 긴 영상은 거부될 수 있다."""
+    if DRY_RUN:
+        dry_run_log("Instagram 스토리(영상)", video=str(video_path))
+        return "dryrun-instagram-story-video"
+    return _publish_story("video_url", video_path)
 
 
 def refresh_access_token(current_token: str) -> dict:
