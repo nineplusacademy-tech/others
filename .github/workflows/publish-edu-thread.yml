@@ -60,7 +60,7 @@ jobs:
           git add -A queue/
           if ! git diff --cached --quiet; then
             git commit -m "교육뉴스 스레드 발행 결과 갱신 [skip ci]"
-            git push
+            bash scripts/publish/push_with_retry.sh
           else
             echo "변경 없음 — 커밋 생략"
           fi
