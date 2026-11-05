@@ -59,6 +59,7 @@ queue/<번호>_<주제요약>/
   카드뉴스/facebook/01.png ~ 09.png ← 페이스북 캐러셀 전용(더보기만 CTA, 2026-09-08 표지 1장→9장 캐러셀로 전환)
   카드뉴스/채널별_캡션.md           ← 인스타·페이스북 캡션 추출용
   숏츠/9x16_instagram.mp4          ← 인스타 릴스 전용
+  숏츠/9x16_instagram_story*.mp4   ← (선택) 인스타 스토리용 ≤59초 조각(릴스가 60초 초과일 때)
   숏츠/9x16_facebook.mp4           ← 페이스북 릴스 전용
   숏츠/9x16_youtube.mp4            ← 유튜브 쇼츠 전용
   숏츠/채널별_캡션.md               ← 릴스용 인스타·페이스북 캡션
@@ -468,3 +469,15 @@ Meta for Developers(`blogTOsns_nineplus` 앱)에서 `read_insights` 권한을
 
 다음 토요일(12:00 KST) 자동 실행 또는 수동 실행에서 위 두 가지(릴스
 재생수·계정 참여 지표)가 정상 조회되는지 확인 예정.
+
+### 인스타그램 스토리 자동 게시 (사용자 지시 2026-11-05)
+
+"인스타에 올리는 모든 게시물을 스토리에도 올려 달라"는 지시로, 피드 게시물과 **같은 실행**에서 스토리도 올린다
+(`scripts/publish/main.py`의 `_publish_instagram_stories`, `instagram.py`의 `publish_story_image/video`,
+Graph API `media_type=STORIES`).
+- 수요일(카드뉴스 배치): `카드뉴스/instagram/*.png` 전부를 순서대로 스토리 프레임으로 게시(인스타 캐러셀 성공 후).
+- 목요일(숏츠 배치): `숏츠/9x16_instagram_story*.mp4`가 있으면 조각 전부, 없으면 `9x16_instagram.mp4`(스토리 영상은 60초 제한이라 초과 시 API가 거부 → 경고만 남김). 긴 릴스는 content-derivation-team이 조각을 만든다.
+- 프레임/조각별로 `_status.json`의 `instagram_carousel_story`·`instagram_reel_story`에 `posted` 목록으로 기록해 재실행해도 중복 게시하지 않는다.
+- 스토리는 `ALL_STEPS`(큐 폴더 삭제 조건)에 넣지 않았고, 실패해도 워크플로를 실패시키지 않고 `::warning::`만 남긴다(피드 발행 우선).
+- API 한계: 링크·멘션·스티커·캡션은 스토리에 넣을 수 없다(원본 이미지/영상만). 카드뉴스(1080×1350)는 9:16 화면에 맞춰 표시되며 여백 처리는 인스타가 한다.
+- **첫 실제 게시(11/11 수요일 카드뉴스)는 결과를 인스타 앱에서 확인**한다(프레임 배치·여백·재생 여부).

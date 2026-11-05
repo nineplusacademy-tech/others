@@ -97,6 +97,53 @@ def _record(folder: Path, status: dict, key: str, result_field: str, value: str)
             save_status(folder, status)
 
 
+def _publish_instagram_stories(folder: Path, status: dict, phase: str) -> None:
+    """피드 게시물(캐러셀·릴스)과 같은 실행에서 같은 콘텐츠를 인스타그램 스토리로도 올린다(2026-11-05 신설).
+
+    - 카드뉴스: `카드뉴스/instagram/*.png` 전부를 순서대로 스토리 프레임으로 올린다.
+    - 릴스: `숏츠/9x16_instagram_story*.mp4`(스토리 영상은 60초 제한이라 긴 릴스는 content-derivation이
+      59초 이하로 나눠 만든 조각)가 있으면 그것들을, 없으면 `숏츠/9x16_instagram.mp4`를 그대로 올린다.
+    - 피드 단계가 성공한 경우에만 올리고, 프레임별로 `_status.json`에 기록해 재실행해도 중복 게시하지
+      않는다. 스토리는 ALL_STEPS(큐 폴더 삭제 조건)에 넣지 않으며 실패해도 워크플로를 실패시키지 않고
+      경고만 남긴다(피드 발행이 우선).
+    """
+    groups: list[tuple[str, list[Path], callable]] = []
+    if phase in ("all", "cardnews") and step_done(status, "instagram_carousel"):
+        frames = sorted((folder / "카드뉴스" / "instagram").glob("*.png"))
+        groups.append(("instagram_carousel_story", frames, instagram.publish_story_image))
+    if phase in ("all", "social") and step_done(status, "instagram_reel"):
+        clips = sorted((folder / "숏츠").glob("9x16_instagram_story*.mp4"))
+        if not clips:
+            clips = [folder / "숏츠" / "9x16_instagram.mp4"]
+        groups.append(("instagram_reel_story", clips, instagram.publish_story_video))
+
+    for key, items, publish_fn in groups:
+        if step_done(status, key):
+            continue
+        posted: list[str] = list(status.get(key, {}).get("posted", []))
+        failed = False
+        for item in items:
+            if item.name in posted:
+                continue
+            try:
+                story_id = publish_fn(item)
+            except Exception as exc:  # noqa: BLE001 — 스토리 실패가 피드 발행·큐 삭제를 막지 않게 한다
+                log(f"::warning::[{key}] {item.name} 스토리 게시 실패(건너뜀, 나머지 중단): {exc}")
+                failed = True
+                break
+            posted.append(item.name)
+            with _status_lock:
+                status[key] = {"done": False, "posted": posted}
+                if not DRY_RUN:
+                    save_status(folder, status)
+            log(f"[{key}] {item.name} 스토리 게시: {story_id}")
+        if not failed and items:
+            with _status_lock:
+                status[key] = {"done": True, "posted": posted}
+                if not DRY_RUN:
+                    save_status(folder, status)
+
+
 def _finish(folder: Path, status: dict, errors: dict[str, Exception]) -> None:
     """이번 배치 실행 후 공통 마무리: 전부 끝났으면 큐 폴더 삭제, 아니면 안내."""
     if not all_steps_done(status):
@@ -276,6 +323,8 @@ def run(folder: Path, phase: str = "all") -> None:
                 except Exception as exc:  # noqa: BLE001 — 다른 채널 발행을 막지 않고 계속 진행
                     errors[key] = exc
                     log(f"[{key}] 발행 실패: {exc}")
+
+    _publish_instagram_stories(folder, status, phase)
 
     _finish(folder, status, errors)
 
