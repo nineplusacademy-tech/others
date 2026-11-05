@@ -52,6 +52,7 @@ from common import (
     fill_image_placeholders,
     fill_placeholders,
     find_queue_folder,
+    followups_pending,
     load_status,
     log,
     naver_post_not_found,
@@ -167,8 +168,17 @@ def _finish(folder: Path, status: dict, errors: dict[str, Exception]) -> None:
     elif DRY_RUN:
         print(f"[DRY RUN] '{folder.name}' 전 채널 시뮬레이션 완료 — 실제로는 아무것도 게시되거나 삭제되지 않음")
     else:
-        shutil.rmtree(folder)
-        print(f"'{folder.name}' 전 채널 발행 완료 — 큐에서 삭제")
+        pending = followups_pending(folder, status)
+        if pending:
+            # 2026-11-05: 스레드·페이스북 글(네이버 글 공개 뒤에 올라감)이 아직이면 폴더를 지우지 않는다.
+            # publish-thread / publish-fb-post catch-up 실행이 올린 뒤 마지막으로 끝낸 쪽이 폴더를 지운다.
+            print(
+                f"::warning::'{folder.name}' 메인 채널은 끝났지만 후속 게시({', '.join(pending)})가 남아 "
+                "큐 폴더를 유지합니다 — 네이버 글 공개·주소 기록 후 catch-up 실행이 올립니다."
+            )
+        else:
+            shutil.rmtree(folder)
+            print(f"'{folder.name}' 전 채널 발행 완료 — 큐에서 삭제")
 
     if errors:
         names = ", ".join(errors)

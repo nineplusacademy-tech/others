@@ -25,6 +25,8 @@ on:
   schedule:
     - cron: "17 22 * * 1"
     - cron: "17 3 * * 2"
+    # 2026-11-05: 네이버 글이 늦게 공개돼 스레드가 미뤄진 주를 위한 저녁 catch-up(화·수·목 19:17 KST 목표). 올릴 게 없으면 아무것도 안 한다.
+    - cron: "17 10 * * 2,3,4"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -68,7 +70,7 @@ jobs:
           git add queue/
           if ! git diff --cached --quiet; then
             git commit -m "스레드 발행 결과 갱신 [skip ci]"
-            git push
+            bash scripts/publish/push_with_retry.sh
           else
             echo "변경 없음 — 커밋 생략"
           fi
