@@ -20,11 +20,20 @@ from __future__ import annotations
 import sys
 
 import threads
-from common import DRY_RUN, fill_placeholders, find_queue_folder, load_status, naver_post_not_found, save_status, step_done
+from common import (
+    DRY_RUN,
+    cleanup_folder_if_complete,
+    fill_placeholders,
+    find_queue_folder,
+    load_status,
+    naver_post_not_found,
+    save_status,
+    step_done,
+)
 
 
 def run() -> None:
-    folder = find_queue_folder()
+    folder = find_queue_folder(for_followups=True)
     if folder is None:
         print("발행할 콘텐츠가 queue/ 에 없음 — 종료")
         return
@@ -64,6 +73,7 @@ def run() -> None:
         status["thread"] = {"done": True, "id": result_id}
         save_status(folder, status)
     print(f"[thread] 발행 완료: {result_id}")
+    cleanup_folder_if_complete(folder, status)
 
 
 def main() -> None:

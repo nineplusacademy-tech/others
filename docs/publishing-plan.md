@@ -484,3 +484,11 @@ Graph API `media_type=STORIES`).
 - **페이스북 페이지 스토리도 같은 실행에서 올린다(사용자 지시 2026-11-05)**: `카드뉴스/facebook/*.png` 전부(사진 스토리 `/photo_stories`)와 `숏츠/9x16_facebook_story*.mp4`(없으면 `9x16_facebook.mp4`, 영상 스토리 `/video_stories` 3단계 업로드, 최대 60초 → 긴 영상은 `9x16_facebook_story1/2.mp4`로 나눠 큐에 올린다). 상태 키 `facebook_carousel_story`·`facebook_reel_story`. 인스타 스토리와 같은 규칙(ALL_STEPS 제외·실패 시 경고만·프레임별 중복 방지). 페이지 토큰의 스토리 게시 권한은 첫 실제 게시로 확인한다.
 - 이 저장소 밖 1회성 보정: 15주차(11/5)는 큐 삭제 뒤라 로컬 파일로 임시 큐를 만들어 `publish.yml`(phase=all)을 수동 실행해 인스타 스토리(카드 9장+릴스 2조각)를 올렸다.
 - **스토리용 세이프존 이미지(2026-11-05)**: 휴대폰에서 스토리 양옆이 잘리는 문제로, 카드뉴스는 `카드뉴스/instagram_story/`·`facebook_story/`(82% 축소+블러 배경 1080×1920 PNG)를, 숏츠는 82% 축소+블러 배경으로 만든 `9x16_<채널>_story1/2.mp4`를 큐에 올린다. 스크립트는 `_story` 폴더가 있으면 그것을, 없으면 원본 카드를 쓴다.
+
+### 발행 누락·충돌 방지 (2026-11-05, 15주차 실사고 반영)
+
+- **후속 게시 보류**: 스레드(`스레드.md`)·페이스북 글(`페이스북글.md`)이 있는 주는 `_status.json`에 `thread`/`facebook_post` 기록이 생기기 전까지 큐 폴더를 **삭제하지 않는다**(`common.followups_pending`·`cleanup_folder_if_complete`). 네이버 글이 공개되기 전에 실행돼 미뤄진 경우, 이전엔 폴더가 지워져 영영 누락됐다. 마지막으로 끝낸 쪽(`main.py` `_finish` 또는 `main_thread.py`·`main_fb_post.py`)이 폴더를 지운다.
+- **폴더 선택 규칙**: `find_queue_folder()` 기본값은 메인 단계(ALL_STEPS)가 남은 폴더만 고르므로, 후속 게시 때문에 남은 지난 주 폴더가 이번 주 발행을 막지 않는다. 스레드·페이스북 글 워크플로는 `find_queue_folder(for_followups=True)`로 후속이 남은 폴더를 우선한다.
+- **저녁 catch-up**: `publish-thread.yml`(화·수·목 10:17 UTC=19:17 KST)·`publish-fb-post.yml`(화·수·목 10:37 UTC)에 catch-up 예약을 추가했다. 올릴 게 없으면 아무것도 안 한다.
+- **결과 커밋 푸시 재시도**: 모든 워크플로의 결과 커밋은 `scripts/publish/push_with_retry.sh`로 푸시한다(실패 시 최신 커밋 위에 `rebase -X theirs` 후 최대 5회). 같은 시각 다른 푸시와 겹쳐 워크플로가 "실패"로 표시되고 사용한 파일이 남던 문제를 막는다.
+- **주간 완료 확인**: 예약 작업 `weekly-publish-completeness-check`(목 21:00)이 이번 주 채널별 게시를 Meta 조회 도구·블로그·GitHub로 직접 확인해 누락을 알린다(완료 기록이 아니라 실제 조회). 조회만 하고 게시하지 않으며, 복구는 사용자 승인 뒤에 한다.

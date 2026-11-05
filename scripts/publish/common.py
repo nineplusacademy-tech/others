@@ -8,6 +8,7 @@ GitHub Actions 로그도 공개되며, 새로 발급받은(아직 Secrets에 등
 from __future__ import annotations
 
 import json
+import shutil
 import os
 import re
 import threading
@@ -71,13 +72,50 @@ ALL_STEPS = [
 ]
 
 
-def find_queue_folder() -> Path | None:
-    """queue/ 아래에서 처리할 폴더 하나를 찾는다 (.gitkeep 등 파일은 무시)."""
+def find_queue_folder(for_followups: bool = False) -> Path | None:
+    """queue/ 아래에서 처리할 폴더 하나를 찾는다 (.gitkeep 등 파일은 무시).
+
+    기본(main.py·set_naver_url): 메인 발행 단계(ALL_STEPS)가 아직 남은 폴더 중 첫 번째를 돌려준다.
+    스레드·페이스북 글이 안 올라가 삭제가 보류된 '완료된 지난 폴더'가 남아 있어도 이번 주 폴더를
+    가로막지 않게 하기 위해서다(2026-11-05).
+    for_followups=True(main_thread·main_fb_post): 스레드·페이스북 글이 아직 남은 폴더를 우선한다."""
     if not QUEUE_DIR.exists():
         return None
     # '_'로 시작하는 폴더(예: _edu_ig, 교육뉴스 인스타 캐러셀용)는 주간 콘텐츠 큐가 아니므로 제외한다.
     candidates = sorted(p for p in QUEUE_DIR.iterdir() if p.is_dir() and not p.name.startswith("_"))
-    return candidates[0] if candidates else None
+    if not candidates:
+        return None
+    if for_followups:
+        for p in candidates:
+            if followups_pending(p, load_status(p)):
+                return p
+        return candidates[0]
+    for p in candidates:
+        if not all_steps_done(load_status(p)):
+            return p
+    return None
+
+
+def followups_pending(folder: Path, status: dict) -> list[str]:
+    """메인 4~6채널이 끝나도 큐 폴더를 지우면 안 되는 후속 게시(스레드·페이스북 글)가 남았는지 알려준다.
+
+    2026-11-05 15주차: 네이버 글이 공개되기 전에 실행돼 미뤄진 스레드·페이스북 글이, 폴더가 삭제되는 바람에
+    영영 올라가지 못하고 '6채널 완료'로 기록된 실사고가 있었다. 파일이 있는데 게시 기록이 없으면 남은 것으로 본다."""
+    pending: list[str] = []
+    if (folder / "스레드.md").exists() and not step_done(status, "thread"):
+        pending.append("thread")
+    if (folder / "페이스북글.md").exists() and not step_done(status, "facebook_post"):
+        pending.append("facebook_post")
+    return pending
+
+
+def cleanup_folder_if_complete(folder: Path, status: dict) -> bool:
+    """메인 단계와 후속 게시가 모두 끝났으면 큐 폴더를 삭제한다. 삭제했으면 True."""
+    if DRY_RUN or not all_steps_done(status) or followups_pending(folder, status):
+        return False
+    shutil.rmtree(folder)
+    print(f"'{folder.name}' 전 채널(스레드·페이스북 글 포함) 발행 완료 — 큐에서 삭제")
+    return True
 
 
 def status_path(folder: Path) -> Path:

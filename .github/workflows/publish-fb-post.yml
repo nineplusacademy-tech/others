@@ -10,6 +10,8 @@ on:
   schedule:
     - cron: "37 22 * * 0,1"
     - cron: "37 3 * * 1,2"
+    # 2026-11-05: 네이버 글이 늦게 공개돼 페이스북 글이 미뤄진 주를 위한 저녁 catch-up(화·수·목 19:37 KST 목표).
+    - cron: "37 10 * * 2,3,4"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -56,8 +58,7 @@ jobs:
           git add -A queue/
           if ! git diff --cached --quiet; then
             git commit -m "페이스북 글 발행 결과 갱신 [skip ci]"
-            git pull --rebase
-            git push
+            bash scripts/publish/push_with_retry.sh
           else
             echo "변경 없음 — 커밋 생략"
           fi

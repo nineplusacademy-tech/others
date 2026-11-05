@@ -27,6 +27,7 @@ from common import (
     DRY_RUN,
     QUEUE_DIR,
     fill_placeholders,
+    cleanup_folder_if_complete,
     find_queue_folder,
     load_status,
     naver_post_not_found,
@@ -102,7 +103,7 @@ def cleanup_edu_link() -> None:
 
 
 def run_main() -> None:
-    folder = find_queue_folder()
+    folder = find_queue_folder(for_followups=True)
     if folder is None:
         print("발행할 콘텐츠가 queue/ 에 없음 — 메인 블로그 페이스북 글 건너뜀")
         return
@@ -141,6 +142,7 @@ def run_main() -> None:
         status["facebook_post"] = {"done": True, "id": post_id}
         save_status(folder, status)
     print(f"[main-facebook-post] 발행 완료: {post_id}")
+    cleanup_folder_if_complete(folder, status)
 
 
 def main() -> None:
