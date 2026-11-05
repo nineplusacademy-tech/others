@@ -140,3 +140,9 @@ mainmanager의 "결과물 보고 및 자동 진행"(`docs/mainmanager-plan.md` �
   부분"에 적어 사용자 판단에 맡긴다.
 - 실제 결과물(스토리보드·이미지·영상)은 이 저장소(`others`)에 두지 않는다 — 로컬
   작업 폴더에만 보관하고, 발행 직전에만 `queue/`로 잠깐 복사한다(콘텐츠 저장 원칙).
+
+## 6. 반복 작업 도구 (2026-11-05, `scripts/local/` — 로컬 실행용, 시크릿은 환경변수)
+
+- **음성(나레이션)**: `python scripts/local/tts_scenes.py <출력 폴더> "scene01=문장" ...` — Gemini TTS가 가끔 응답 없이 멈추므로 장면마다 별도 프로세스로 호출해 60초가 지나면 끊고 최대 6번 다시 시도한다(시험에서 실제로 멈춘 호출을 끊고 재시도해 성공 확인). 장면별 길이를 출력한다. 예전 `_tts_oneoff.py`를 직접 돌리지 않는다.
+- **채널별 렌더링 병렬화**: `bash scripts/local/render_channels_parallel.sh <…/숏츠/_원본프로젝트_916_instagram> build_wNN.py instagram facebook youtube none` — 채널마다 프로젝트를 복사해 동시에 렌더링하고 `_small`까지 만든다(채널당 ~7분 → 가장 오래 걸리는 채널 시간으로 단축 기대, 첫 실사용 때 CPU 여유를 확인한다).
+- **스토리용 파일**: `python scripts/local/make_story_assets.py <주차 폴더>` — 카드뉴스 `instagram_story/`·`facebook_story/`와 숏츠 `9x16_<채널>_story1(2).mp4`를 한 번에 만든다(60초를 넘으면 가운데 근처 말 쉼에서 자동 분할, `--split`으로 지정 가능). 큐에 올릴 때 `_story_full`은 만들지 않는다(스크립트가 지운다).
