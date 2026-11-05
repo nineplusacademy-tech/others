@@ -1,4 +1,4 @@
-"""페이스북 페이지 게시글(사진) + 릴스 발행."""
+"""페이스북 페이지 게시글(사진) + 릴스 + 스토리 발행."""
 
 from __future__ import annotations
 
@@ -142,3 +142,77 @@ def publish_post(message: str, image_path: Path | None = None) -> str:
     )
     raise_for_status_with_body(resp)
     return resp.json()["id"]
+
+
+def publish_story_photo(image_path: Path) -> str:
+    """사진 1장을 페이스북 페이지 스토리로 올린다(2026-11-05 신설).
+
+    사진을 비공개(published=false)로 업로드해 photo_id를 받은 뒤 /photo_stories로 스토리 게시.
+    링크·스티커·문구는 API로 넣을 수 없다."""
+    if DRY_RUN:
+        dry_run_log("Facebook 스토리(사진)", image=str(image_path))
+        return "dryrun-facebook-story-photo"
+
+    token = _page_token()
+    page_id = _page_id()
+    with open(image_path, "rb") as f:
+        up = requests.post(
+            f"{GRAPH}/{page_id}/photos",
+            data={"published": "false", "access_token": token},
+            files={"source": f},
+            timeout=120,
+        )
+    raise_for_status_with_body(up)
+    photo_id = up.json()["id"]
+
+    story = requests.post(
+        f"{GRAPH}/{page_id}/photo_stories",
+        data={"photo_id": photo_id, "access_token": token},
+        timeout=60,
+    )
+    raise_for_status_with_body(story)
+    data = story.json()
+    return str(data.get("post_id") or data.get("id") or photo_id)
+
+
+def publish_story_video(video_path: Path) -> str:
+    """영상 1개를 페이스북 페이지 스토리로 올린다(Resumable Upload 3단계, 스토리 영상은 최대 60초)."""
+    if DRY_RUN:
+        dry_run_log("Facebook 스토리(영상)", video=str(video_path))
+        return "dryrun-facebook-story-video"
+
+    token = _page_token()
+    page_id = _page_id()
+
+    start = requests.post(
+        f"{GRAPH}/{page_id}/video_stories",
+        data={"upload_phase": "start", "access_token": token},
+        timeout=60,
+    )
+    raise_for_status_with_body(start)
+    start_data = start.json()
+    video_id = start_data["video_id"]
+    upload_url = start_data["upload_url"]
+
+    file_size = os.path.getsize(video_path)
+    with open(video_path, "rb") as f:
+        video_bytes = f.read()
+    upload_resp = requests.post(
+        upload_url,
+        headers={
+            "Authorization": f"OAuth {token}",
+            "offset": "0",
+            "file_size": str(file_size),
+        },
+        data=video_bytes,
+        timeout=600,
+    )
+    raise_for_status_with_body(upload_resp)
+
+    finish = requests.post(
+        f"{GRAPH}/{page_id}/video_stories",
+        data={"upload_phase": "finish", "video_id": video_id, "access_token": token},
+        timeout=60,
+    )
+    raise_for_status_with_body(finish)
+    return video_id
