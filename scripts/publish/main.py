@@ -100,7 +100,7 @@ def _record(folder: Path, status: dict, key: str, result_field: str, value: str)
 def _publish_stories(folder: Path, status: dict, phase: str) -> None:
     """피드 게시물(캐러셀·릴스)과 같은 실행에서 같은 콘텐츠를 인스타그램·페이스북 스토리로도 올린다(2026-11-05 신설).
 
-    - 카드뉴스: `카드뉴스/instagram/*.png` 전부를 순서대로 스토리 프레임으로 올린다.
+    - 카드뉴스: 스토리용 세이프존 이미지 `카드뉴스/instagram_story/*.png`(없으면 `카드뉴스/instagram/*.png`) 전부를 순서대로 스토리 프레임으로 올린다.
     - 페이스북은 `카드뉴스/facebook/*.png`와 `숏츠/9x16_facebook_story*.mp4`(없으면 `9x16_facebook.mp4`)를 같은 방식으로 올린다.
     - 릴스: `숏츠/9x16_instagram_story*.mp4`(스토리 영상은 60초 제한이라 긴 릴스는 content-derivation이
       59초 이하로 나눠 만든 조각)가 있으면 그것들을, 없으면 `숏츠/9x16_instagram.mp4`를 그대로 올린다.
@@ -111,10 +111,12 @@ def _publish_stories(folder: Path, status: dict, phase: str) -> None:
     groups: list[tuple[str, list[Path], callable]] = []
     if phase in ("all", "cardnews"):
         if step_done(status, "instagram_carousel"):
-            frames = sorted((folder / "카드뉴스" / "instagram").glob("*.png"))
+            frames = sorted((folder / "카드뉴스" / "instagram_story").glob("*.png")) or sorted(
+                (folder / "카드뉴스" / "instagram").glob("*.png"))
             groups.append(("instagram_carousel_story", frames, instagram.publish_story_image))
         if step_done(status, "facebook_carousel"):
-            frames = sorted((folder / "카드뉴스" / "facebook").glob("*.png"))
+            frames = sorted((folder / "카드뉴스" / "facebook_story").glob("*.png")) or sorted(
+                (folder / "카드뉴스" / "facebook").glob("*.png"))
             groups.append(("facebook_carousel_story", frames, facebook.publish_story_photo))
     if phase in ("all", "social"):
         if step_done(status, "instagram_reel"):
