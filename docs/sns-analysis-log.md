@@ -460,3 +460,25 @@ Meta 앱 연결을 완전히 끊었다가 Instagram 테스터 초대·수락을 
 - **Meta·광고(별도 항목)**: 인스타 릴스 11/5 도달 118·10/29 139 안팎 유지, 카드 캐러셀 19~30, 교육뉴스 캐러셀(11/2) 도달 19(기준 약 31 미달, 표본 1건), 예비중1 카드(11/5 19시 게시 직후) 9. 광고 최근 14일(10/22~11/4): 오답노트 블로그 광고 지출 45,662원·링크 클릭 175(클릭당 약 261원, 10/24 기준 200원 초과), 같은 세트 숏츠 4,338원·링크 클릭 8(약 542원, 표본 작음), 수리논술 광고 12,227원·링크 클릭 51(약 240원). 스레드 최근 6건 조회 9~59, 반응 0. 트래픽 목표라 상담 전환은 측정 불가.
 - **추천(mainmanager 보고용)**: 16주차는 일정표대로 홍보 P12(수업 녹화영상 전체 공개) 진행, 교육뉴스 11/9호는 수능 D-10 시의성 소재(보류 중이던 I9 수능 시험시간표·유의사항 계열) 추천. 사용자 선택은 킥오프에서 기록.
 - **데이터 한계**: 블로그탭 상위 30개만 확인, 1회 시점 값이라 순위가 주 단위로 크게 출렁임, 방문·유입 표본 작음, 인스타 팔로워 수는 이번에 재조회하지 않음.
+
+### 2026-11-07 — Meta(인스타·페이스북) 인사이트 자동 조회
+
+- 인스타그램 계정: 팔로워 100, 게시물 수 82
+  - 계정 인사이트: reach=1485, accounts_engaged=2
+  - [CAROUSEL_ALBUM] 2026-11-05 "동성중·동수원중 예비중1, 수학 첫 시험은 '풀이'가 " → reach=22, likes=2, comments=0, saved=1, shares=0 (https://www.instagram.com/p/DfW2uXaEhnS/)
+  - [VIDEO] 2026-11-05 "'집중 좀 해'라는 말만으로 집중이 늘까요? 🎬  수학" → reach=121, likes=1, comments=0, saved=1, shares=0, views=154 (https://www.instagram.com/reel/DfVyTm9kfmJ/)
+  - [CAROUSEL_ALBUM] 2026-11-04 "'집중 좀 해'라는 말만으로 집중이 늘까요? 수학은 풀" → reach=26, likes=1, comments=0, saved=1, shares=2 (https://www.instagram.com/p/DfTLlnAmTRW/)
+  - [CAROUSEL_ALBUM] 2026-11-02 '교사 96.6%가 최근 5년 새 학생 문해력이 저하됐다' → reach=19, likes=0, comments=0, saved=0, shares=0 (https://www.instagram.com/p/DfOKC4pkYTo/)
+  - [CAROUSEL_ALBUM] 2026-10-30 '고3 수리논술 직전 특강, 11월 19일 개강해요 📝 ' → reach=24, likes=3, comments=0, saved=0, shares=0 (https://www.instagram.com/p/DfHz6ESkt6a/)
+- 페이스북 페이지: 팔로워 17
+  - 페이지 인사이트: page_follows=17, page_media_view=320
+  - [게시글] 2026-11-05 "동성중·동수원중 예비중1, 수학 첫 시험은 '풀이'가 " → post_media_view=1, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122126244423424939)
+  - [게시글] 2026-11-05 "'집중 좀 해'라는 말만으로 집중이 늘까요? 📚 수학은" → post_media_view=8, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122126215239424939)
+  - [게시글] 2026-11-05 "'집중 좀 해'라는 말만으로 집중이 늘까요? 🎬  수학" → post_media_view=8, post_reactions_by_type_total={} (https://www.facebook.com/reel/1647936643792502/)
+  - [게시글] 2026-11-04 "'집중 좀 해'라는 말만으로 집중이 늘까요? 📚  수학" → post_media_view=1, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122126030793424939)
+  - [게시글] 2026-11-02 '📚 교사 96.6%가 체감하는 문해력 저하  교사노조 ' → post_media_view=2, post_reactions_by_type_total={} (https://www.facebook.com/122115070323424939/posts/122125736679424939)
+  - [릴스/영상] 2026-11-05 '' → total_video_views=0, total_video_avg_time_watched=0 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/2163105304638794/video_insights?metric=tot…) (/122115070323424939/videos/2163105304638794)
+  - [릴스/영상] 2026-11-05 '' → total_video_views=0, total_video_avg_time_watched=0 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1887754555558419/video_insights?metric=tot…) (/122115070323424939/videos/1887754555558419)
+  - [릴스/영상] 2026-11-05 '' → total_video_views=0, total_video_avg_time_watched=0 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/2680887552356743/video_insights?metric=tot…) (/122115070323424939/videos/2680887552356743)
+  - [릴스/영상] 2026-11-05 "'집중 좀 해'라는 말만으로 집중이 늘까요? 🎬  수학" → blue_reels_play_count=4 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/1647936643792502/video_insights?metric=tot…) (/reel/1647936643792502/)
+  - [릴스/영상] 2026-10-28 '선생님이 바뀌면 공부도 처음부터일까요? 🎬  강사가 달' → blue_reels_play_count=10 | 실패: total_video_impressions(400 Bad Request for url: https://graph.facebook.com/v21.0/4826101941005689/video_insights?metric=tot…) (/reel/4826101941005689/)
