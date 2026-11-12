@@ -1,6 +1,6 @@
 ---
 name: algorithm-searching-team
-description: "알고리즘-searching team" — 네이버(C-Rank·D.I.A.+·AI 브리핑)와 구글(코어 업데이트·SGE/AI Overviews) 검색 알고리즘, 그리고 AEO/GEO(생성형 AI 검색·인용 최적화) 동향을 조사해 docs/content-playbook.md의 작성 지침을 최신 상태로 갱신하는 팀. 4주(28일) 간격으로 스케줄 실행되며, 수동으로 "/algorithm-searching-team" 호출도 가능. 사용자가 "SEO 최신화", "알고리즘 업데이트 확인", "지침 갱신"을 요청할 때도 이 스킬을 쓴다.
+description: "알고리즘-searching team" — 네이버(C-Rank·D.I.A.+·AI 브리핑)와 구글(코어 업데이트·SGE/AI Overviews) 검색 알고리즘, 그리고 AEO/GEO(생성형 AI 검색·인용 최적화) 동향을 조사해 docs/content-playbook.md의 작성 지침을 최신 상태로 갱신하는 팀. 2026-11-12부터 매주 토요일 킥오프(`docs/mainmanager-plan.md` §5 2단계)에서 수동 모드로 호출되며(28일 주기 확인 생략), 사용자가 직접 "/algorithm-searching-team"을 호출해도 된다. 사용자가 "SEO 최신화", "알고리즘 업데이트 확인", "지침 갱신"을 요청할 때도 이 스킬을 쓴다.
 ---
 
 # 알고리즘-searching team
@@ -13,6 +13,8 @@ description: "알고리즘-searching team" — 네이버(C-Rank·D.I.A.+·AI 브
 ## 실행 시 순서
 
 ### 1. 갱신 주기 확인 (스케줄 실행일 때만 — 수동 호출이면 건너뛰고 바로 2번)
+
+**(2026-11-12 변경) 킥오프에서 호출될 때는 항상 수동 모드다 — 28일 확인을 건너뛰고 매번 바로 2번 리서치로 간다.** 변화가 없으면 지침은 그대로 두고 로그에 "변경 없음 — 근거"만 남기며, 변화가 있으면 PR로만 제안한다(자동 머지 없음). 킥오프는 PR 머지를 기다리지 않고 조사 결과를 주제 선정 근거로 넘긴다. 아래 28일 확인 절차는 스케줄 실행에만 해당한다(기존 claude.ai 월 1회 루틴은 중지됨).
 
 1. 저장소에서 `docs/algorithm-search-log.md`를 읽는다.
 2. 가장 최근 항목의 날짜를 확인한다.

@@ -390,9 +390,7 @@ Threads API는 같은 Meta 앱 안에서 Facebook 로그인/페이지 관리 이
   모음(계정 요약, 최근 게시물별 reach·좋아요·댓글·저장·공유, 릴스 재생수 등).
 - `scripts/publish/append_insights_log.py`: 위 결과를 마크다운으로 정리해
   `docs/sns-analysis-log.md` 끝에 append(기존 내용은 지우지 않음).
-- `.github/workflows/insights.yml`: **매주 토요일 12:00 KST**(콘텐츠 브리핑
-  13:00보다 먼저) 자동 실행 + `workflow_dispatch`로 수동 실행 가능. 조회만 하므로
-  실패해도 발행 파이프라인에 영향 없음.
+- `.github/workflows/insights.yml`: ~~매주 토요일 12:00 KST 자동 실행~~ **2026-11-12 사용자 지시로 삭제했다**. 인스타·페이스북·스레드 현황 분석은 이제 매주 토요일 킥오프에서 `sns_analysis_team`이 `meta-readonly` MCP로 직접 한다(`docs/mainmanager-plan.md` §5). `insights.py`·`append_insights_log.py`는 필요하면 수동으로 쓸 수 있게 그대로 둔다.
 
 메트릭은 **하나씩 개별 요청**한다(콤마로 묶으면 그중 하나라도 무효한 메트릭이 있을
 때 Graph API가 요청 전체를 400으로 거부해 멀쩡한 값까지 못 받아온다 — 2026-09-12
