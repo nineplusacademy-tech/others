@@ -2,4 +2,4 @@
 
 수능 이후 일정을 한 장으로 정리했어요. 우리 집 달력에는 표시해 두셨나요?
 
-📝 원문 보기 👉 {{BLOG_URL}}
+📝 원문 보기 👉 https://blog.naver.com/nineplusacademy/224474976827
