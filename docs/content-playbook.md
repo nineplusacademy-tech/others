@@ -248,7 +248,7 @@ D.I.A.+ 가점 참고(비공식 분석 기준, 네이버 공식 확인 아님 �
 3. 이하 — **블로그 본문(원고·구글 블로그)의 연락처 블록**에만 아래 전체를 둔다:
    - 💬 카카오톡 채널 상담: http://pf.kakao.com/_wXzzX/chat
    - 💬 네이버 톡톡 상담: http://talk.naver.com/WH8SV4R
-   - 📝 블로그: https://blog.naver.com/math20335
+   - 📝 블로그: https://blog.naver.com/nineplusacademy
    - 📍 네이버 플레이스(위치·리뷰): https://naver.me/5lfsn0rI
    - 📞 전화: 0507-1327-0317 (수업 중에는 통화가 어려울 수 있어요. 부재중이면 연락드려요)
    - 📌 주소: 경기 수원시 팔달구 팔달문로130번길 69

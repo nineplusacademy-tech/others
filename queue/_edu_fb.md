@@ -8,8 +8,8 @@
 📝 원문 보기 👉 https://blog.naver.com/nineplusacademy/224474976827
 
 📖 함께 읽어보면 좋은 글
-- 수능 D-10 시험시간표와 유의사항 👉 https://blog.naver.com/math20335/224468332357
-- 수시 6장 넣고 나서 할 일 👉 https://blog.naver.com/math20335/224425295122
-- 2028학년도 수능 선택과목 폐지 👉 https://blog.naver.com/math20335/224430552056
+- 수능 D-10 시험시간표와 유의사항 👉 https://blog.naver.com/nineplusacademy/224468332357
+- 수시 6장 넣고 나서 할 일 👉 https://blog.naver.com/nineplusacademy/224425295122
+- 2028학년도 수능 선택과목 폐지 👉 https://blog.naver.com/nineplusacademy/224430552056
 
 #나인플러스학원 #수원학원 #우만동학원 #수능 #수능이후일정 #정시일정 #수시합격발표 #나인플러스학원블로그
