@@ -67,8 +67,8 @@ def _prefill(path: Path, url: str) -> bool:
 def _usage_and_exit() -> None:
     print(
         "사용법: python scripts/publish/set_naver_url.py [--edu] <네이버 블로그 글 URL>\n"
-        "예(메인 블로그): python scripts/publish/set_naver_url.py https://blog.naver.com/math20335/224404199642\n"
-        "예(교육뉴스):     python scripts/publish/set_naver_url.py --edu https://blog.naver.com/math20335/224404199999",
+        "예(메인 블로그): python scripts/publish/set_naver_url.py https://blog.naver.com/nineplusacademy/224404199642\n"
+        "예(교육뉴스):     python scripts/publish/set_naver_url.py --edu https://blog.naver.com/nineplusacademy/224404199999",
         file=sys.stderr,
     )
     sys.exit(1)
