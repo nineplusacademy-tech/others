@@ -56,6 +56,12 @@ Claude Code가 요청서(8항목: 목적, 진행 내용, 구현·변경 파일, 
 
 `content-playbook.md`(콘텐츠 상세 규칙, 매우 김)는 콘텐츠 규칙 자문이 필요할 때 따로 올린다.
 
+## 2-1. 적용 상태 (2026-11-16, 사용자 승인 후 Claude Code가 크롬으로 입력)
+
+- ChatGPT 프로젝트 "클로드코드와의 협업"의 **지침 칸에 §1 v1을 입력·저장**했다(저장 후 재확인).
+- 프로젝트는 **무료 플랜이라 파일을 최대 5개**까지 올릴 수 있다. 올라간 5개: `CLAUDE.md`, `operations-overview.md`, `PROJECT_STATUS.md`, `CHATGPT_ADVISORY.md`, `ADVISORY_REQUEST.md`. 나머지(`publishing-plan.md`, `mainmanager-plan.md`, `CHATGPT_PROJECT_INSTRUCTIONS.md`, 첫 요청서 `advisory_001_project.md`)는 올리지 못했으므로 **필요할 때 대화에 붙여넣거나 첨부**한다.
+- 이 프로젝트는 "공유 프로젝트"로 표시되어 있어 프로젝트 전용 메모리를 쓰고 파일 라이브러리에 접근하지 않는다.
+
 ## 3. 동기화 규칙
 
 - **원본**: `CLAUDE.md`, `docs/operations-overview.md`. ChatGPT 지침과 업로드 사본은 원본의 사본이다.
