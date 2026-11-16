@@ -108,6 +108,7 @@
 | `docs/sns-analysis-log.md` | 순위·SNS·광고 분석 기록 | 기록 |
 | `docs/naver-blog-posts.md` | 발행된 네이버 글 주소 목록 | 기록 |
 | `docs/ad-marketing-knowledge.md` | 광고법규·브랜딩 지식 | 참고 |
+| `docs/CHATGPT_ADVISORY.md` · `ADVISORY_REQUEST.md` · `PROJECT_STATUS.md` | ChatGPT 프로젝트 자문 협업 원칙·요청서 양식·프로젝트 상태와 자문 이력(콘텐츠 교차검토는 규칙 16) | 상세, 2026-11-16 신설 |
 
 ## 6. 정리하면서 확인된 미결·불일치
 - ~~전화번호 문구~~ **해결(2026-11-07)**: 0507-1327-0317은 문자를 받지 못해 "문자 우선 안내"를 뺐다. 연락처 블록 문구는 "(수업 중에는 통화가 어려울 수 있어요. 부재중이면 연락드려요)"이며 `content-playbook.md` §4에 반영했다. 이미 발행된 과거 글은 고치지 않는다.
