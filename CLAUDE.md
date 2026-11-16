@@ -32,3 +32,11 @@
 - `queue/`·`queue-edu/`를 수정하면 지시가 없어도 곧바로 commit+push하고 원격 기준으로 자동 발행을 확인한다. `git add`는 경로를 지정한다(미추적 파일이 딸려 올라가지 않게).
 - 실제 API 키·토큰 값은 저장소에 커밋하지 않고 GitHub Actions Secrets로만 관리한다(이름과 용도는 `docs/publishing-plan.md` "자격증명").
 - 되돌리기 어려운 작업(히스토리 정리·force push, 광고비 집행, 계정·결제 설정)은 사용자의 명시적 승인 뒤에만 한다.
+
+## ChatGPT 자문 협업
+
+Claude Code는 프로젝트의 **주도적인 실행자**, ChatGPT는 **독립적인 기술·기획·마케팅 자문·검토자**, 사용자는 **최종 의사결정자**다. ChatGPT는 실행을 대신하거나 기존 작업 흐름을 바꾸지 않고 의견만 낸다.
+
+- 설계·구조 결정·구조 변경·전략 수립·어려운 문제·주요 기능 완성 같은 **중요한 단계에서만** 자문 요청서를 쓴다(사소한 수정은 요청하지 않는다). 원칙과 절차는 [docs/CHATGPT_ADVISORY.md](docs/CHATGPT_ADVISORY.md), 양식은 [docs/ADVISORY_REQUEST.md](docs/ADVISORY_REQUEST.md), 프로젝트 상태·의사결정·자문 이력은 [docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md).
+- 게시될 콘텐츠 텍스트의 교차검토는 별도로 `docs/operations-overview.md` 규칙 16을 따른다(두 체계는 겹치지 않는다).
+- ChatGPT 의견은 독립 검토 의견으로 취급해 적합성을 판단한 뒤 반영하고, 반영하지 않으면 이유를 기록한다. **주요 변경은 사용자 승인 뒤에만** 하고, 승인 없는 대규모 구조 변경이나 핵심 기능 삭제는 하지 않는다. 비밀값·개인정보·연락처는 보내지 않는다.
