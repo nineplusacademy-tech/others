@@ -72,3 +72,4 @@
 - [`ADVISORY_REQUEST.md`](ADVISORY_REQUEST.md): 요청서 표준 양식
 - [`PROJECT_STATUS.md`](PROJECT_STATUS.md): 프로젝트 전체 상태, 의사결정, 변경 이력, 자문 이력
 - [`operations-overview.md`](operations-overview.md): 운영 기준 요약(규칙 16 포함)
+- [`CHATGPT_PROJECT_INSTRUCTIONS.md`](CHATGPT_PROJECT_INSTRUCTIONS.md): ChatGPT 프로젝트 지침 원문, 업로드 파일 목록, Claude Code 지침과의 동기화 규칙
