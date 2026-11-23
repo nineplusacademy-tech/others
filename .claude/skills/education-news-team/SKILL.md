@@ -124,6 +124,7 @@ mainmanager가 확정한 주제를 받아 착수하거나, mainmanager가 후보
    ---
    <html 본문 그대로>
    ```
+   **프런트매터에 `search_description:`(100~140자, 150자 이내, 따옴표 문자열)을 반드시 넣는다(사용자 지시 2026-11-23: 구글 블로그 검색설명 누락 방지).** 11/23호는 이 값이 빠져 Blogger 검색설명이 비어 게시됐다. 큐 등록 직전 `title`·`labels`·`search_description` 셋이 모두 있는지 확인하고, 하나라도 없으면 등록하지 않는다.
 2. 저장소에 커밋(브랜치는 현재 작업 브랜치, 커밋 메시지는 한국어로 간결하게, 마지막
    줄에 `Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>`)하고 push한다. git
    author/committer 오류가 나면 `GIT_AUTHOR_NAME="nineplusacademy-tech"
