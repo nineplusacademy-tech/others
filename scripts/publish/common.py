@@ -331,6 +331,29 @@ def raw_github_url(rel_path: Path) -> str:
     return f"https://raw.githubusercontent.com/{repo}/{sha}/{encoded_path}"
 
 
+BLOG_IMAGE_DIR = Path("assets/blog-images")
+
+
+def blog_image_url(image: Path, blog_folder: Path) -> str:
+    """블로그 글에 계속 남는 사진 주소. assets/ 보존본을 브랜치 이름으로 가리킨다.
+
+    커밋 SHA와 queue/ 경로를 쓰면 히스토리 정리 때 게시된 글의 사진이 깨진다. 보존본은
+    워크플로가 발행 전에 preserve_blog_images.py로 만든다. 보존본이 없으면 발행을 막지
+    않고 예전 방식(SHA 고정)으로 대신하되 경고를 남긴다.
+    """
+    import sys
+    from urllib.parse import quote
+
+    preserved = BLOG_IMAGE_DIR / blog_folder.parent.name / image.name
+    branch = os.environ.get("GITHUB_REF_NAME")
+    if not preserved.exists() or not branch:
+        print(f"::warning::[blogger] {image.name}의 보존본이 없어 queue/ 주소를 씁니다 — 히스토리 정리 전에 옮겨야 합니다", file=sys.stderr)
+        return raw_github_url(image)
+    repo = os.environ["GITHUB_REPOSITORY"]
+    encoded = "/".join(quote(segment) for segment in preserved.as_posix().split("/"))
+    return f"https://raw.githubusercontent.com/{repo}/{quote(branch)}/{encoded}"
+
+
 _IMG_PLACEHOLDER_RE = re.compile(r'<img\s+src="\[사진 자리 \d+\s*·\s*([^\]]+)\]"')
 
 
@@ -352,7 +375,7 @@ def fill_image_placeholders(html: str, blog_folder: Path) -> str:
             if candidate.exists():
                 # blog_folder는 이미 저장소 루트 기준 상대경로(queue/.../블로그)이므로
                 # 추가 변환 없이 그대로 raw_github_url에 넘긴다.
-                return f'<img src="{raw_github_url(candidate)}"'
+                return f'<img src="{blog_image_url(candidate, blog_folder)}"'
         print(f"[blogger] 경고: '{label}'에 매칭되는 이미지 파일을 {blog_folder}에서 찾지 못함 — 원본 플레이스홀더 유지", file=sys.stderr)
         return match.group(0)
 

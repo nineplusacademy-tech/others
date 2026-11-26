@@ -1,0 +1,47 @@
+name: 블로그 사진 주소 교체 (일회성)
+
+# 게시된 구글 블로그 글의 사진 주소를 assets/blog-images/ 보존본으로 바꾼다(2026-11-26).
+# 수동 실행 전용. apply를 끄면 미리보기만 한다.
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "true면 실제로 글을 수정"
+        type: boolean
+        default: false
+      limit:
+        description: "수정할 글 수 (0=전부)"
+        type: string
+        default: "1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-queue
+  cancel-in-progress: false
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r scripts/publish/requirements.txt
+      - name: 주소 교체
+        env:
+          PYTHONPATH: scripts/publish
+          GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+          GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
+          GOOGLE_OAUTH_REFRESH_TOKEN: ${{ secrets.GOOGLE_OAUTH_REFRESH_TOKEN }}
+          BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
+          APPLY: ${{ inputs.apply }}
+          LIMIT: ${{ inputs.limit }}
+        run: |
+          if [ "$APPLY" = "true" ]; then
+            python scripts/publish/fix_blog_image_urls.py --apply --limit "$LIMIT"
+          else
+            python scripts/publish/fix_blog_image_urls.py --limit "$LIMIT"
+          fi
